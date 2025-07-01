@@ -1,0 +1,942 @@
+/* General Resets and Body Styling */
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif; /* A common font for modern UIs */
+    background-color: #242424; /* Dark background as in the image */
+    color: #e0e0e0; /* Light text color */
+    overflow: hidden; /* Hide scrollbars for fixed layout */
+    display: flex;
+    height: 100vh;
+}
+
+.app-container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+/* Global Left Sidebar */
+.global-sidebar {
+    width: 60px; /* Fixed width for icon-only sidebar */
+    background-color: #2e2e2e;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px 0;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.2);
+    z-index: 20;
+}
+
+.global-sidebar .logo {
+    margin-bottom: 30px;
+}
+
+.global-sidebar .logo img {
+    width: 30px;
+    height: 30px;
+    border-radius: 4px;
+}
+
+.global-nav {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    flex-grow: 1; /* Allows it to take available space */
+}
+
+.global-nav .nav-item {
+    color: #b0b0b0;
+    text-decoration: none;
+    padding: 12px 0;
+    text-align: center;
+    font-size: 0.9em;
+    transition: background-color 0.2s, color 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px; /* Space between icon and text */
+}
+
+.global-nav .nav-item i {
+    font-size: 1.3em;
+}
+
+.global-nav .nav-item span {
+    font-size: 0.7em;
+}
+
+.global-nav .nav-item:hover,
+.global-nav .nav-item.active {
+    background-color: #3a3a3a;
+    color: #ffffff;
+}
+
+.global-nav .nav-item.active {
+    border-left: 3px solid #6c5ce7; /* Highlight active item */
+}
+
+.global-nav .nav-separator {
+    height: 1px;
+    background-color: #444;
+    margin: 15px 10px;
+}
+
+.global-nav .nav-item.update {
+    color: #ffc107; /* Warning color for update */
+}
+
+.bottom-settings {
+    margin-top: auto; /* Pushes to the bottom */
+}
+
+.bottom-settings .nav-item {
+    color: #b0b0b0;
+    text-align: center;
+    padding: 12px 0;
+}
+
+/* Main Content Wrapper (Top Bar + Workflow Editor) */
+.main-wrapper {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: #242424; /* Main background */
+}
+
+/* Top Bar Styling */
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #2e2e2e;
+    padding: 10px 20px;
+    border-bottom: 1px solid #3a3a3a;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    z-index: 10;
+}
+
+.top-left .workflow-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #b0b0b0;
+}
+
+.top-left .workflow-name {
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.top-left .add-tag-btn {
+    background-color: #4a4a4a;
+    color: #b0b0b0;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8em;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.top-left .add-tag-btn:hover {
+    background-color: #5a5a5a;
+}
+
+.top-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Nuevo estilo para botones de acción en la top-bar */
+.action-btn {
+    background-color: #6c5ce7;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: background-color 0.2s;
+}
+
+.action-btn:hover {
+    background-color: #5b4bd8;
+}
+
+
+.status-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9em;
+}
+
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 38px;
+    height: 20px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-switch label {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #444;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.toggle-switch label:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+.toggle-switch input:checked + label {
+    background-color: #28a745; /* Green for active */
+}
+
+.toggle-switch input:focus + label {
+    box-shadow: 0 0 1px #28a745;
+}
+
+.toggle-switch input:checked + label:before {
+    -webkit-transform: translateX(18px);
+    -ms-transform: translateX(18px);
+    transform: translateX(18px);
+}
+
+.share-btn, .save-btn {
+    background-color: #4a4a4a;
+    color: #b0b0b0;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: background-color 0.2s;
+}
+
+.share-btn:hover, .save-btn:hover {
+    background-color: #5a5a5a;
+}
+
+.top-icon {
+    color: #b0b0b0;
+    font-size: 1.1em;
+    cursor: pointer;
+}
+
+.star-count {
+    font-size: 0.9em;
+    color: #b0b0b0;
+}
+
+/* Workflow Editor Area */
+.workflow-editor-area {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    overflow: hidden; /* Important for scrollable canvas/bottom panel */
+}
+
+.editor-tabs {
+    display: flex;
+    background-color: #2e2e2e;
+    border-bottom: 1px solid #3a3a3a;
+    padding-left: 20px;
+}
+
+.editor-tabs .tab {
+    background-color: transparent;
+    border: none;
+    color: #b0b0b0;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: color 0.2s, border-bottom 0.2s;
+    border-bottom: 2px solid transparent;
+}
+
+.editor-tabs .tab:hover {
+    color: #ffffff;
+}
+
+.editor-tabs .tab.active {
+    color: #ffffff;
+    border-bottom: 2px solid #6c5ce7; /* Highlight active tab */
+}
+
+.editor-canvas-wrapper {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* For controlling inner scrolls */
+}
+
+/* Workflow Canvas */
+.editor-canvas {
+    flex-grow: 1;
+    background-color: #242424; /* Dark canvas background */
+    background-image:
+        linear-gradient(to right, #3a3a3a 1px, transparent 1px),
+        linear-gradient(to bottom, #3a3a3a 1px, transparent 1px);
+    background-size: 20px 20px; /* Grid size */
+    position: relative; /* For absolute positioning of nodes */
+    overflow: hidden; /* For zooming/panning (not implemented here) */
+}
+
+.canvas-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* This empty div is just a layer to ensure background shows through if nodes have transparency */
+}
+
+.canvas-add-node-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background-color: #6c5ce7;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5em;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    z-index: 5; /* Above nodes but below lines */
+}
+.canvas-add-node-btn:hover {
+    background-color: #5b4bd8;
+}
+
+/* Node Styling */
+.node {
+    background-color: #3a3a3a; /* Darker grey for nodes */
+    border: 1px solid #555;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    padding: 10px 15px;
+    position: absolute;
+    min-width: 170px; /* Adjusted min-width */
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: grab;
+    transition: box-shadow 0.2s, transform 0.2s, background-color 0.2s;
+    color: #e0e0e0;
+    font-size: 0.9em;
+}
+
+.node:hover {
+    box-shadow: 0 6px 15px rgba(0,0,0,0.4);
+    transform: translateY(-2px);
+    background-color: #4a4a4a;
+}
+
+/* Dragging state for nodes */
+.node.is-dragging {
+    box-shadow: 0 8px 20px rgba(0,0,0,0.5); /* Stronger shadow */
+    transform: translateY(-4px) scale(1.02); /* Slightly bigger and lifted */
+    z-index: 100; /* Ensure node is on top when dragging */
+    cursor: grabbing;
+}
+
+/* Estilo para el botón de eliminar nodo */
+.node .delete-node-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: rgba(255, 0, 0, 0.7);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 0.7em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0; /* Hidden by default */
+    transition: opacity 0.2s, background-color 0.2s;
+    z-index: 10; /* Ensure it's above other node content */
+}
+
+.node:hover .delete-node-btn {
+    opacity: 1; /* Show on node hover */
+}
+
+.node .delete-node-btn:hover {
+    background-color: red;
+}
+
+
+.node-header {
+    font-size: 0.7em;
+    color: #a0a0a0;
+    margin-bottom: 5px;
+}
+
+/* Estilo para el título del nodo (editable) */
+.node-title {
+    font-weight: bold;
+    margin-bottom: 3px;
+    color: #ffffff;
+    padding: 2px 5px; /* Pequeño padding para el área de edición */
+    border-radius: 3px;
+    min-width: 50px; /* Para que sea visible aunque esté vacío */
+    outline: none; /* Eliminar el contorno por defecto al enfocar */
+}
+
+/* Opcional: Estilo visual para cuando el título está en modo edición */
+.node-title:focus {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid #6c5ce7;
+    cursor: text;
+}
+
+
+.node-subtitle {
+    font-size: 0.75em;
+    color: #b0b0b0;
+    word-break: break-all; /* For long URLs */
+}
+
+.node-icon {
+    font-size: 1.8em; /* Slightly smaller icons */
+    margin-bottom: 8px;
+    padding: 8px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #2e2e2e; /* Icon background */
+    border: 1px solid #555;
+    cursor: pointer; /* To indicate it's clickable for context menu */
+}
+
+/* Specific Node Icon Colors/Backgrounds (approximated from image) */
+.node-start .node-icon { background-color: #28a745; border-color: #28a745; color: white; } /* Green for Start */
+.type-chat-message i { color: #88c0d0; } /* Light blue for chat icon */
+.type-code i { color: #ffe66d; } /* Yellow for code icon */
+.type-api i { color: #ff6b6b; } /* Red for API/Globe icon */
+.type-edit-fields i { color: #6a0dad; } /* Purple for edit icon */
+.type-disk i { color: #f5a623; } /* Orange for disk icon */
+.type-database i { color: #20b2aa; } /* Lightseagreen for database icon (example color) */
+.type-generic i { color: #999; } /* Gray for generic/new icon */
+
+/* Node Ports */
+.node-port {
+    width: 12px; /* Slightly larger ports */
+    height: 12px;
+    background-color: #666;
+    border-radius: 50%;
+    position: absolute;
+    border: 1px solid #444;
+    cursor: pointer; /* Added for connection drawing */
+    transition: background-color 0.2s, border-color 0.2s; /* Added for connection drawing */
+}
+
+.node-port:hover { /* Added for connection drawing */
+    background-color: #a7a7a7; /* Color de resaltado al pasar el mouse */
+    border-color: #888;
+}
+
+.node-port.highlight { /* Added for connection drawing */
+    background-color: #6c5ce7; /* Resaltar puerto destino potencial */
+    border-color: #5b4bd8;
+}
+
+.input-port {
+    left: -6px; /* Half of width to stick out */
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.output-port {
+    right: -6px; /* Half of width to stick out */
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* SVG for lines (positioned absolutely over canvas) */
+.lines-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* Allows clicks to pass through to nodes, except for specific lines */
+    z-index: 1; /* Below nodes but above canvas background */
+}
+
+/* Línea temporal de conexión */
+.temp-line {
+    stroke: #6c5ce7; /* Color de la línea temporal */
+    stroke-width: 2;
+    stroke-dasharray: 5, 5; /* Línea punteada */
+    pointer-events: none; /* Ignorar eventos del mouse para que no interfiera */
+}
+
+/* Líneas de conexión existentes */
+.connection-line {
+    stroke: #666;
+    stroke-width: 2;
+    /* marker-end: url(#arrowhead-dark);  -- ELIMINADO PARA QUITAR LA PUNTA -- */
+    cursor: pointer; /* Para poder hacer clic y eliminar */
+    transition: stroke 0.2s, stroke-width 0.2s;
+    pointer-events: all; /* Important: allows click events on the line itself */
+}
+
+.connection-line:hover {
+    stroke: #88c0d0; /* Resaltar al pasar el mouse */
+    stroke-width: 3;
+}
+
+
+/* Canvas controls (bottom left) */
+.canvas-controls {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    background-color: #3a3a3a;
+    border-radius: 8px;
+    display: flex;
+    gap: 5px;
+    padding: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+    z-index: 5;
+}
+
+.canvas-controls button {
+    background-color: transparent;
+    border: none;
+    color: #b0b0b0;
+    font-size: 1.1em;
+    padding: 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.canvas-controls button:hover {
+    background-color: #4a4a4a;
+    color: #ffffff;
+}
+
+/* Bottom Chat/Logs Area */
+.bottom-panel {
+    background-color: #2e2e2e;
+    height: 250px; /* Fixed height for the bottom panel */
+    border-top: 1px solid #3a3a3a;
+    display: flex;
+    flex-direction: column;
+    z-index: 10;
+}
+
+.chat-header {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    border-bottom: 1px solid #3a3a3a;
+    color: #b0b0b0;
+    font-size: 0.9em;
+    position: relative;
+}
+
+.chat-title {
+    font-weight: bold;
+    color: #ffffff;
+    margin-right: 15px;
+}
+
+.chat-session, .chat-logs {
+    margin-right: 15px;
+}
+
+.hide-chat-btn {
+    background-color: #4a4a4a;
+    color: #b0b0b0;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8em;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-left: auto; /* Push to the right */
+}
+.hide-chat-btn:hover {
+    background-color: #5a5a5a;
+}
+
+.chat-header-right-icons {
+    display: flex;
+    gap: 15px;
+    margin-left: 20px; /* Space from hide button */
+}
+
+.chat-header-right-icons i {
+    cursor: pointer;
+}
+
+.chat-content, .log-content {
+    flex-grow: 1;
+    padding: 15px 20px;
+    overflow-y: auto; /* Enable scrolling for content */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Center placeholder */
+    align-items: center;
+    color: #b0b0b0;
+}
+
+.log-content {
+    display: none; /* Only one should be visible, for now logs are hidden */
+    justify-content: flex-start; /* Logs typically start from top */
+    align-items: flex-start;
+}
+
+.chat-message-placeholder {
+    text-align: center;
+    font-size: 0.9em;
+    margin-bottom: 20px;
+}
+
+.chat-message-placeholder i {
+    font-size: 2em;
+    margin-bottom: 10px;
+    color: #88c0d0;
+}
+
+.chat-input-area {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    max-width: 600px; /* Limit input width */
+    margin-top: auto; /* Push to bottom */
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 15px; /* Space from message above */
+    border-top: 1px solid #3a3a3a;
+}
+
+.chat-input-area input {
+    flex-grow: 1;
+    background-color: #3a3a3a;
+    border: 1px solid #555;
+    color: #e0e0e0;
+    padding: 10px 15px;
+    border-radius: 6px;
+    font-size: 0.9em;
+}
+
+.chat-input-area input::placeholder {
+    color: #999;
+}
+
+.chat-input-area button {
+    background-color: #6c5ce7;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 1.1em;
+    transition: background-color 0.2s;
+}
+
+.chat-input-area button:hover {
+    background-color: #5b4bd8;
+}
+
+/* Contenedor del menú contextual (para conexiones) */
+.context-menu {
+    position: absolute;
+    background-color: #3a3a3a;
+    border: 1px solid #555;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+    z-index: 1000;
+    list-style: none;
+    margin: 0;
+    padding: 5px 0;
+    display: none; /* Oculto por defecto */
+}
+
+.context-menu.show {
+    display: block;
+}
+
+.context-menu li {
+    padding: 8px 15px;
+    color: #e0e0e0;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+
+.context-menu li:hover {
+    background-color: #555;
+}
+
+/* Context Menu for Icons */
+.icon-selection-menu {
+    position: absolute;
+    background-color: #3a3a3a;
+    border: 1px solid #555;
+    border-radius: 4px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    z-index: 1001; /* Higher than node context menu */
+    list-style: none;
+    margin: 0;
+    padding: 5px;
+    display: none;
+    max-height: 200px; /* Limit height for scroll if many icons */
+    overflow-y: auto; /* Enable scroll if content overflows */
+    flex-wrap: wrap; /* Allow icons to wrap */
+    gap: 5px; /* Space between icons */
+    max-width: 150px; /* Limit menu width */
+}
+
+.icon-selection-menu.show {
+    display: flex; /* Use flexbox for icon grid */
+}
+
+.icon-selection-menu .icon-item {
+    background-color: #4a4a4a;
+    color: #e0e0e0;
+    width: 30px; /* Size of each icon square */
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+    font-size: 1.2em;
+}
+
+.icon-selection-menu .icon-item:hover {
+    background-color: #6c5ce7; /* Highlight on hover */
+    transform: scale(1.1);
+}
+
+/* Modal Overlay (Database Config Modal) */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000; /* Higher than other elements */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.modal-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Modal Content */
+.modal-content {
+    background-color: #2e2e2e;
+    color: #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    width: 90%;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+    overflow: hidden;
+    transform: translateY(-50px);
+    transition: transform 0.3s ease;
+}
+
+.modal-overlay.show .modal-content {
+    transform: translateY(0);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid #3a3a3a;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 1.2em;
+}
+
+.close-modal-btn {
+    background: none;
+    border: none;
+    color: #e0e0e0;
+    font-size: 1.8em;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.close-modal-btn:hover {
+    color: #ff6b6b; /* Red for close */
+}
+
+.modal-body {
+    padding: 20px;
+    overflow-y: auto; /* Enable scrolling for modal content */
+    flex-grow: 1;
+}
+
+.modal-body fieldset {
+    border: 1px solid #555;
+    border-radius: 6px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.modal-body legend {
+    color: #6c5ce7;
+    font-weight: bold;
+    padding: 0 10px;
+    font-size: 0.95em;
+}
+
+.input-group {
+    margin-bottom: 15px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 0.9em;
+    color: #b0b0b0;
+}
+
+.input-group input[type="text"],
+.input-group input[type="password"] {
+    width: calc(100% - 20px); /* Adjust for padding */
+    padding: 10px;
+    background-color: #3a3a3a;
+    border: 1px solid #555;
+    border-radius: 4px;
+    color: #e0e0e0;
+    font-size: 0.9em;
+}
+
+.input-group input[type="text"]::placeholder,
+.input-group input[type="password"]::placeholder {
+    color: #888;
+}
+
+/* Dynamic fields container */
+.dynamic-fields-container {
+    margin-top: 10px;
+}
+
+.dynamic-field-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    align-items: center;
+}
+
+.dynamic-field-row input {
+    flex: 1;
+    padding: 8px;
+    background-color: #3a3a3a;
+    border: 1px solid #555;
+    border-radius: 4px;
+    color: #e0e0e0;
+    font-size: 0.85em;
+}
+
+.dynamic-field-row .remove-field-btn {
+    background-color: #ff6b6b;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 10px;
+    cursor: pointer;
+    font-size: 0.8em;
+    transition: background-color 0.2s;
+}
+
+.dynamic-field-row .remove-field-btn:hover {
+    background-color: #e05454;
+}
+
+.add-field-btn {
+    background-color: #4a4a4a;
+    color: #e0e0e0;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 10px;
+    transition: background-color 0.2s;
+}
+
+.add-field-btn:hover {
+    background-color: #5a5a5a;
+}
+
+.modal-footer {
+    padding: 15px 20px;
+    border-top: 1px solid #3a3a3a;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.modal-footer .action-btn {
+    /* Reusing existing action-btn styles */
+    padding: 10px 20px;
+}
