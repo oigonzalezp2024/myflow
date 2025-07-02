@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workflow Automation - Persistencia de Datos en Archivo</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <aside class="global-sidebar">
+            <div class="logo">
+                <img src="https://via.placeholder.com/30x30/FFFFFF/000000?text=n8n" alt="Logo">
+            </div>
+            <nav class="global-nav">
+                <a href="#" class="nav-item active"><i class="fas fa-home"></i> <span>Overview</span></a>
+                <a href="#" class="nav-item"><i class="fas fa-user"></i> <span>Personal</span></a>
+                <a href="#" class="nav-item"><i class="fas fa-share-alt"></i> <span>Shared with you</span></a>
+                <div class="nav-separator"></div>
+                <a href="#" class="nav-item"><i class="fas fa-boxes"></i> <span>Templates</span></a>
+                <a href="#" class="nav-item"><i class="fas fa-chart-line"></i> <span>Insights</span></a>
+                <a href="#" class="nav-item"><i class="fas fa-question-circle"></i> <span>Help</span></a>
+                <a href="#" class="nav-item update"><i class="fas fa-sync-alt"></i> <span>1 Update</span></a>
+            </nav>
+            <div class="bottom-settings">
+                <a href="#" class="nav-item"><i class="fas fa-cog"></i></a>
+            </div>
+        </aside>
+
+        <div class="main-wrapper">
+            <header class="top-bar">
+                <div class="top-left">
+                    <div class="workflow-info">
+                        <i class="fas fa-user"></i> <span>Personal</span>
+                        <span class="workflow-name">codeGenerate</span>
+                        <button class="add-tag-btn"><i class="fas fa-plus"></i> Add tag</button>
+                    </div>
+                </div>
+                <div class="top-right">
+                    <button class="action-btn" id="downloadWorkflowBtn"><i class="fas fa-download"></i> Descargar JSON</button>
+                    <input type="file" id="uploadWorkflowInput" accept=".json,application/json" style="display: none;">
+                    <button class="action-btn" id="uploadWorkflowBtn"><i class="fas fa-upload"></i> Cargar JSON</button>
+                    
+                    <div class="status-toggle">
+                        <span class="status-text">Active</span>
+                        <div class="toggle-switch">
+                            <input type="checkbox" id="statusToggle" checked>
+                            <label for="statusToggle"></label>
+                        </div>
+                    </div>
+                    <button class="share-btn"><i class="fas fa-share-alt"></i> Share</button>
+                    <button class="save-btn"><i class="fas fa-save"></i> Saved</button>
+                    <i class="fas fa-ellipsis-h top-icon"></i>
+                    <i class="fas fa-star top-icon"></i> <span class="star-count">113.985</span>
+                </div>
+            </header>
+
+            <div class="workflow-editor-area">
+                <div class="editor-tabs">
+                    <button class="tab active">Editor</button>
+                    <button class="tab">Executions</button>
+                    <button class="tab">Evaluations</button>
+                </div>
+
+                <div class="editor-canvas-wrapper">
+                    <main class="editor-canvas" id="workflowCanvas">
+                        <div class="canvas-background"></div>
+                        <div class="canvas-add-node-btn" id="addNodeBtn">
+                            <i class="fas fa-plus"></i>
+                        </div>
+
+                        <svg class="lines-svg" id="linesSvg" width="100%" height="100%">
+                            </svg>
+
+                        <div class="canvas-controls">
+                            <button><i class="fas fa-search-plus"></i></button>
+                            <button><i class="fas fa-search-minus"></i></button>
+                            <button><i class="fas fa-compress-arrows-alt"></i></button>
+                            <button><i class="fas fa-undo"></i></button>
+                            <button><i class="fas fa-redo"></i></button>
+                        </div>
+                    </main>
+
+                    <div class="bottom-panel">
+                        <div class="chat-header">
+                            <span class="chat-title">Chat</span>
+                            <span class="chat-session">Session: 7S99H...</span>
+                            <span class="chat-logs">Logs</span>
+                            <button class="hide-chat-btn"><i class="fas fa-eye-slash"></i> Hide chat</button>
+                            <div class="chat-header-right-icons">
+                                <i class="fas fa-ellipsis-h"></i>
+                                <i class="fas fa-cog"></i>
+                                <i class="fas fa-times"></i>
+                            </div>
+                        </div>
+                        <div class="chat-content">
+                            <div class="chat-message-placeholder">
+                                <i class="fas fa-comment-dots"></i>
+                                <span>Send a message below to trigger the chat workflow</span>
+                            </div>
+                            <div class="chat-input-area">
+                                <input type="text" placeholder="Type a message...">
+                                <button><i class="fas fa-paper-plane"></i></button>
+                            </div>
+                        </div>
+                        <div class="log-content">
+                            <p>Nothing to display yet. Execute the workflow to see execution logs.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+
+    <div id="databaseConfigModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Configurar Base de Datos</h2>
+                <button class="close-modal-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="modalNodeId">
+                
+                <fieldset>
+                    <legend>Credenciales de Conexión</legend>
+                    <div class="input-group">
+                        <label for="dbHost">Host/URL:</label>
+                        <input type="text" id="dbHost" placeholder="ej. localhost o mi.servidor.com">
+                    </div>
+                    <div class="input-group">
+                        <label for="dbPort">Puerto:</label>
+                        <input type="text" id="dbPort" placeholder="ej. 3306">
+                    </div>
+                    <div class="input-group">
+                        <label for="dbUsername">Usuario:</label>
+                        <input type="text" id="dbUsername" placeholder="ej. root">
+                    </div>
+                    <div class="input-group">
+                        <label for="dbPassword">Contraseña:</label>
+                        <input type="password" id="dbPassword" placeholder="ej. mi_contraseña_segura">
+                    </div>
+                    <div class="input-group">
+                        <label for="dbName">Nombre BD:</label>
+                        <input type="text" id="dbName" placeholder="ej. mi_aplicacion_db">
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Configuración de Tabla</legend>
+                    <div class="input-group">
+                        <label for="dbTableName">Nombre de Tabla:</label>
+                        <input type="text" id="dbTableName" placeholder="ej. usuarios">
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Campos a Diligenciar</legend>
+                    <div id="dbFieldsContainer" class="dynamic-fields-container">
+                        </div>
+                    <button id="addFieldBtn" class="add-field-btn"><i class="fas fa-plus"></i> Añadir Campo</button>
+                </fieldset>
+            </div>
+            <div class="modal-footer">
+                <button id="saveDbConfigBtn" class="action-btn">Guardar Configuración</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
