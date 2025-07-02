@@ -949,7 +949,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Ejemplos:
             // 'http://localhost/nombre_carpeta_backend/create_db_table.php'
             // 'http://localhost:8080/create_db_table.php' (si tu servidor Apache/Nginx usa otro puerto)
-            const response = await fetch('http://localhost/n8n-project/replica4/create_db_table.php', { // <--- CAMBIA ESTA URL
+            const response = await fetch('http://localhost/myflow/create_db_table.php', { // <--- CAMBIA ESTA URL
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
