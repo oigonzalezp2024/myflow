@@ -1,5 +1,8 @@
 # MyFlow: Plataforma de Automatización de Workflows
 
+![image](https://github.com/user-attachments/assets/84865f21-c588-4de5-8ce2-0dd86a9d641e)
+
+
 Este repositorio contiene el prototipo inicial de una aplicación web para la automatización de workflows, inspirada en herramientas como n8n. **MyFlow** se concibe como una interfaz visual intuitiva que permite a los usuarios definir y gestionar sus propias secuencias de tareas automatizadas, incluyendo la interacción fluida con bases de datos MySQL.
 
 ## Contenido del Repositorio
