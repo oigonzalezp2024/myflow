@@ -1,0 +1,140 @@
+{
+  "nodes": [
+    {
+      "id": "79796623-0033-426c-a6e3-ba81226e5af6",
+      "type": "generic",
+      "title": "instrucciones",
+      "subtitle": "",
+      "x": 302,
+      "y": 127,
+      "icon": "fas fa-file-invoice"
+    },
+    {
+      "id": "85f7658e-7081-459d-90c7-cc400d448c97",
+      "type": "generic",
+      "title": "respuesta",
+      "subtitle": "",
+      "x": 862.9876098632812,
+      "y": 125.98139190673828,
+      "icon": "fas fa-file-invoice"
+    },
+    {
+      "id": "cb93a730-016a-4102-8274-59ede0e42d92",
+      "type": "generic",
+      "title": "AI",
+      "subtitle": "",
+      "x": 582,
+      "y": 125,
+      "icon": "fas fa-robot"
+    },
+    {
+      "id": "66e62d3b-08f1-49da-8386-fd812da8d734",
+      "type": "generic",
+      "title": "Pregunta",
+      "subtitle": "",
+      "x": 22,
+      "y": 225,
+      "icon": "fas fa-comment-dots"
+    },
+    {
+      "id": "765736aa-be64-4f6c-9dc1-22606a5b58a3",
+      "type": "generic",
+      "title": "preguntas frecuentes",
+      "subtitle": "",
+      "x": 21,
+      "y": 29,
+      "icon": "fas fa-database",
+      "dbConfig": {
+        "host": "localhost",
+        "port": "",
+        "username": "root",
+        "password": "",
+        "dbName": "myapp",
+        "tableName": "preguntas_frecuentes",
+        "fields": [
+          {
+            "key": "id_pregunta",
+            "value": "int(11)"
+          },
+          {
+            "key": "pregunta",
+            "value": "varchar(150)"
+          }
+        ]
+      }
+    },
+    {
+      "id": "4406af98-1792-4b61-b389-d537790aa3ba",
+      "type": "generic",
+      "title": "registro",
+      "subtitle": "",
+      "x": 1142,
+      "y": 226,
+      "icon": "fas fa-code"
+    },
+    {
+      "id": "94863c90-32d6-41ec-bf7c-deb9857aed19",
+      "type": "generic",
+      "title": "preguntas",
+      "subtitle": "",
+      "x": 1422.9407958984375,
+      "y": 223.91156005859375,
+      "icon": "fas fa-database",
+      "dbConfig": {
+        "host": "localhost",
+        "port": "",
+        "username": "root",
+        "password": "",
+        "dbName": "myapp",
+        "tableName": "preguntas",
+        "fields": [
+          {
+            "key": "id_pregunta",
+            "value": "int(11)"
+          },
+          {
+            "key": "pregunta",
+            "value": "varchar(150)"
+          }
+        ]
+      }
+    }
+  ],
+  "connections": [
+    {
+      "lineId": "line-765736aa-be64-4f6c-9dc1-22606a5b58a3-79796623-0033-426c-a6e3-ba81226e5af6-78a2",
+      "fromNodeId": "765736aa-be64-4f6c-9dc1-22606a5b58a3",
+      "toNodeId": "79796623-0033-426c-a6e3-ba81226e5af6"
+    },
+    {
+      "lineId": "line-66e62d3b-08f1-49da-8386-fd812da8d734-79796623-0033-426c-a6e3-ba81226e5af6-8935",
+      "fromNodeId": "66e62d3b-08f1-49da-8386-fd812da8d734",
+      "toNodeId": "79796623-0033-426c-a6e3-ba81226e5af6"
+    },
+    {
+      "lineId": "line-79796623-0033-426c-a6e3-ba81226e5af6-cb93a730-016a-4102-8274-59ede0e42d92-7ef3",
+      "fromNodeId": "79796623-0033-426c-a6e3-ba81226e5af6",
+      "toNodeId": "cb93a730-016a-4102-8274-59ede0e42d92"
+    },
+    {
+      "lineId": "line-cb93a730-016a-4102-8274-59ede0e42d92-85f7658e-7081-459d-90c7-cc400d448c97-79c8",
+      "fromNodeId": "cb93a730-016a-4102-8274-59ede0e42d92",
+      "toNodeId": "85f7658e-7081-459d-90c7-cc400d448c97"
+    },
+    {
+      "lineId": "line-85f7658e-7081-459d-90c7-cc400d448c97-4406af98-1792-4b61-b389-d537790aa3ba-c686",
+      "fromNodeId": "85f7658e-7081-459d-90c7-cc400d448c97",
+      "toNodeId": "4406af98-1792-4b61-b389-d537790aa3ba"
+    },
+    {
+      "lineId": "line-66e62d3b-08f1-49da-8386-fd812da8d734-4406af98-1792-4b61-b389-d537790aa3ba-2d00",
+      "fromNodeId": "66e62d3b-08f1-49da-8386-fd812da8d734",
+      "toNodeId": "4406af98-1792-4b61-b389-d537790aa3ba"
+    },
+    {
+      "lineId": "line-4406af98-1792-4b61-b389-d537790aa3ba-94863c90-32d6-41ec-bf7c-deb9857aed19-38e2",
+      "fromNodeId": "4406af98-1792-4b61-b389-d537790aa3ba",
+      "toNodeId": "94863c90-32d6-41ec-bf7c-deb9857aed19"
+    }
+  ]
+}
