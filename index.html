@@ -248,6 +248,72 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal de Configuración para Generador de Cliente API -->
+    <div id="clientGeneratorModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-plug"></i> Generar Cliente Consumidor API</h2>
+                <button class="close-modal-btn" id="closeClientModalBtn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="clientModalNodeId">
+
+                <fieldset>
+                    <legend>Parámetros del Endpoint</legend>
+                    <div class="input-group">
+                        <label for="clientEndpointUrl">URL completa del Endpoint:</label>
+                        <input type="text" id="clientEndpointUrl" placeholder="http://localhost/api/UsuariosApi.php">
+                    </div>
+                    <div class="input-group">
+                        <label for="clientToken">Token de Autorización (Bearer Token):</label>
+                        <input type="text" id="clientToken" placeholder="token_abc123xyz">
+                    </div>
+                    <div class="input-group">
+                        <label for="clientPrimaryKey">Nombre Clave Primaria:</label>
+                        <input type="text" id="clientPrimaryKey" value="id">
+                    </div>
+                    <div class="input-group">
+                        <label for="clientLanguage">Lenguaje del Cliente:</label>
+                        <select id="clientLanguage"
+                            style="width: 100%; padding: 10px; background-color: #3a3a3a; border: 1px solid #555; border-radius: 4px; color: #e0e0e0;">
+                            <option value="js">JavaScript (Fetch API)</option>
+                            <option value="php">PHP (cURL)</option>
+                        </select>
+                    </div>
+                </fieldset>
+
+                <div id="clientResultContainer" style="display:none; margin-top: 15px;">
+                    <fieldset style="margin-bottom: 15px;">
+                        <legend>Despliegue del Cliente en Servidor</legend>
+                        <div class="input-group">
+                            <label for="clientFilePath">Ruta/Directorio Destino:</label>
+                            <input type="text" id="clientFilePath" placeholder="ej. clients o public/js">
+                        </div>
+                        <div class="input-group">
+                            <label for="clientFileName">Nombre del Archivo:</label>
+                            <input type="text" id="clientFileName" placeholder="ApiClient.js">
+                        </div>
+                        <button id="saveClientFileBtn" class="action-btn"
+                            style="background-color: #28a745; margin-top: 5px;">
+                            <i class="fas fa-file-export"></i> Crear Archivo de Cliente
+                        </button>
+                    </fieldset>
+
+                    <label><strong>Código del Cliente Generado:</strong></label>
+                    <textarea id="generatedClientCode" rows="10"
+                        style="width: 100%; font-family: monospace; background: #1e1e1e; color: #a9b7c6; padding: 10px; border-radius: 4px; border: 1px solid #444;"
+                        readonly></textarea>
+                    <button id="copyClientCodeBtn" class="action-btn" style="margin-top: 8px;"><i
+                            class="fas fa-copy"></i> Copiar Código</button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="generateClientBtn" class="action-btn"><i class="fas fa-cogs"></i> Generar Código de
+                    Cliente</button>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>

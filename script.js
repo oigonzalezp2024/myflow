@@ -30,18 +30,36 @@ document.addEventListener('DOMContentLoaded', () => {
     const generateCrudBtn = document.getElementById('generateCrudBtn');
     const copyPhpCodeBtn = document.getElementById('copyPhpCodeBtn');
     const saveFileToDiskBtn = document.getElementById('saveFileToDiskBtn');
-    
+
     const apiHostInput = document.getElementById('apiHost');
     const apiPortInput = document.getElementById('apiPort');
     const apiUsernameInput = document.getElementById('apiUsername');
     const apiPasswordInput = document.getElementById('apiPassword');
     const apiDbNameInput = document.getElementById('apiDbName');
     const apiTableNameInput = document.getElementById('apiTableName');
-    
+
     const apiFilePathInput = document.getElementById('apiFilePath');
     const apiFileNameInput = document.getElementById('apiFileName');
     const generatedPhpCodeArea = document.getElementById('generatedPhpCode');
     const apiResultContainer = document.getElementById('apiResultContainer');
+
+    // --- Client Generator Modal Elements ---
+    const clientGeneratorModal = document.getElementById('clientGeneratorModal');
+    const clientModalNodeIdInput = document.getElementById('clientModalNodeId');
+    const closeClientModalBtn = document.getElementById('closeClientModalBtn');
+    const generateClientBtn = document.getElementById('generateClientBtn');
+    const copyClientCodeBtn = document.getElementById('copyClientCodeBtn');
+    const saveClientFileBtn = document.getElementById('saveClientFileBtn');
+
+    const clientEndpointUrlInput = document.getElementById('clientEndpointUrl');
+    const clientTokenInput = document.getElementById('clientToken');
+    const clientPrimaryKeyInput = document.getElementById('clientPrimaryKey');
+    const clientLanguageSelect = document.getElementById('clientLanguage');
+
+    const clientFilePathInput = document.getElementById('clientFilePath');
+    const clientFileNameInput = document.getElementById('clientFileName');
+    const generatedClientCodeArea = document.getElementById('generatedClientCode');
+    const clientResultContainer = document.getElementById('clientResultContainer');
 
     let activeNode = null;
     let offsetX, offsetY;
@@ -76,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
     function generateUniqueId() {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
             var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
             return v.toString(16);
         });
@@ -96,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let headerContent = '';
         let subtitleContent = nodeConfig.subtitle ? `<div class="node-subtitle">${nodeConfig.subtitle}</div>` : '';
 
-        switch(nodeConfig.type) {
+        switch (nodeConfig.type) {
             case 'start':
                 nodeTypeClass = 'node-start';
                 headerContent = 'de chat';
@@ -117,16 +135,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 nodeTypeClass = 'node-process';
                 headerContent = 'API Generator';
                 break;
+            case 'crud-client':
+                nodeTypeClass = 'node-process';
+                headerContent = 'API Client';
+                break;
             default:
                 nodeTypeClass = 'node-process';
-                headerContent = ''; 
+                headerContent = '';
                 break;
         }
 
         let iconColorClass = '';
         if (nodeConfig.type === 'start') iconColorClass = 'type-chat-message';
         else if (nodeConfig.type === 'code') iconColorClass = 'type-code';
-        else if (nodeConfig.type === 'api' || nodeConfig.type === 'crud-api') iconColorClass = 'type-api';
+        else if (nodeConfig.type === 'api' || nodeConfig.type === 'crud-api' || nodeConfig.type === 'crud-client') iconColorClass = 'type-api';
         else if (nodeConfig.type === 'edit-fields') iconColorClass = 'type-edit-fields';
         else if (nodeConfig.type === 'disk') iconColorClass = 'type-disk';
         else if (nodeConfig.type === 'database') iconColorClass = 'type-database';
@@ -150,6 +172,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!e.target.classList.contains('node-port') && !e.target.closest('.node-icon')) {
                 if (nodeConfig.type === 'crud-api' || (nodeConfig.icon && nodeConfig.icon.includes('fa-laptop-code'))) {
                     showApiGeneratorModal(nodeConfig.id);
+                } else if (nodeConfig.type === 'crud-client' || (nodeConfig.icon && nodeConfig.icon.includes('fa-plug'))) {
+                    showClientGeneratorModal(nodeConfig.id);
                 } else if (nodeConfig.type === 'database' || (nodeConfig.icon && nodeConfig.icon.includes('fas fa-database'))) {
                     showDatabaseConfigModal(nodeConfig.id);
                 }
@@ -166,7 +190,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const outputPort = nodeDiv.querySelector('.output-port');
         if (outputPort) outputPort.addEventListener('mousedown', startConnectionDrawing);
-        
+
         const inputPort = nodeDiv.querySelector('.input-port');
         if (inputPort) inputPort.addEventListener('mousedown', startConnectionDrawing);
 
@@ -224,7 +248,8 @@ document.addEventListener('DOMContentLoaded', () => {
             y: y,
             icon: icon,
             dbConfig: type === 'database' ? {} : undefined,
-            apiConfig: type === 'crud-api' ? {} : undefined
+            apiConfig: type === 'crud-api' ? {} : undefined,
+            clientConfig: type === 'crud-client' ? {} : undefined
         };
         nodesData.push(newNode);
         createNodeElement(newNode);
@@ -243,14 +268,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const nodeIndex = nodesData.findIndex(node => node.id === nodeId);
         if (nodeIndex !== -1) {
             nodesData[nodeIndex].icon = newIconClass;
-            
+
             if (newIconClass.includes('fas fa-database')) {
                 nodesData[nodeIndex].type = 'database';
                 if (!nodesData[nodeIndex].dbConfig) nodesData[nodeIndex].dbConfig = {};
             } else if (newIconClass.includes('fa-laptop-code')) {
                 nodesData[nodeIndex].type = 'crud-api';
                 if (!nodesData[nodeIndex].apiConfig) nodesData[nodeIndex].apiConfig = {};
-            } else if (nodesData[nodeIndex].type === 'database' || nodesData[nodeIndex].type === 'crud-api') {
+            } else if (newIconClass.includes('fa-plug')) {
+                nodesData[nodeIndex].type = 'crud-client';
+                if (!nodesData[nodeIndex].clientConfig) nodesData[nodeIndex].clientConfig = {};
+            } else if (nodesData[nodeIndex].type === 'database' || nodesData[nodeIndex].type === 'crud-api' || nodesData[nodeIndex].type === 'crud-client') {
                 nodesData[nodeIndex].type = 'generic';
             }
 
@@ -258,16 +286,16 @@ document.addEventListener('DOMContentLoaded', () => {
             if (nodeElement) {
                 const iconElement = nodeElement.querySelector('.node-icon i');
                 if (iconElement) {
-                    iconElement.className = ''; 
-                    iconElement.classList.add(...newIconClass.split(' ')); 
+                    iconElement.className = '';
+                    iconElement.classList.add(...newIconClass.split(' '));
 
                     const nodeIconContainer = nodeElement.querySelector('.node-icon');
                     nodeIconContainer.classList.remove('type-chat-message', 'type-code', 'type-api', 'type-edit-fields', 'type-disk', 'type-database', 'type-generic');
-                    
+
                     let newIconColorClass = '';
                     if (nodesData[nodeIndex].type === 'start') newIconColorClass = 'type-chat-message';
                     else if (nodesData[nodeIndex].type === 'code') newIconColorClass = 'type-code';
-                    else if (nodesData[nodeIndex].type === 'api' || nodesData[nodeIndex].type === 'crud-api') newIconColorClass = 'type-api';
+                    else if (nodesData[nodeIndex].type === 'api' || nodesData[nodeIndex].type === 'crud-api' || nodesData[nodeIndex].type === 'crud-client') newIconColorClass = 'type-api';
                     else if (nodesData[nodeIndex].type === 'edit-fields') newIconColorClass = 'type-edit-fields';
                     else if (nodesData[nodeIndex].type === 'disk') newIconColorClass = 'type-disk';
                     else if (nodesData[nodeIndex].type === 'database') newIconColorClass = 'type-database';
@@ -314,7 +342,7 @@ document.addEventListener('DOMContentLoaded', () => {
             toNodeId: toNodeId
         };
         connectionsData.push(newConnection);
-        
+
         createLineElement(newConnection);
         updateConnectedLines(document.getElementById(fromNodeId));
         updateConnectedLines(document.getElementById(toNodeId));
@@ -461,7 +489,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (target.classList.contains('node-port') &&
                 target.dataset.nodeId !== startNodeId &&
                 ((startPortType === 'output' && target.dataset.portType === 'input') ||
-                 (startPortType === 'input' && target.dataset.portType === 'output'))
+                    (startPortType === 'input' && target.dataset.portType === 'output'))
             ) {
                 if (targetPortElement && targetPortElement !== target) {
                     targetPortElement.classList.remove('highlight');
@@ -638,6 +666,7 @@ document.addEventListener('DOMContentLoaded', () => {
         hideIconSelectionMenu();
         hideDatabaseConfigModal();
         hideApiGeneratorModal();
+        hideClientGeneratorModal();
     }
 
     // --- Modal Configuración Base de Datos ---
@@ -859,6 +888,124 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // --- Modal Generador de Cliente API ---
+
+    function showClientGeneratorModal(nodeId) {
+        hideAllContextMenus();
+        const node = nodesData.find(n => n.id === nodeId);
+        if (!node || !clientGeneratorModal) return;
+
+        clientModalNodeIdInput.value = nodeId;
+        const config = node.clientConfig || {};
+
+        if (clientEndpointUrlInput) clientEndpointUrlInput.value = config.endpointUrl || 'http://localhost/api/UsuariosApi.php';
+        if (clientTokenInput) clientTokenInput.value = config.token || '';
+        if (clientPrimaryKeyInput) clientPrimaryKeyInput.value = config.primaryKey || 'id';
+        if (clientLanguageSelect) clientLanguageSelect.value = config.language || 'js';
+
+        if (clientResultContainer) clientResultContainer.style.display = node.generatedClientCode ? 'block' : 'none';
+        if (generatedClientCodeArea) generatedClientCodeArea.value = node.generatedClientCode || '';
+
+        clientGeneratorModal.classList.add('show');
+    }
+
+    function hideClientGeneratorModal() {
+        if (clientGeneratorModal) clientGeneratorModal.classList.remove('show');
+    }
+
+    if (closeClientModalBtn) closeClientModalBtn.addEventListener('click', hideClientGeneratorModal);
+
+    if (generateClientBtn) {
+        generateClientBtn.addEventListener('click', async () => {
+            const nodeId = clientModalNodeIdInput.value;
+            const payload = {
+                action: 'generate_client',
+                endpointUrl: clientEndpointUrlInput.value.trim(),
+                token: clientTokenInput.value.trim(),
+                primaryKey: clientPrimaryKeyInput.value.trim(),
+                clientLanguage: clientLanguageSelect.value
+            };
+
+            try {
+                const response = await fetch('generate_crud_api.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.success) {
+                    if (generatedClientCodeArea) generatedClientCodeArea.value = result.generatedCode;
+                    if (clientResultContainer) clientResultContainer.style.display = 'block';
+
+                    if (clientFilePathInput && !clientFilePathInput.value) clientFilePathInput.value = 'clients';
+                    if (clientFileNameInput && result.defaultFileName) clientFileNameInput.value = result.defaultFileName;
+
+                    const nodeIndex = nodesData.findIndex(n => n.id === nodeId);
+                    if (nodeIndex !== -1) {
+                        nodesData[nodeIndex].clientConfig = payload;
+                        nodesData[nodeIndex].generatedClientCode = result.generatedCode;
+                        saveWorkflowToLocalStorage();
+                    }
+                } else {
+                    alert(`Error: ${result.message}`);
+                }
+            } catch (err) {
+                console.error('Error al generar cliente API:', err);
+                alert('Error de conexión con el backend.');
+            }
+        });
+    }
+
+    if (copyClientCodeBtn) {
+        copyClientCodeBtn.addEventListener('click', () => {
+            if (generatedClientCodeArea) {
+                generatedClientCodeArea.select();
+                navigator.clipboard.writeText(generatedClientCodeArea.value);
+                alert('Código de cliente copiado al portapapeles.');
+            }
+        });
+    }
+
+    if (saveClientFileBtn) {
+        saveClientFileBtn.addEventListener('click', async () => {
+            const code = generatedClientCodeArea ? generatedClientCodeArea.value : '';
+            const filePath = clientFilePathInput ? clientFilePathInput.value.trim() : '';
+            const fileName = clientFileNameInput ? clientFileNameInput.value.trim() : '';
+
+            if (!code || !fileName) {
+                alert('Faltan el código o el nombre del archivo.');
+                return;
+            }
+
+            const payload = {
+                action: 'save',
+                code: code,
+                filePath: filePath,
+                fileName: fileName
+            };
+
+            try {
+                const response = await fetch('generate_crud_api.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+                if (response.ok && result.success) {
+                    alert(`¡Éxito! ${result.message}`);
+                } else {
+                    alert(`Error al guardar: ${result.message}`);
+                }
+            } catch (err) {
+                console.error('Error al guardar archivo en disco:', err);
+                alert('Error de red al intentar guardar.');
+            }
+        });
+    }
+
     // --- Global Click & Key Listeners ---
 
     document.addEventListener('click', (e) => {
@@ -902,8 +1049,8 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 'node-aiexecute', type: 'api', title: 'AIExecute', subtitle: 'POST https://localho.st:5678/...', x: 850, y: 150, icon: 'fas fa-globe' },
         { id: 'node-code', type: 'code', title: 'Code', x: 1100, y: 150, icon: 'fas fa-code' },
         { id: 'node-editfields', type: 'edit-fields', title: 'Edit fields', subtitle: 'manual', x: 1350, y: 150, icon: 'fas fa-pencil-alt' },
-        { id: 'node-db-example', type: 'database', title: 'Database Op', subtitle: 'MySQL users', x: 450, y: 400, icon: 'fas fa-database', dbConfig: {host: 'localhost', port: '3306', username: 'root', password: '', dbName: 'myapp', tableName: 'users', fields: [{key: 'id_usuario', value: 'INT AUTO_INCREMENT PRIMARY KEY'}, {key: 'nombre', value: 'VARCHAR(100)'}]} },
-        { id: 'node-crud-api', type: 'crud-api', title: 'Generar API CRUD PHP', subtitle: 'PHP REST Controller', x: 750, y: 400, icon: 'fas fa-laptop-code', apiConfig: {host: 'localhost', port: '3306', username: 'root', password: '', dbName: 'myapp', tableName: 'users'} },
+        { id: 'node-db-example', type: 'database', title: 'Database Op', subtitle: 'MySQL users', x: 450, y: 400, icon: 'fas fa-database', dbConfig: { host: 'localhost', port: '3306', username: 'root', password: '', dbName: 'myapp', tableName: 'users', fields: [{ key: 'id_usuario', value: 'INT AUTO_INCREMENT PRIMARY KEY' }, { key: 'nombre', value: 'VARCHAR(100)' }] } },
+        { id: 'node-crud-api', type: 'crud-api', title: 'Generar API CRUD PHP', subtitle: 'PHP REST Controller', x: 750, y: 400, icon: 'fas fa-laptop-code', apiConfig: { host: 'localhost', port: '3306', username: 'root', password: '', dbName: 'myapp', tableName: 'users' } },
         { id: 'node-end', type: 'disk', title: 'Read/Write Files From Disk', subtitle: 'Write File to Disk', x: 1600, y: 150, icon: 'fas fa-file-invoice' },
     ];
 
