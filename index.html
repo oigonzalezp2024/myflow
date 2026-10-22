@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
+
 <body>
     <div class="app-container">
         <aside class="global-sidebar">
@@ -38,10 +40,11 @@
                     </div>
                 </div>
                 <div class="top-right">
-                    <button class="action-btn" id="downloadWorkflowBtn"><i class="fas fa-download"></i> Descargar JSON</button>
+                    <button class="action-btn" id="downloadWorkflowBtn"><i class="fas fa-download"></i> Descargar
+                        JSON</button>
                     <input type="file" id="uploadWorkflowInput" accept=".json,application/json" style="display: none;">
                     <button class="action-btn" id="uploadWorkflowBtn"><i class="fas fa-upload"></i> Cargar JSON</button>
-                    
+
                     <div class="status-toggle">
                         <span class="status-text">Active</span>
                         <div class="toggle-switch">
@@ -71,7 +74,7 @@
                         </div>
 
                         <svg class="lines-svg" id="linesSvg" width="100%" height="100%">
-                            </svg>
+                        </svg>
 
                         <div class="canvas-controls">
                             <button><i class="fas fa-search-plus"></i></button>
@@ -122,7 +125,7 @@
             </div>
             <div class="modal-body">
                 <input type="hidden" id="modalNodeId">
-                
+
                 <fieldset>
                     <legend>Credenciales de Conexión</legend>
                     <div class="input-group">
@@ -158,7 +161,7 @@
                 <fieldset>
                     <legend>Campos a Diligenciar</legend>
                     <div id="dbFieldsContainer" class="dynamic-fields-container">
-                        </div>
+                    </div>
                     <button id="addFieldBtn" class="add-field-btn"><i class="fas fa-plus"></i> Añadir Campo</button>
                 </fieldset>
             </div>
@@ -167,5 +170,84 @@
             </div>
         </div>
     </div>
+    <!-- Modal de Configuración para Generador API CRUD PHP -->
+    <div id="apiGeneratorModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-laptop-code"></i> Generar API CRUD PHP</h2>
+                <button class="close-modal-btn" id="closeApiModalBtn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="apiModalNodeId">
+
+                <fieldset>
+                    <legend>Conexión e Información de Tabla</legend>
+                    <div class="input-group">
+                        <label for="apiHost">Host MySQL:</label>
+                        <input type="text" id="apiHost" placeholder="localhost">
+                    </div>
+                    <div class="input-group">
+                        <label for="apiPort">Puerto:</label>
+                        <input type="text" id="apiPort" placeholder="3306">
+                    </div>
+                    <div class="input-group">
+                        <label for="apiUsername">Usuario:</label>
+                        <input type="text" id="apiUsername" placeholder="root">
+                    </div>
+                    <div class="input-group">
+                        <label for="apiPassword">Contraseña:</label>
+                        <input type="password" id="apiPassword">
+                    </div>
+                    <div class="input-group">
+                        <label for="apiDbName">Base de Datos:</label>
+                        <input type="text" id="apiDbName" placeholder="nombre_bd">
+                    </div>
+                    <div class="input-group">
+                        <label for="apiTableName">Tabla:</label>
+                        <input type="text" id="apiTableName" placeholder="nombre_tabla">
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Opciones de Código Generado</legend>
+                    <div class="input-group">
+                        <label for="apiNamespace">Namespace / Directorio Destino:</label>
+                        <input type="text" id="apiNamespace" placeholder="Api/Controllers">
+                    </div>
+                </fieldset>
+
+                HTML
+                <div id="apiResultContainer" style="display:none; margin-top: 15px;">
+                    <fieldset style="margin-bottom: 15px;">
+                        <legend>Ubicación y Despliegue de Archivo</legend>
+                        <div class="input-group">
+                            <label for="apiFilePath">Ruta/Directorio en Servidor (relativa o absoluta):</label>
+                            <input type="text" id="apiFilePath" placeholder="ej. api/v1 o controllers">
+                        </div>
+                        <div class="input-group">
+                            <label for="apiFileName">Nombre del Archivo PHP:</label>
+                            <input type="text" id="apiFileName" placeholder="ej. UsuariosApi.php">
+                        </div>
+                        <button id="saveFileToDiskBtn" class="action-btn"
+                            style="background-color: #28a745; margin-top: 5px;">
+                            <i class="fas fa-file-export"></i> Crear Archivo en Servidor
+                        </button>
+                    </fieldset>
+
+                    <label><strong>Código PHP Generado:</strong></label>
+                    <textarea id="generatedPhpCode" rows="10"
+                        style="width: 100%; font-family: monospace; background: #1e1e1e; color: #a9b7c6; padding: 10px; border-radius: 4px; border: 1px solid #444;"
+                        readonly></textarea>
+                    <button id="copyPhpCodeBtn" class="action-btn" style="margin-top: 8px;"><i class="fas fa-copy"></i>
+                        Copiar Código</button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="generateCrudBtn" class="action-btn"><i class="fas fa-cogs"></i> Leer Estructura y Generar
+                    API</button>
+            </div>
+        </div>
+    </div>
 </body>
+
 </html>
