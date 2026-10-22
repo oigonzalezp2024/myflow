@@ -59,6 +59,10 @@
           {
             "key": "pregunta",
             "value": "varchar(150)"
+          },
+          {
+            "key": "comentario",
+            "value": "text"
           }
         ]
       }
@@ -68,8 +72,8 @@
       "type": "generic",
       "title": "registro",
       "subtitle": "",
-      "x": 1142,
-      "y": 226,
+      "x": 1346,
+      "y": 388,
       "icon": "fas fa-code"
     },
     {
@@ -77,8 +81,8 @@
       "type": "generic",
       "title": "preguntas",
       "subtitle": "",
-      "x": 1422.9407958984375,
-      "y": 223.91156005859375,
+      "x": 1762.9375,
+      "y": 413.90625,
       "icon": "fas fa-database",
       "dbConfig": {
         "host": "localhost",
@@ -98,6 +102,25 @@
           }
         ]
       }
+    },
+    {
+      "id": "3ae9cdb0-c69c-412f-bf3b-0a06c8ed9928",
+      "type": "crud-api",
+      "title": "api/preguntas-frecuentes",
+      "subtitle": "",
+      "x": 324.984375,
+      "y": 358,
+      "icon": "fas fa-laptop-code",
+      "apiConfig": {
+        "action": "generate",
+        "host": "localhost",
+        "port": "3306",
+        "username": "root",
+        "password": "",
+        "dbName": "myapp",
+        "tableName": "preguntas_frecuentes"
+      },
+      "generatedCode": "<?php\n// API REST Autogenerada para la tabla 'preguntas_frecuentes'\nheader('Content-Type: application/json');\nheader('Access-Control-Allow-Origin: *');\nheader('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');\nheader('Access-Control-Allow-Headers: Content-Type');\n\nif ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { exit(0); }\n\n$pdo = new PDO('mysql:host=localhost;port=3306;dbname=myapp;charset=utf8mb4', 'root', '', [\n    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,\n    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC\n]);\n\n$method = $_SERVER['REQUEST_METHOD'];\n$input = json_decode(file_get_contents('php://input'), true);\n$id = $_GET['id_pregunta'] ?? null;\n\nswitch ($method) {\n    case 'GET':\n        if ($id) {\n            $stmt = $pdo->prepare('SELECT * FROM `preguntas_frecuentes` WHERE `id_pregunta` = ?');\n            $stmt->execute([$id]);\n            echo json_encode($stmt->fetch() ?: ['message' => 'Registro no encontrado']);\n        } else {\n            $stmt = $pdo->query('SELECT * FROM `preguntas_frecuentes`');\n            echo json_encode($stmt->fetchAll());\n        }\n        break;\n\n    case 'POST':\n        $sql = 'INSERT INTO `preguntas_frecuentes` (`pregunta`, `comentario`) VALUES (:pregunta, :comentario)';\n        $stmt = $pdo->prepare($sql);\n        $stmt->execute($input);\n        echo json_encode(['success' => true, 'id_pregunta' => $pdo->lastInsertId()]);\n        break;\n\n    case 'PUT':\n        if (!$id) { echo json_encode(['error' => 'Se requiere el campo id_pregunta']); break; }\n        $sql = 'UPDATE `preguntas_frecuentes` SET `pregunta` = :pregunta, `comentario` = :comentario WHERE `id_pregunta` = :id_pregunta';\n        $input['id_pregunta'] = $id;\n        $stmt = $pdo->prepare($sql);\n        $stmt->execute($input);\n        echo json_encode(['success' => true, 'updated' => $stmt->rowCount()]);\n        break;\n\n    case 'DELETE':\n        if (!$id) { echo json_encode(['error' => 'Se requiere el campo id_pregunta']); break; }\n        $stmt = $pdo->prepare('DELETE FROM `preguntas_frecuentes` WHERE `id_pregunta` = ?');\n        $stmt->execute([$id]);\n        echo json_encode(['success' => true, 'deleted' => $stmt->rowCount()]);\n        break;\n}\n"
     }
   ],
   "connections": [
