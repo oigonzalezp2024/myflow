@@ -560,7 +560,7 @@ body {
     color: #ffffff;
 }
 
-/* Bottom Chat/Logs Area */
+/* Bottom Chat/Logs Area (Actualizado con animación de colapso total) */
 .bottom-panel {
     background-color: #2e2e2e;
     height: 250px; /* Fixed height for the bottom panel */
@@ -568,6 +568,23 @@ body {
     display: flex;
     flex-direction: column;
     z-index: 10;
+    transition: height 0.3s ease-in-out, border-color 0.3s ease-in-out;
+    overflow: hidden; /* Oculta el contenido mientras se aplasta */
+}
+
+/* Estado colapsado / aplastado completo */
+.bottom-panel.collapsed {
+    height: 0px !important;
+    min-height: 0px !important;
+    border-top-color: transparent !important;
+}
+
+/* Ocultar elementos internos instantáneamente al colapsar para evitar desbordes */
+.bottom-panel.collapsed .chat-content,
+.bottom-panel.collapsed .log-content,
+.bottom-panel.collapsed .chat-input-area,
+.bottom-panel.collapsed .chat-message-placeholder {
+    display: none !important;
 }
 
 .chat-header {
@@ -939,4 +956,34 @@ body {
 .modal-footer .action-btn {
     /* Reusing existing action-btn styles */
     padding: 10px 20px;
+}
+
+/* Botón flotante para restaurar el chat cuando está completamente oculto */
+.floating-show-chat-btn {
+    position: absolute;
+    bottom: 15px;
+    right: 20px;
+    background-color: #2e2e2e;
+    color: #e0e0e0;
+    border: 1px solid #555;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85em;
+    display: none; /* Oculto por defecto */
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    z-index: 50;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.floating-show-chat-btn:hover {
+    background-color: #3a3a3a;
+    color: #ffffff;
+    transform: translateY(-2px);
+}
+
+.floating-show-chat-btn.show {
+    display: flex; /* Se muestra solo cuando la clase .collapsed está activa */
 }
