@@ -1009,7 +1009,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Global Click & Key Listeners ---
 
     document.addEventListener('click', (e) => {
-        if (!e.target.closest('.context-menu') && !e.target.closest('.icon-selection-menu') && !e.target.closest('.modal-content')) {
+        if (!e.target.closest('.context-menu') && !e.target.closest('.icon-selection-menu') && !e.target.closest('.modal-content') && !e.target.closest('.floating-show-chat-btn')) {
             hideAllContextMenus();
         }
     });
@@ -1086,5 +1086,32 @@ document.addEventListener('DOMContentLoaded', () => {
         connectionsData = [...initialConnections];
         renderWorkflow();
         saveWorkflowToLocalStorage();
+    }
+    
+    // --- Lógica para colapsar/aplastar la barra inferior de chat con botón flotante ---
+    
+    const bottomPanel = document.querySelector('.bottom-panel');
+    const hideChatBtn = document.querySelector('.hide-chat-btn');
+    const floatingShowChatBtn = document.getElementById('floatingShowChatBtn');
+
+    function toggleChat() {
+        bottomPanel.classList.toggle('collapsed');
+        const isCollapsed = bottomPanel.classList.contains('collapsed');
+
+        if (isCollapsed) {
+            hideChatBtn.innerHTML = '<i class="fas fa-eye"></i> Show chat';
+            if (floatingShowChatBtn) floatingShowChatBtn.classList.add('show');
+        } else {
+            hideChatBtn.innerHTML = '<i class="fas fa-eye-slash"></i> Hide chat';
+            if (floatingShowChatBtn) floatingShowChatBtn.classList.remove('show');
+        }
+    }
+
+    if (hideChatBtn && bottomPanel) {
+        hideChatBtn.addEventListener('click', toggleChat);
+    }
+
+    if (floatingShowChatBtn) {
+        floatingShowChatBtn.addEventListener('click', toggleChat);
     }
 });
