@@ -30,7 +30,7 @@ if ($action === 'save') {
         $fileName .= '.php';
     }
 
-    $dirPath = __DIR__;
+    $dirPath = __DIR__ . "/../";
     if (!empty($path)) {
         $dirPath .= DIRECTORY_SEPARATOR . $path;
     }

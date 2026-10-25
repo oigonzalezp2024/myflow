@@ -737,7 +737,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         try {
-            const response = await fetch('create_db_table.php', {
+            const response = await fetch('./controllers/create_db_table.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(dbConfigToSave)
@@ -803,7 +803,7 @@ document.addEventListener('DOMContentLoaded', () => {
             };
 
             try {
-                const response = await fetch('generate_crud_api.php', {
+                const response = await fetch('./controllers/generate_crud_api.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
@@ -868,7 +868,7 @@ document.addEventListener('DOMContentLoaded', () => {
             };
 
             try {
-                const response = await fetch('generate_crud_api.php', {
+                const response = await fetch('./controllers/generate_crud_api.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
@@ -927,7 +927,7 @@ document.addEventListener('DOMContentLoaded', () => {
             };
 
             try {
-                const response = await fetch('generate_crud_api.php', {
+                const response = await fetch('./controllers/generate_crud_api.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
@@ -987,7 +987,7 @@ document.addEventListener('DOMContentLoaded', () => {
             };
 
             try {
-                const response = await fetch('generate_crud_api.php', {
+                const response = await fetch('./controllers/generate_crud_api.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)

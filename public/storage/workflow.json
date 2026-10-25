@@ -1,0 +1,221 @@
+{
+  "nodes": [
+    {
+      "id": "79796623-0033-426c-a6e3-ba81226e5af6",
+      "type": "generic",
+      "title": "instrucciones",
+      "subtitle": "",
+      "x": 302,
+      "y": 127,
+      "icon": "fas fa-file-invoice"
+    },
+    {
+      "id": "85f7658e-7081-459d-90c7-cc400d448c97",
+      "type": "generic",
+      "title": "respuesta",
+      "subtitle": "",
+      "x": 862.9876098632812,
+      "y": 125.98139190673828,
+      "icon": "fas fa-file-invoice"
+    },
+    {
+      "id": "cb93a730-016a-4102-8274-59ede0e42d92",
+      "type": "generic",
+      "title": "AI",
+      "subtitle": "",
+      "x": 582,
+      "y": 125,
+      "icon": "fas fa-robot"
+    },
+    {
+      "id": "66e62d3b-08f1-49da-8386-fd812da8d734",
+      "type": "generic",
+      "title": "Pregunta",
+      "subtitle": "",
+      "x": 22,
+      "y": 225,
+      "icon": "fas fa-comment-dots"
+    },
+    {
+      "id": "765736aa-be64-4f6c-9dc1-22606a5b58a3",
+      "type": "generic",
+      "title": "preguntas frecuentes",
+      "subtitle": "",
+      "x": 21,
+      "y": 29,
+      "icon": "fas fa-database",
+      "dbConfig": {
+        "host": "localhost",
+        "port": "",
+        "username": "root",
+        "password": "",
+        "dbName": "myapp",
+        "tableName": "preguntas_frecuentes",
+        "fields": [
+          {
+            "key": "id_pregunta",
+            "value": "int(11)"
+          },
+          {
+            "key": "pregunta",
+            "value": "varchar(150)"
+          },
+          {
+            "key": "comentario",
+            "value": "text"
+          }
+        ]
+      }
+    },
+    {
+      "id": "4406af98-1792-4b61-b389-d537790aa3ba",
+      "type": "generic",
+      "title": "registro",
+      "subtitle": "",
+      "x": 1211,
+      "y": 238,
+      "icon": "fas fa-code"
+    },
+    {
+      "id": "94863c90-32d6-41ec-bf7c-deb9857aed19",
+      "type": "generic",
+      "title": "preguntas",
+      "subtitle": "",
+      "x": 1474.9375,
+      "y": 239.90625,
+      "icon": "fas fa-database",
+      "dbConfig": {
+        "host": "localhost",
+        "port": "",
+        "username": "root",
+        "password": "",
+        "dbName": "myapp",
+        "tableName": "preguntas",
+        "fields": [
+          {
+            "key": "id_pregunta",
+            "value": "int(11)"
+          },
+          {
+            "key": "pregunta",
+            "value": "varchar(150)"
+          }
+        ]
+      }
+    },
+    {
+      "id": "ecc4cc51-deeb-43d7-af28-bf6de218fdb0",
+      "type": "database",
+      "title": "Base de datos",
+      "subtitle": "",
+      "x": 42,
+      "y": 389,
+      "icon": "fas fa-database",
+      "dbConfig": {
+        "host": "localhost",
+        "port": "",
+        "username": "root",
+        "password": "",
+        "dbName": "my_app_db",
+        "tableName": "users",
+        "fields": [
+          {
+            "key": "id_user",
+            "value": "int(11)"
+          },
+          {
+            "key": "user_name",
+            "value": "varchar(150)"
+          },
+          {
+            "key": "user_password",
+            "value": "text"
+          }
+        ]
+      }
+    },
+    {
+      "id": "f8a0eb46-6d41-4df8-a27c-b34491c0701d",
+      "type": "crud-api",
+      "title": "API",
+      "subtitle": "",
+      "x": 322,
+      "y": 388,
+      "icon": "fas fa-laptop-code",
+      "apiConfig": {
+        "action": "generate",
+        "host": "localhost",
+        "port": "3306",
+        "username": "root",
+        "password": "",
+        "dbName": "my_app_db",
+        "tableName": "users"
+      },
+      "generatedCode": "<?php\n// API REST Autogenerada con Token para la tabla 'users'\nheader('Content-Type: application/json');\nheader('Access-Control-Allow-Origin: *');\nheader('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');\nheader('Access-Control-Allow-Headers: Content-Type, Authorization');\n\nif ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { exit(0); }\n\n// Token de acceso requerido en la cabecera Authorization: Bearer <token>\ndefine('API_TOKEN', 'token_50114525136910271a43d3eb7194a599');\n\n$headers = apache_request_headers();\n$authHeader = $headers['Authorization'] ?? $headers['authorization'] ?? '';\n$tokenValido = false;\n\nif (preg_match('/Bearer\\s(\\S+)/', $authHeader, $matches)) {\n    if ($matches[1] === API_TOKEN) {\n        $tokenValido = true;\n    }\n}\n\nif (!$tokenValido) {\n    http_response_code(401);\n    echo json_encode(['success' => false, 'error' => 'Acceso no autorizado. Token inválido o ausente.']);\n    exit();\n}\n\n$pdo = new PDO('mysql:host=localhost;port=3306;dbname=my_app_db;charset=utf8mb4', 'root', '', [\n    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,\n    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC\n]);\n\n$method = $_SERVER['REQUEST_METHOD'];\n$input = json_decode(file_get_contents('php://input'), true);\n$id = $_GET['id_user'] ?? null;\n\nswitch ($method) {\n    case 'GET':\n        if ($id) {\n            $stmt = $pdo->prepare('SELECT * FROM `users` WHERE `id_user` = ?');\n            $stmt->execute([$id]);\n            echo json_encode($stmt->fetch() ?: ['message' => 'Registro no encontrado']);\n        } else {\n            $stmt = $pdo->query('SELECT * FROM `users`');\n            echo json_encode($stmt->fetchAll());\n        }\n        break;\n\n    case 'POST':\n        $sql = 'INSERT INTO `users` (`user_name`, `user_password`) VALUES (:user_name, :user_password)';\n        $stmt = $pdo->prepare($sql);\n        $stmt->execute($input);\n        echo json_encode(['success' => true, 'id_user' => $pdo->lastInsertId()]);\n        break;\n\n    case 'PUT':\n        if (!$id) { echo json_encode(['error' => 'Se requiere el campo id_user']); break; }\n        $sql = 'UPDATE `users` SET `user_name` = :user_name, `user_password` = :user_password WHERE `id_user` = :id_user';\n        $input['id_user'] = $id;\n        $stmt = $pdo->prepare($sql);\n        $stmt->execute($input);\n        echo json_encode(['success' => true, 'updated' => $stmt->rowCount()]);\n        break;\n\n    case 'DELETE':\n        if (!$id) { echo json_encode(['error' => 'Se requiere el campo id_user']); break; }\n        $stmt = $pdo->prepare('DELETE FROM `users` WHERE `id_user` = ?');\n        $stmt->execute([$id]);\n        echo json_encode(['success' => true, 'deleted' => $stmt->rowCount()]);\n        break;\n}\n"
+    },
+    {
+      "id": "eac5b9f8-2c8f-4621-91d9-828f37c22fd4",
+      "type": "crud-client",
+      "title": "Client",
+      "subtitle": "",
+      "x": 607,
+      "y": 400,
+      "icon": "fas fa-plug",
+      "clientConfig": {
+        "action": "generate_client",
+        "endpointUrl": "http://localhost/myflow/public/api/user/",
+        "token": "token_438a38f9c6b6f86298c7c5e935925f66",
+        "primaryKey": "id_user",
+        "clientLanguage": "php"
+      },
+      "generatedClientCode": "<?php\n/**\n * Cliente PHP cURL autogenerado para consumir la API\n * Endpoint: http://localhost/myflow/public/api/user/\n */\n\nclass ApiClientPHP {\n    private $baseUrl;\n    private $token;\n    private $primaryKey;\n\n    public function __construct($baseUrl = 'http://localhost/myflow/public/api/user/', $token = 'token_438a38f9c6b6f86298c7c5e935925f66', $primaryKey = 'id_user') {\n        $this->baseUrl = $baseUrl;\n        $this->token = $token;\n        $this->primaryKey = $primaryKey;\n    }\n\n    private function send($method, $data = null, $id = null) {\n        $url = $this->baseUrl;\n        if ($id !== null) {\n            $url .= '?' . $this->primaryKey . '=' . $id;\n        }\n\n        $ch = curl_init($url);\n        $headers = [\n            'Content-Type: application/json',\n            'Authorization: Bearer ' . $this->token\n        ];\n\n        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);\n        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\n\n        if ($data !== null && ($method === 'POST' || $method === 'PUT')) {\n            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));\n        }\n\n        $response = curl_exec($ch);\n        curl_close($ch);\n        return json_decode($response, true);\n    }\n\n    public function getAll() { return $this->send('GET'); }\n    public function getById($id) { return $this->send('GET', null, $id); }\n    public function create($data) { return $this->send('POST', $data); }\n    public function update($id, $data) { return $this->send('PUT', $data, $id); }\n    public function delete($id) { return $this->send('DELETE', null, $id); }\n}\n"
+    }
+  ],
+  "connections": [
+    {
+      "lineId": "line-765736aa-be64-4f6c-9dc1-22606a5b58a3-79796623-0033-426c-a6e3-ba81226e5af6-78a2",
+      "fromNodeId": "765736aa-be64-4f6c-9dc1-22606a5b58a3",
+      "toNodeId": "79796623-0033-426c-a6e3-ba81226e5af6"
+    },
+    {
+      "lineId": "line-66e62d3b-08f1-49da-8386-fd812da8d734-79796623-0033-426c-a6e3-ba81226e5af6-8935",
+      "fromNodeId": "66e62d3b-08f1-49da-8386-fd812da8d734",
+      "toNodeId": "79796623-0033-426c-a6e3-ba81226e5af6"
+    },
+    {
+      "lineId": "line-79796623-0033-426c-a6e3-ba81226e5af6-cb93a730-016a-4102-8274-59ede0e42d92-7ef3",
+      "fromNodeId": "79796623-0033-426c-a6e3-ba81226e5af6",
+      "toNodeId": "cb93a730-016a-4102-8274-59ede0e42d92"
+    },
+    {
+      "lineId": "line-cb93a730-016a-4102-8274-59ede0e42d92-85f7658e-7081-459d-90c7-cc400d448c97-79c8",
+      "fromNodeId": "cb93a730-016a-4102-8274-59ede0e42d92",
+      "toNodeId": "85f7658e-7081-459d-90c7-cc400d448c97"
+    },
+    {
+      "lineId": "line-85f7658e-7081-459d-90c7-cc400d448c97-4406af98-1792-4b61-b389-d537790aa3ba-c686",
+      "fromNodeId": "85f7658e-7081-459d-90c7-cc400d448c97",
+      "toNodeId": "4406af98-1792-4b61-b389-d537790aa3ba"
+    },
+    {
+      "lineId": "line-66e62d3b-08f1-49da-8386-fd812da8d734-4406af98-1792-4b61-b389-d537790aa3ba-2d00",
+      "fromNodeId": "66e62d3b-08f1-49da-8386-fd812da8d734",
+      "toNodeId": "4406af98-1792-4b61-b389-d537790aa3ba"
+    },
+    {
+      "lineId": "line-4406af98-1792-4b61-b389-d537790aa3ba-94863c90-32d6-41ec-bf7c-deb9857aed19-38e2",
+      "fromNodeId": "4406af98-1792-4b61-b389-d537790aa3ba",
+      "toNodeId": "94863c90-32d6-41ec-bf7c-deb9857aed19"
+    },
+    {
+      "lineId": "line-ecc4cc51-deeb-43d7-af28-bf6de218fdb0-f8a0eb46-6d41-4df8-a27c-b34491c0701d-2db3",
+      "fromNodeId": "ecc4cc51-deeb-43d7-af28-bf6de218fdb0",
+      "toNodeId": "f8a0eb46-6d41-4df8-a27c-b34491c0701d"
+    },
+    {
+      "lineId": "line-f8a0eb46-6d41-4df8-a27c-b34491c0701d-eac5b9f8-2c8f-4621-91d9-828f37c22fd4-e4bc",
+      "fromNodeId": "f8a0eb46-6d41-4df8-a27c-b34491c0701d",
+      "toNodeId": "eac5b9f8-2c8f-4621-91d9-828f37c22fd4"
+    }
+  ]
+}
