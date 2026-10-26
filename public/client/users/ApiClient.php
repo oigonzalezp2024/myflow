@@ -1,16 +1,15 @@
 <?php
-declare(strict_types=1);
+/**
+ * Cliente PHP cURL autogenerado para consumir la API
+ * Endpoint: http://localhost/myflow/public/api/users/UsersApi.php
+ */
 
 class ApiClient {
     private $baseUrl;
     private $token;
     private $primaryKey;
 
-    public function __construct(
-        $baseUrl = 'http://localhost/myflow/public/controllers/consume_users_create.php', 
-        $token = 'TU_TOKEN_INTERMEDIARIO_SECRETO', 
-        $primaryKey = 'id_user'
-    ) {
+    public function __construct($baseUrl = 'http://localhost/myflow/public/api/users/UsersApi.php', $token = 'token_f5f6271b63096ef7737409e644e72cfd', $primaryKey = 'id_user') {
         $this->baseUrl = $baseUrl;
         $this->token = $token;
         $this->primaryKey = $primaryKey;
@@ -37,13 +36,6 @@ class ApiClient {
         }
 
         $response = curl_exec($ch);
-        
-        if (curl_errno($ch)) {
-            $error = curl_error($ch);
-            curl_close($ch);
-            return ['success' => false, 'message' => 'Error cURL: ' . $error];
-        }
-
         curl_close($ch);
         return json_decode($response, true);
     }

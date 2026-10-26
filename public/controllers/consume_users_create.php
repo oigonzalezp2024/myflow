@@ -27,6 +27,7 @@ $allowedColumns = array (
   0 => 'id_user',
   1 => 'user_name',
   2 => 'user_password',
+  3 => 'user_rol',
 );
 $payload = [];
 
