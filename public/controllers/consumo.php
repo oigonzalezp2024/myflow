@@ -173,13 +173,41 @@ if ($action === 'generate_consumer') {
         $consumerCode .= "    http_response_code(500);\n";
         $consumerCode .= "    echo json_encode(['success' => false, 'message' => \$e->getMessage()]);\n";
         $consumerCode .= "}\n";
+    } elseif ($targetMethod === 'getById') {
+        $consumerCode = "<?php\n";
+        $consumerCode .= "declare(strict_types=1);\n\n";
+        $consumerCode .= "header('Content-Type: application/json; charset=utf-8');\n\n";
+        $consumerCode .= "require_once __DIR__ . '/../client/users/ApiClient.php';\n\n";
+        $consumerCode .= "// 1. Configuración de conexión y credenciales\n";
+        $consumerCode .= "\$baseUrl = '{$endpointUrl}';\n";
+        $consumerCode .= "\$token = '{$targetServiceToken}';\n";
+        $consumerCode .= "\$primaryKey = '{$primaryKey}';\n\n";
+        $consumerCode .= "\$api = new ApiClient(\$baseUrl, \$token, \$primaryKey);\n\n";
+        $consumerCode .= "// 2. Capturar datos entrantes (Soporta JSON o FormData / x-www-form-urlencoded)\n";
+        $consumerCode .= "\$inputData = json_decode(file_get_contents('php://input'), true);\n";
+        $consumerCode .= "\$requestData = !empty(\$inputData) ? \$inputData : \$_GET;\n\n";
+        $consumerCode .= "if (empty(\$requestData)) {\n";
+        $consumerCode .= "    http_response_code(400);\n";
+        $consumerCode .= "    echo json_encode(['success' => false, 'message' => 'No se recibieron datos en la solicitud.']);\n";
+        $consumerCode .= "    exit();\n";
+        $consumerCode .= "}\n\n";
+        $consumerCode .= "// 3. Mapeo y filtrado de columnas permitidas en la tabla `{$tableName}`\n";
+        $consumerCode .= "\$allowedColumns = " . var_export($tableColumns, true) . ";\n";
+        $consumerCode .= "\$payload = [];\n\n";
+        $consumerCode .= "foreach (\$allowedColumns as \$col) {\n";
+        $consumerCode .= "    if (isset(\$requestData[\$col])) {\n";
+        $consumerCode .= "        \$payload[\$col] = \$requestData[\$col];\n";
+        $consumerCode .= "    }\n";
+        $consumerCode .= "}\n\n";
+        $consumerCode .= "\$response = \$api->getById(\$payload[\$primaryKey]);\n";
+        $consumerCode .= "echo json_encode(['success' => true, 'data' => \$response]);\n";
     } else {
         // Fallback por defecto si es consulta general
         $consumerCode .= "\$response = \$api->getAll();\n";
         $consumerCode .= "echo json_encode(['success' => true, 'data' => \$response]);\n";
     }
 
-    $consumerCode .= "?>\n";
+    $consumerCode .= "exit;\n";
 
     if (is_dir($outputPath)) {
         $outputPath = rtrim($outputPath, '/\\') . '/' . $defaultFileName;

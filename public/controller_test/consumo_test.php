@@ -82,7 +82,7 @@ foreach ($methods as $targetMethod) {
     $data['tableName'] = $tableName;    
     
     $defaultFileName = 'consume_' . $tableName . '_' . $targetMethod . '.php';
-    $data['outputPath'] = __DIR__ . '/' . $defaultFileName;
+    $data['outputPath'] = __DIR__ . '/../controllers/' . $defaultFileName;
 
     echo "Generando consumidor para método: [{$targetMethod}]...\n";
     $result = $apiClient->create($data);
