@@ -12,7 +12,7 @@ $primaryKey = 'id_user';
 
 $api = new ApiClient($baseUrl, $token, $primaryKey);
 
-$id = 14;
+$id = 13;
 $data = [];
 $data['user_name'] = 'user_name2';
 $data['user_password'] = 'user_password2';
