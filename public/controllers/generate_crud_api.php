@@ -113,7 +113,7 @@ if ($action === 'generate_client') {
         $clientCode .= " * Cliente PHP cURL autogenerado para consumir la API\n";
         $clientCode .= " * Endpoint: {$endpointUrl}\n";
         $clientCode .= " */\n\n";
-        $clientCode .= "class ApiClientPHP {\n";
+        $clientCode .= "class ApiClient {\n";
         $clientCode .= "    private \$baseUrl;\n";
         $clientCode .= "    private \$token;\n";
         $clientCode .= "    private \$primaryKey;\n\n";
