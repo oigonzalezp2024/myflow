@@ -90,7 +90,8 @@ document.addEventListener('DOMContentLoaded', () => {
         'fas fa-robot', 'fas fa-envelope', 'fas fa-bell', 'fas fa-terminal',
         'fas fa-hdd', 'fas fa-sitemap', 'fas fa-chart-bar', 'fas fa-server',
         'fas fa-users', 'fas fa-credit-card', 'fas fa-laptop-code', 'fas fa-plug',
-        'fas fa-wifi', 'fas fa-shield-alt', 'fas fa-truck', 'fas fa-shopping-cart'
+        'fas fa-wifi', 'fas fa-shield-alt', 'fas fa-truck', 'fas fa-shopping-cart',
+        'fas fa-solid fa-rss'
     ];
 
     function generateUniqueId() {
