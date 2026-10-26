@@ -12,14 +12,13 @@ $primaryKey = 'id_user';
 
 $api = new ApiClient($baseUrl, $token, $primaryKey);
 
-$id = 14;
 $data = [];
-$data['id_user'] = 14;
-$data['user_name'] = 'user_name3';
-$data['user_password'] = 'user_password3yyyy';
+$data['id_user'] = 16;
+$data['user_name'] = 'user_name17';
+$data['user_password'] = 'user_password17';
 
 try {
-    $response = $api->update($id, $data);
+    $response = $api->update($data[$primaryKey], $data);
     http_response_code(200);
     echo json_encode(['success' => true, 'data' => $response]);
 } catch (\Exception $e) {
