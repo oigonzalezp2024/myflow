@@ -142,7 +142,7 @@ if ($action === 'generate_consumer') {
         $consumerCode .= "} catch (\\Exception \$e) {\n";
         $consumerCode .= "    http_response_code(500);\n";
         $consumerCode .= "    echo json_encode(['success' => false, 'message' => \$e->getMessage()]);\n";
-        $consumerCode .= "}\n";
+        $consumerCode .= "}\n\n";
     } elseif ($targetMethod === 'update') {
         $consumerCode .= "\$id = \$requestData[\$primaryKey] ?? null;\n";
         $consumerCode .= "if (!\$id) {\n";
