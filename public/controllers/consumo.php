@@ -173,6 +173,18 @@ if ($action === 'generate_consumer') {
         $consumerCode .= "    http_response_code(500);\n";
         $consumerCode .= "    echo json_encode(['success' => false, 'message' => \$e->getMessage()]);\n";
         $consumerCode .= "}\n";
+    } elseif ($targetMethod === 'getAll') {
+        $consumerCode = "<?php\n";
+        $consumerCode .= "declare(strict_types=1);\n\n";
+        $consumerCode .= "header('Content-Type: application/json; charset=utf-8');\n\n";
+        $consumerCode .= "require_once __DIR__ . '/../client/users/ApiClient.php';\n\n";
+        $consumerCode .= "// 1. Configuración de conexión y credenciales\n";
+        $consumerCode .= "\$baseUrl = '{$endpointUrl}';\n";
+        $consumerCode .= "\$token = '{$targetServiceToken}';\n";
+        $consumerCode .= "\$primaryKey = '{$primaryKey}';\n\n";
+        $consumerCode .= "\$api = new ApiClient(\$baseUrl, \$token, \$primaryKey);\n\n";
+        $consumerCode .= "\$response = \$api->getAll();\n";
+        $consumerCode .= "echo json_encode(['success' => true, 'data' => \$response]);\n\n";
     } elseif ($targetMethod === 'getById') {
         $consumerCode = "<?php\n";
         $consumerCode .= "declare(strict_types=1);\n\n";
