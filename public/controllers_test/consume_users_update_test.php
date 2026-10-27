@@ -3,19 +3,20 @@ declare(strict_types=1);
 
 header('Content-Type: application/json; charset=utf-8');
 
-require_once __DIR__ . '/../client/users/ApiClient.php';
+require_once __DIR__ . '/../clients/ApiClient.php';
 
 // 1. Configuración de conexión y credenciales
-$baseUrl = 'http://localhost/myflow/public/controllers/consume_users_update.php';
-$token = 'token_3075b5bded622b2113aba9daf51d90f0';
-$primaryKey = 'id_user';
+
+$baseUrl = 'http://localhost/myflow/public/controllers/consume_usuarios_update.php';
+$token = 'token_72df870e596604dcec52604d0f127216';
+$primaryKey = 'id_usuario';
 
 $api = new ApiClient($baseUrl, $token, $primaryKey);
 
 $data = [];
-$data['id_user'] = 16;
-$data['user_name'] = 'user_name17';
-$data['user_password'] = 'user_password17';
+$data['id_usuario'] = 3;
+$data['usuario_nombre'] = 'user_name990016';
+$data['usuario_email'] = 'user_password990016';
 
 try {
     $response = $api->update($data[$primaryKey], $data);

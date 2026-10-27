@@ -61,14 +61,15 @@ class ApiClientPHP {
 // Token con el que este cliente se autentica ante el API Intermediario
 $intermediaryToken = 'TU_TOKEN_INTERMEDIARIO_SECRETO';
 $endpointIntermediary = 'http://localhost/myflow/public/controllers/consumo.php';
+$primaryKey = 'id_usuario';
 
 // Instanciamos el cliente apuntando al intermediario con su respectivo token de acceso
-$apiClient = new ApiClientPHP($endpointIntermediary, $intermediaryToken);
+$apiClient = new ApiClientPHP($endpointIntermediary, $intermediaryToken, $primaryKey);
 
 $methods = ['getAll', 'getById', 'create', 'update', 'delete'];
-$tableName = 'users';
-$targetServiceEndpoint = 'http://localhost/myflow/public/api/users/index.php';
-$targetServiceTokenVal = 'token_84c475332f7e54392c2a4acadef29adf'; // Token que usará el código generado
+$tableName = 'usuarios';
+$targetServiceEndpoint = 'http://localhost/myflow/public/api/usuarios/UsuariosApi.php';
+$targetServiceTokenVal = 'token_72df870e596604dcec52604d0f127216'; // Token que usará el código generado
 
 foreach ($methods as $targetMethod) {
     $data = [];
