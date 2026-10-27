@@ -318,6 +318,44 @@
             </div>
         </div>
     </div>
+    <!-- Modal de Configuración para Casos de Uso -->
+    <div id="caseUsesModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-project-diagram"></i> Configurar Casos de Uso</h2>
+                <button class="close-modal-btn" id="closeCaseUsesModalBtn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="caseUsesModalNodeId">
+
+                <fieldset>
+                    <legend>Detalles del Caso de Uso</legend>
+                    <div class="input-group">
+                        <label for="caseTitle">Título del Escenario:</label>
+                        <input type="text" id="caseTitle" placeholder="ej. Flujo de Autenticación de Usuarios">
+                    </div>
+                    <div class="input-group">
+                        <label for="caseDescription">Descripción / Requisitos:</label>
+                        <textarea id="caseDescription" rows="4"
+                            style="width: 100%; background-color: #3a3a3a; border: 1px solid #555; border-radius: 4px; color: #e0e0e0; padding: 10px;"
+                            placeholder="Describa los pasos o condiciones del caso de uso..."></textarea>
+                    </div>
+                    <div class="input-group">
+                        <label for="caseStatus">Estado del Caso:</label>
+                        <select id="caseStatus"
+                            style="width: 100%; padding: 10px; background-color: #3a3a3a; border: 1px solid #555; border-radius: 4px; color: #e0e0e0;">
+                            <option value="pending">Pendiente</option>
+                            <option value="in-progress">En Progreso</option>
+                            <option value="completed">Completado</option>
+                        </select>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="modal-footer">
+                <button id="saveCaseUsesBtn" class="action-btn"><i class="fas fa-save"></i> Guardar Caso de Uso</button>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
