@@ -83,6 +83,11 @@ document.addEventListener('DOMContentLoaded', () => {
     let tempLine = null;
     let targetPortElement = null;
 
+    // --- Variables para el Panning del Fondo (Canvas) ---
+    let isCanvasPanning = false;
+    let canvasPanStartX = 0;
+    let canvasPanStartY = 0;
+
     // --- Context Menu (for connections) ---
     const connectionContextMenu = document.createElement('ul');
     connectionContextMenu.classList.add('context-menu');
@@ -183,7 +188,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         addDragListeners(nodeDiv);
 
-        // Listener de doble clic para abrir configuraciones
         nodeDiv.addEventListener('dblclick', (e) => {
             if (!e.target.classList.contains('node-port') && !e.target.closest('.node-icon')) {
                 if (nodeConfig.type === 'crud-api' || (nodeConfig.icon && nodeConfig.icon.includes('fa-laptop-code'))) {
@@ -450,7 +454,7 @@ document.addEventListener('DOMContentLoaded', () => {
         reader.readAsText(file);
     }
 
-    // --- Drag & Drop ---
+    // --- Drag & Drop y Panning del Fondo ---
 
     function addDragListeners(nodeElement) {
         nodeElement.addEventListener('mousedown', (e) => {
@@ -470,6 +474,17 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Evento para activar el Panning al hacer clic en el fondo del canvas
+    workflowCanvas.addEventListener('mousedown', (e) => {
+        if (e.target === workflowCanvas || e.target.classList.contains('canvas-background') || e.target.tagName.toLowerCase() === 'svg') {
+            isCanvasPanning = true;
+            canvasPanStartX = e.clientX;
+            canvasPanStartY = e.clientY;
+            workflowCanvas.style.cursor = 'grabbing';
+            hideAllContextMenus();
+        }
+    });
+
     document.addEventListener('mousemove', (e) => {
         if (activeNode) {
             const canvasRect = workflowCanvas.getBoundingClientRect();
@@ -488,6 +503,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
             updateNodePosition(activeNode.id, newX, newY);
             updateConnectedLines(activeNode);
+        }
+
+        // Lógica de Panning (Mover todos los nodos/esquemas en conjunto)
+        if (isCanvasPanning) {
+            const deltaX = e.clientX - canvasPanStartX;
+            const deltaY = e.clientY - canvasPanStartY;
+
+            canvasPanStartX = e.clientX;
+            canvasPanStartY = e.clientY;
+
+            nodesData.forEach(node => {
+                node.x += deltaX;
+                node.y += deltaY;
+
+                const nodeElem = document.getElementById(node.id);
+                if (nodeElem) {
+                    nodeElem.style.left = `${node.x}px`;
+                    nodeElem.style.top = `${node.y}px`;
+                }
+            });
+
+            nodesData.forEach(node => {
+                const nodeElem = document.getElementById(node.id);
+                if (nodeElem) updateConnectedLines(nodeElem);
+            });
         }
 
         if (isDrawingConnection && tempLine) {
@@ -529,6 +569,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (activeNode) {
             activeNode.classList.remove('is-dragging');
             activeNode = null;
+            saveWorkflowToLocalStorage();
+        }
+
+        if (isCanvasPanning) {
+            isCanvasPanning = false;
+            workflowCanvas.style.cursor = 'default';
             saveWorkflowToLocalStorage();
         }
 
@@ -1029,7 +1075,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- Modal Casos de Uso (Apuntando a Backend por Definir) ---
+    // --- Modal Casos de Uso ---
 
     function showCaseUsesModal(nodeId) {
         hideAllContextMenus();
@@ -1067,7 +1113,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 endpointUrl: caseUsesEndpointInput ? caseUsesEndpointInput.value.trim() : 'http://localhost/myflow/public/controllers/generate_case_uses.php'
             };
 
-            // Integración lista para el backend futuro (endpoint pendiente de definir)
             if (caseConfig.endpointUrl) {
                 try {
                     const response = await fetch(caseConfig.endpointUrl, {
