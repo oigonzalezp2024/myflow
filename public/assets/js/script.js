@@ -61,6 +61,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const generatedClientCodeArea = document.getElementById('generatedClientCode');
     const clientResultContainer = document.getElementById('clientResultContainer');
 
+    // --- Case Uses Modal Elements ---
+    const caseUsesModal = document.getElementById('caseUsesModal') || document.getElementById('caseUsesClientGeneratorModal');
+    const caseUsesModalNodeIdInput = document.getElementById('caseUsesModalNodeId') || document.getElementById('caseUsesClientModalNodeId');
+    const closeCaseUsesModalBtn = document.getElementById('closeCaseUsesModalBtn') || document.getElementById('caseUsesCloseClientModalBtn');
+    const saveCaseUsesBtn = document.getElementById('saveCaseUsesBtn') || document.getElementById('caseUsesSaveClientFileBtn');
+    const caseTitleInput = document.getElementById('caseTitle');
+    const caseDescriptionInput = document.getElementById('caseDescription');
+    const caseStatusSelect = document.getElementById('caseStatus');
+    const caseUsesEndpointInput = document.getElementById('caseUsesEndpoint') || document.getElementById('caseUsesClientEndpointUrl');
+
     let activeNode = null;
     let offsetX, offsetY;
     let nodesData = [];
@@ -72,6 +82,11 @@ document.addEventListener('DOMContentLoaded', () => {
     let startPortType = null; // 'input' or 'output'
     let tempLine = null;
     let targetPortElement = null;
+
+    // --- Variables para el Panning del Fondo (Canvas) ---
+    let isCanvasPanning = false;
+    let canvasPanStartX = 0;
+    let canvasPanStartY = 0;
 
     // --- Context Menu (for connections) ---
     const connectionContextMenu = document.createElement('ul');
@@ -91,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'fas fa-hdd', 'fas fa-sitemap', 'fas fa-chart-bar', 'fas fa-server',
         'fas fa-users', 'fas fa-credit-card', 'fas fa-laptop-code', 'fas fa-plug',
         'fas fa-wifi', 'fas fa-shield-alt', 'fas fa-truck', 'fas fa-shopping-cart',
-        'fas fa-solid fa-rss'
+        'fas fa-solid fa-rss', 'fas fa-project-diagram'
     ];
 
     function generateUniqueId() {
@@ -140,6 +155,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 nodeTypeClass = 'node-process';
                 headerContent = 'API Client';
                 break;
+            case 'case-uses':
+                nodeTypeClass = 'node-process';
+                headerContent = 'case Uses';
+                break;
             default:
                 nodeTypeClass = 'node-process';
                 headerContent = '';
@@ -153,6 +172,7 @@ document.addEventListener('DOMContentLoaded', () => {
         else if (nodeConfig.type === 'edit-fields') iconColorClass = 'type-edit-fields';
         else if (nodeConfig.type === 'disk') iconColorClass = 'type-disk';
         else if (nodeConfig.type === 'database') iconColorClass = 'type-database';
+        else if (nodeConfig.type === 'case-uses') iconColorClass = 'type-api';
         else iconColorClass = 'type-generic';
 
         nodeDiv.innerHTML = `
@@ -168,7 +188,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         addDragListeners(nodeDiv);
 
-        // Listener de doble clic para abrir configuraciones
         nodeDiv.addEventListener('dblclick', (e) => {
             if (!e.target.classList.contains('node-port') && !e.target.closest('.node-icon')) {
                 if (nodeConfig.type === 'crud-api' || (nodeConfig.icon && nodeConfig.icon.includes('fa-laptop-code'))) {
@@ -177,6 +196,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     showClientGeneratorModal(nodeConfig.id);
                 } else if (nodeConfig.type === 'database' || (nodeConfig.icon && nodeConfig.icon.includes('fas fa-database'))) {
                     showDatabaseConfigModal(nodeConfig.id);
+                } else if (nodeConfig.type === 'case-uses' || (nodeConfig.icon && (nodeConfig.icon.includes('fa-project-diagram') || nodeConfig.icon.includes('fa-rss')))) {
+                    showCaseUsesModal(nodeConfig.id);
                 }
             }
         });
@@ -250,7 +271,8 @@ document.addEventListener('DOMContentLoaded', () => {
             icon: icon,
             dbConfig: type === 'database' ? {} : undefined,
             apiConfig: type === 'crud-api' ? {} : undefined,
-            clientConfig: type === 'crud-client' ? {} : undefined
+            clientConfig: type === 'crud-client' ? {} : undefined,
+            caseUsesConfig: type === 'case-uses' ? {} : undefined
         };
         nodesData.push(newNode);
         createNodeElement(newNode);
@@ -279,7 +301,10 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (newIconClass.includes('fa-plug')) {
                 nodesData[nodeIndex].type = 'crud-client';
                 if (!nodesData[nodeIndex].clientConfig) nodesData[nodeIndex].clientConfig = {};
-            } else if (nodesData[nodeIndex].type === 'database' || nodesData[nodeIndex].type === 'crud-api' || nodesData[nodeIndex].type === 'crud-client') {
+            } else if (newIconClass.includes('fa-rss') || newIconClass.includes('fa-project-diagram')) {
+                nodesData[nodeIndex].type = 'case-uses';
+                if (!nodesData[nodeIndex].caseUsesConfig) nodesData[nodeIndex].caseUsesConfig = {};
+            } else if (['database', 'crud-api', 'crud-client', 'case-uses'].includes(nodesData[nodeIndex].type)) {
                 nodesData[nodeIndex].type = 'generic';
             }
 
@@ -296,7 +321,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     let newIconColorClass = '';
                     if (nodesData[nodeIndex].type === 'start') newIconColorClass = 'type-chat-message';
                     else if (nodesData[nodeIndex].type === 'code') newIconColorClass = 'type-code';
-                    else if (nodesData[nodeIndex].type === 'api' || nodesData[nodeIndex].type === 'crud-api' || nodesData[nodeIndex].type === 'crud-client') newIconColorClass = 'type-api';
+                    else if (['api', 'crud-api', 'crud-client', 'case-uses'].includes(nodesData[nodeIndex].type)) newIconColorClass = 'type-api';
                     else if (nodesData[nodeIndex].type === 'edit-fields') newIconColorClass = 'type-edit-fields';
                     else if (nodesData[nodeIndex].type === 'disk') newIconColorClass = 'type-disk';
                     else if (nodesData[nodeIndex].type === 'database') newIconColorClass = 'type-database';
@@ -429,7 +454,7 @@ document.addEventListener('DOMContentLoaded', () => {
         reader.readAsText(file);
     }
 
-    // --- Drag & Drop ---
+    // --- Drag & Drop y Panning del Fondo ---
 
     function addDragListeners(nodeElement) {
         nodeElement.addEventListener('mousedown', (e) => {
@@ -449,6 +474,17 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Evento para activar el Panning al hacer clic en el fondo del canvas
+    workflowCanvas.addEventListener('mousedown', (e) => {
+        if (e.target === workflowCanvas || e.target.classList.contains('canvas-background') || e.target.tagName.toLowerCase() === 'svg') {
+            isCanvasPanning = true;
+            canvasPanStartX = e.clientX;
+            canvasPanStartY = e.clientY;
+            workflowCanvas.style.cursor = 'grabbing';
+            hideAllContextMenus();
+        }
+    });
+
     document.addEventListener('mousemove', (e) => {
         if (activeNode) {
             const canvasRect = workflowCanvas.getBoundingClientRect();
@@ -467,6 +503,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
             updateNodePosition(activeNode.id, newX, newY);
             updateConnectedLines(activeNode);
+        }
+
+        // Lógica de Panning (Mover todos los nodos/esquemas en conjunto)
+        if (isCanvasPanning) {
+            const deltaX = e.clientX - canvasPanStartX;
+            const deltaY = e.clientY - canvasPanStartY;
+
+            canvasPanStartX = e.clientX;
+            canvasPanStartY = e.clientY;
+
+            nodesData.forEach(node => {
+                node.x += deltaX;
+                node.y += deltaY;
+
+                const nodeElem = document.getElementById(node.id);
+                if (nodeElem) {
+                    nodeElem.style.left = `${node.x}px`;
+                    nodeElem.style.top = `${node.y}px`;
+                }
+            });
+
+            nodesData.forEach(node => {
+                const nodeElem = document.getElementById(node.id);
+                if (nodeElem) updateConnectedLines(nodeElem);
+            });
         }
 
         if (isDrawingConnection && tempLine) {
@@ -508,6 +569,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (activeNode) {
             activeNode.classList.remove('is-dragging');
             activeNode = null;
+            saveWorkflowToLocalStorage();
+        }
+
+        if (isCanvasPanning) {
+            isCanvasPanning = false;
+            workflowCanvas.style.cursor = 'default';
             saveWorkflowToLocalStorage();
         }
 
@@ -668,6 +735,7 @@ document.addEventListener('DOMContentLoaded', () => {
         hideDatabaseConfigModal();
         hideApiGeneratorModal();
         hideClientGeneratorModal();
+        hideCaseUsesModal();
     }
 
     // --- Modal Configuración Base de Datos ---
@@ -1007,6 +1075,70 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // --- Modal Casos de Uso ---
+
+    function showCaseUsesModal(nodeId) {
+        hideAllContextMenus();
+        const node = nodesData.find(n => n.id === nodeId);
+        if (!node || !caseUsesModal) return;
+
+        if (caseUsesModalNodeIdInput) caseUsesModalNodeIdInput.value = nodeId;
+        const config = node.caseUsesConfig || {};
+
+        if (caseTitleInput) caseTitleInput.value = config.title || node.title || '';
+        if (caseDescriptionInput) caseDescriptionInput.value = config.description || '';
+        if (caseStatusSelect) caseStatusSelect.value = config.status || 'pending';
+        if (caseUsesEndpointInput) caseUsesEndpointInput.value = config.endpointUrl || '';
+
+        caseUsesModal.classList.add('show');
+    }
+
+    function hideCaseUsesModal() {
+        if (caseUsesModal) caseUsesModal.classList.remove('show');
+    }
+
+    if (closeCaseUsesModalBtn) {
+        closeCaseUsesModalBtn.addEventListener('click', hideCaseUsesModal);
+    }
+
+    if (saveCaseUsesBtn) {
+        saveCaseUsesBtn.addEventListener('click', async () => {
+            const nodeId = caseUsesModalNodeIdInput ? caseUsesModalNodeIdInput.value : null;
+            const nodeIndex = nodesData.findIndex(n => n.id === nodeId);
+            
+            const caseConfig = {
+                title: caseTitleInput ? caseTitleInput.value.trim() : 'Case Uses',
+                description: caseDescriptionInput ? caseDescriptionInput.value.trim() : '',
+                status: caseStatusSelect ? caseStatusSelect.value : 'pending',
+                endpointUrl: caseUsesEndpointInput ? caseUsesEndpointInput.value.trim() : 'http://localhost/myflow/public/controllers/generate_case_uses.php'
+            };
+
+            if (caseConfig.endpointUrl) {
+                try {
+                    const response = await fetch(caseConfig.endpointUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(caseConfig)
+                    });
+                    if (!response.ok) {
+                        console.warn('El backend respondió con un estado no exitoso, pero se guardarán los datos localmente.');
+                    }
+                } catch (err) {
+                    console.info('Endpoint de backend no disponible aún. Guardando configuración local en el nodo.');
+                }
+            }
+
+            if (nodeIndex !== -1) {
+                nodesData[nodeIndex].caseUsesConfig = caseConfig;
+                nodesData[nodeIndex].title = caseConfig.title || 'case Uses';
+                renderWorkflow();
+                saveWorkflowToLocalStorage();
+                alert('Caso de uso guardado correctamente.');
+            }
+            hideCaseUsesModal();
+        });
+    }
+
     // --- Global Click & Key Listeners ---
 
     document.addEventListener('click', (e) => {
@@ -1053,6 +1185,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 'node-db-example', type: 'database', title: 'Database Op', subtitle: 'MySQL users', x: 450, y: 400, icon: 'fas fa-database', dbConfig: { host: 'localhost', port: '3306', username: 'root', password: '', dbName: 'myapp', tableName: 'users', fields: [{ key: 'id_usuario', value: 'INT AUTO_INCREMENT PRIMARY KEY' }, { key: 'nombre', value: 'VARCHAR(100)' }] } },
         { id: 'node-crud-api', type: 'crud-api', title: 'Generar API CRUD PHP', subtitle: 'PHP REST Controller', x: 750, y: 400, icon: 'fas fa-laptop-code', apiConfig: { host: 'localhost', port: '3306', username: 'root', password: '', dbName: 'myapp', tableName: 'users' } },
         { id: 'node-end', type: 'disk', title: 'Read/Write Files From Disk', subtitle: 'Write File to Disk', x: 1600, y: 150, icon: 'fas fa-file-invoice' },
+        { id: 'eac5b9f8-2c8f-4621-91d9-828f37c22fd4', type: 'case-uses', title: 'case Uses', subtitle: 'Backend pendiente', x: 1100, y: 400, icon: 'fas fa-rss', caseUsesConfig: { title: 'case Uses', description: '', status: 'pending', endpointUrl: '' } }
     ];
 
     const initialConnections = [
@@ -1068,7 +1201,7 @@ document.addEventListener('DOMContentLoaded', () => {
     addNodeBtn.addEventListener('click', () => {
         const randomX = Math.floor(Math.random() * (workflowCanvas.offsetWidth - 200));
         const randomY = Math.floor(Math.random() * (workflowCanvas.offsetHeight - 300));
-        addNode('generic', 'New Node', '', randomX, randomY, 'fas fa-cogs');
+        addNode('case-uses', 'case Uses', 'Nuevo caso', randomX, randomY, 'fas fa-rss');
     });
 
     downloadWorkflowBtn.addEventListener('click', downloadWorkflowAsJson);

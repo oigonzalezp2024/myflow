@@ -5,8 +5,8 @@
       "type": "generic",
       "title": "instrucciones",
       "subtitle": "",
-      "x": 302,
-      "y": 127,
+      "x": -129,
+      "y": 2,
       "icon": "fas fa-file-invoice"
     },
     {
@@ -14,8 +14,8 @@
       "type": "generic",
       "title": "respuesta",
       "subtitle": "",
-      "x": 862.9876098632812,
-      "y": 125.98139190673828,
+      "x": 431.98760986328125,
+      "y": 0.9813919067382812,
       "icon": "fas fa-file-invoice"
     },
     {
@@ -23,8 +23,8 @@
       "type": "generic",
       "title": "AI",
       "subtitle": "",
-      "x": 582,
-      "y": 125,
+      "x": 151,
+      "y": 0,
       "icon": "fas fa-robot"
     },
     {
@@ -32,8 +32,8 @@
       "type": "generic",
       "title": "Pregunta",
       "subtitle": "",
-      "x": 22,
-      "y": 225,
+      "x": -409,
+      "y": 100,
       "icon": "fas fa-comment-dots"
     },
     {
@@ -41,8 +41,8 @@
       "type": "generic",
       "title": "preguntas frecuentes",
       "subtitle": "",
-      "x": 21,
-      "y": 29,
+      "x": -410,
+      "y": -96,
       "icon": "fas fa-database",
       "dbConfig": {
         "host": "localhost",
@@ -72,8 +72,8 @@
       "type": "generic",
       "title": "registro",
       "subtitle": "",
-      "x": 1211,
-      "y": 238,
+      "x": 780,
+      "y": 113,
       "icon": "fas fa-code"
     },
     {
@@ -81,8 +81,8 @@
       "type": "generic",
       "title": "preguntas",
       "subtitle": "",
-      "x": 1474.9375,
-      "y": 239.90625,
+      "x": 1043.9375,
+      "y": 114.90625,
       "icon": "fas fa-database",
       "dbConfig": {
         "host": "localhost",
@@ -104,47 +104,44 @@
       }
     },
     {
-      "id": "ecc4cc51-deeb-43d7-af28-bf6de218fdb0",
+      "id": "70803c86-faed-40ec-a70d-8ee65a00aeff",
       "type": "database",
-      "title": "Base de datos",
-      "subtitle": "",
-      "x": 42,
-      "y": 389,
+      "title": "case Uses",
+      "subtitle": "Nuevo caso",
+      "x": 1045,
+      "y": 257,
       "icon": "fas fa-database",
       "dbConfig": {
         "host": "localhost",
         "port": "",
         "username": "root",
         "password": "",
-        "dbName": "my_app_db",
-        "tableName": "users",
+        "dbName": "myflow",
+        "tableName": "usuarios",
         "fields": [
           {
-            "key": "id_user",
+            "key": "id_usuario",
             "value": "int(11)"
           },
           {
-            "key": "user_name",
-            "value": "varchar(150)"
+            "key": "usuario_nombre",
+            "value": "varchar(60)"
           },
           {
-            "key": "user_password",
-            "value": "text"
-          },
-          {
-            "key": "user_rol",
-            "value": "int(11)"
+            "key": "usuario_email",
+            "value": "varchar(190)"
           }
         ]
-      }
+      },
+      "caseUsesConfig": {}
     },
     {
-      "id": "f8a0eb46-6d41-4df8-a27c-b34491c0701d",
+      "id": "cd49db3f-c067-400c-b9d2-eb5f8da3d24d",
       "type": "crud-api",
-      "title": "API",
-      "subtitle": "",
-      "x": 322,
-      "y": 388,
+      "title": "case Uses",
+      "subtitle": "Nuevo caso",
+      "x": 780,
+      "y": 263,
       "icon": "fas fa-laptop-code",
       "apiConfig": {
         "action": "generate",
@@ -152,36 +149,44 @@
         "port": "3306",
         "username": "root",
         "password": "",
-        "dbName": "my_app_db",
-        "tableName": "users"
+        "dbName": "myflow",
+        "tableName": "usuarios"
       },
-      "generatedCode": "<?php\n// API REST Autogenerada con Token para la tabla 'users'\nheader('Content-Type: application/json');\nheader('Access-Control-Allow-Origin: *');\nheader('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');\nheader('Access-Control-Allow-Headers: Content-Type, Authorization');\n\nif ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { exit(0); }\n\n// Token de acceso requerido en la cabecera Authorization: Bearer <token>\ndefine('API_TOKEN', 'token_3591d75e99062c04936882770eab03b3');\n\n$headers = apache_request_headers();\n$authHeader = $headers['Authorization'] ?? $headers['authorization'] ?? '';\n$tokenValido = false;\n\nif (preg_match('/Bearer\\s(\\S+)/', $authHeader, $matches)) {\n    if ($matches[1] === API_TOKEN) {\n        $tokenValido = true;\n    }\n}\n\nif (!$tokenValido) {\n    http_response_code(401);\n    echo json_encode(['success' => false, 'error' => 'Acceso no autorizado. Token inválido o ausente.']);\n    exit();\n}\n\n$pdo = new PDO('mysql:host=localhost;port=3306;dbname=my_app_db;charset=utf8mb4', 'root', '', [\n    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,\n    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC\n]);\n\n$method = $_SERVER['REQUEST_METHOD'];\n$input = json_decode(file_get_contents('php://input'), true);\n$id = $_GET['id_user'] ?? null;\n\nswitch ($method) {\n    case 'GET':\n        if ($id) {\n            $stmt = $pdo->prepare('SELECT * FROM `users` WHERE `id_user` = ?');\n            $stmt->execute([$id]);\n            echo json_encode($stmt->fetch() ?: ['message' => 'Registro no encontrado']);\n        } else {\n            $stmt = $pdo->query('SELECT * FROM `users`');\n            echo json_encode($stmt->fetchAll());\n        }\n        break;\n\n    case 'POST':\n        $sql = 'INSERT INTO `users` (`user_name`, `user_password`, `user_rol`) VALUES (:user_name, :user_password, :user_rol)';\n        $stmt = $pdo->prepare($sql);\n        $stmt->execute($input);\n        echo json_encode(['success' => true, 'id_user' => $pdo->lastInsertId()]);\n        break;\n\n    case 'PUT':\n        if (!$id) { echo json_encode(['error' => 'Se requiere el campo id_user']); break; }\n        $sql = 'UPDATE `users` SET `user_name` = :user_name, `user_password` = :user_password, `user_rol` = :user_rol WHERE `id_user` = :id_user';\n        $input['id_user'] = $id;\n        $stmt = $pdo->prepare($sql);\n        $stmt->execute($input);\n        echo json_encode(['success' => true, 'updated' => $stmt->rowCount()]);\n        break;\n\n    case 'DELETE':\n        if (!$id) { echo json_encode(['error' => 'Se requiere el campo id_user']); break; }\n        $stmt = $pdo->prepare('DELETE FROM `users` WHERE `id_user` = ?');\n        $stmt->execute([$id]);\n        echo json_encode(['success' => true, 'deleted' => $stmt->rowCount()]);\n        break;\n}\n"
+      "caseUsesConfig": {},
+      "generatedCode": "<?php\n// API REST Autogenerada con Token para la tabla 'usuarios'\nheader('Content-Type: application/json');\nheader('Access-Control-Allow-Origin: *');\nheader('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');\nheader('Access-Control-Allow-Headers: Content-Type, Authorization');\n\nif ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { exit(0); }\n\n// Token de acceso requerido en la cabecera Authorization: Bearer <token>\ndefine('API_TOKEN', 'token_72df870e596604dcec52604d0f127216');\n\n$headers = apache_request_headers();\n$authHeader = $headers['Authorization'] ?? $headers['authorization'] ?? '';\n$tokenValido = false;\n\nif (preg_match('/Bearer\\s(\\S+)/', $authHeader, $matches)) {\n    if ($matches[1] === API_TOKEN) {\n        $tokenValido = true;\n    }\n}\n\nif (!$tokenValido) {\n    http_response_code(401);\n    echo json_encode(['success' => false, 'error' => 'Acceso no autorizado. Token inválido o ausente.']);\n    exit();\n}\n\n$pdo = new PDO('mysql:host=localhost;port=3306;dbname=myflow;charset=utf8mb4', 'root', '', [\n    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,\n    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC\n]);\n\n$method = $_SERVER['REQUEST_METHOD'];\n$input = json_decode(file_get_contents('php://input'), true);\n$id = $_GET['id_usuario'] ?? null;\n\nswitch ($method) {\n    case 'GET':\n        if ($id) {\n            $stmt = $pdo->prepare('SELECT * FROM `usuarios` WHERE `id_usuario` = ?');\n            $stmt->execute([$id]);\n            echo json_encode($stmt->fetch() ?: ['message' => 'Registro no encontrado']);\n        } else {\n            $stmt = $pdo->query('SELECT * FROM `usuarios`');\n            echo json_encode($stmt->fetchAll());\n        }\n        break;\n\n    case 'POST':\n        $sql = 'INSERT INTO `usuarios` (`usuario_nombre`, `usuario_email`) VALUES (:usuario_nombre, :usuario_email)';\n        $stmt = $pdo->prepare($sql);\n        $stmt->execute($input);\n        echo json_encode(['success' => true, 'id_usuario' => $pdo->lastInsertId()]);\n        break;\n\n    case 'PUT':\n        if (!$id) { echo json_encode(['error' => 'Se requiere el campo id_usuario']); break; }\n        $sql = 'UPDATE `usuarios` SET `usuario_nombre` = :usuario_nombre, `usuario_email` = :usuario_email WHERE `id_usuario` = :id_usuario';\n        $input['id_usuario'] = $id;\n        $stmt = $pdo->prepare($sql);\n        $stmt->execute($input);\n        echo json_encode(['success' => true, 'updated' => $stmt->rowCount()]);\n        break;\n\n    case 'DELETE':\n        if (!$id) { echo json_encode(['error' => 'Se requiere el campo id_usuario']); break; }\n        $stmt = $pdo->prepare('DELETE FROM `usuarios` WHERE `id_usuario` = ?');\n        $stmt->execute([$id]);\n        echo json_encode(['success' => true, 'deleted' => $stmt->rowCount()]);\n        break;\n}\n"
     },
     {
-      "id": "eac5b9f8-2c8f-4621-91d9-828f37c22fd4",
+      "id": "8bd87e98-8d45-423d-894d-6daa6f6fa47c",
       "type": "crud-client",
-      "title": "Client",
-      "subtitle": "",
-      "x": 607,
-      "y": 400,
+      "title": "case Uses",
+      "subtitle": "Nuevo caso",
+      "x": 510,
+      "y": 266,
       "icon": "fas fa-plug",
       "clientConfig": {
         "action": "generate_client",
-        "endpointUrl": "http://localhost/myflow/public/api/users/UsersApi.php",
-        "token": "token_f5f6271b63096ef7737409e644e72cfd",
-        "primaryKey": "id_user",
-        "clientLanguage": "js"
+        "endpointUrl": "http://localhost/api/UsuariosApi.php",
+        "token": "token_72df870e596604dcec52604d0f127216",
+        "primaryKey": "id_usuario",
+        "clientLanguage": "php"
       },
-      "generatedClientCode": "/**\n * Cliente JavaScript autogenerado para consumir la API\n * Endpoint: http://localhost/myflow/public/api/users/UsersApi.php\n */\n\nclass ApiClient {\n    constructor() {\n        this.baseUrl = 'http://localhost/myflow/public/api/users/UsersApi.php';\n        this.token = 'token_f5f6271b63096ef7737409e644e72cfd';\n        this.primaryKey = 'id_user';\n    }\n\n    async request(method = 'GET', data = null, id = null) {\n        let url = this.baseUrl;\n        if (id !== null) {\n            url += `?${this.primaryKey}=${id}`;\n        }\n\n        const options = {\n            method: method,\n            headers: {\n                'Content-Type': 'application/json',\n                'Authorization': `Bearer ${this.token}`\n            }\n        };\n\n        if (data && (method === 'POST' || method === 'PUT')) {\n            options.body = JSON.stringify(data);\n        }\n\n        try {\n            const response = await fetch(url, options);\n            return await response.json();\n        } catch (error) {\n            console.error('Error en cliente API:', error);\n            return { success: false, message: error.message };\n        }\n    }\n\n    getAll() { return this.request('GET'); }\n    getById(id) { return this.request('GET', null, id); }\n    create(data) { return this.request('POST', data); }\n    update(id, data) { return this.request('PUT', data, id); }\n    delete(id) { return this.request('DELETE', null, id); }\n}\n"
+      "caseUsesConfig": {},
+      "generatedClientCode": "<?php\n/**\n * Cliente PHP cURL autogenerado para consumir la API\n * Endpoint: http://localhost/api/UsuariosApi.php\n */\n\nclass ApiClient {\n    private $baseUrl;\n    private $token;\n    private $primaryKey;\n\n    public function __construct($baseUrl = 'http://localhost/api/UsuariosApi.php', $token = 'token_72df870e596604dcec52604d0f127216', $primaryKey = 'id_usuario') {\n        $this->baseUrl = $baseUrl;\n        $this->token = $token;\n        $this->primaryKey = $primaryKey;\n    }\n\n    private function send($method, $data = null, $id = null) {\n        $url = $this->baseUrl;\n        if ($id !== null) {\n            $url .= '?' . $this->primaryKey . '=' . $id;\n        }\n\n        $ch = curl_init($url);\n        $headers = [\n            'Content-Type: application/json',\n            'Authorization: Bearer ' . $this->token\n        ];\n\n        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);\n        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\n\n        if ($data !== null && ($method === 'POST' || $method === 'PUT')) {\n            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));\n        }\n\n        $response = curl_exec($ch);\n        curl_close($ch);\n        return json_decode($response, true);\n    }\n\n    public function getAll() { return $this->send('GET'); }\n    public function getById($id) { return $this->send('GET', null, $id); }\n    public function create($data) { return $this->send('POST', $data); }\n    public function update($id, $data) { return $this->send('PUT', $data, $id); }\n    public function delete($id) { return $this->send('DELETE', null, $id); }\n}\n"
     },
     {
-      "id": "a1f5da0b-2136-4ee4-b4dc-4dbcca8419ca",
-      "type": "generic",
-      "title": "Input",
-      "subtitle": "",
-      "x": 853,
-      "y": 419,
-      "icon": "fas fa-solid fa-rss"
+      "id": "a5a2cb3c-485b-44e0-82f7-c608bfb67f1b",
+      "type": "case-uses",
+      "title": "case Uses",
+      "subtitle": "Nuevo caso",
+      "x": 259,
+      "y": 260,
+      "icon": "fas fa-rss",
+      "caseUsesConfig": {
+        "title": "case Uses",
+        "description": "Crud de tabla usuarios de la base de datos myflow.",
+        "status": "pending",
+        "endpointUrl": "http://localhost/myflow/public/controllers/generate_case_uses.php"
+      }
     }
   ],
   "connections": [
@@ -221,19 +226,19 @@
       "toNodeId": "94863c90-32d6-41ec-bf7c-deb9857aed19"
     },
     {
-      "lineId": "line-ecc4cc51-deeb-43d7-af28-bf6de218fdb0-f8a0eb46-6d41-4df8-a27c-b34491c0701d-2db3",
-      "fromNodeId": "ecc4cc51-deeb-43d7-af28-bf6de218fdb0",
-      "toNodeId": "f8a0eb46-6d41-4df8-a27c-b34491c0701d"
+      "lineId": "line-cd49db3f-c067-400c-b9d2-eb5f8da3d24d-70803c86-faed-40ec-a70d-8ee65a00aeff-9728",
+      "fromNodeId": "cd49db3f-c067-400c-b9d2-eb5f8da3d24d",
+      "toNodeId": "70803c86-faed-40ec-a70d-8ee65a00aeff"
     },
     {
-      "lineId": "line-f8a0eb46-6d41-4df8-a27c-b34491c0701d-eac5b9f8-2c8f-4621-91d9-828f37c22fd4-e4bc",
-      "fromNodeId": "f8a0eb46-6d41-4df8-a27c-b34491c0701d",
-      "toNodeId": "eac5b9f8-2c8f-4621-91d9-828f37c22fd4"
+      "lineId": "line-8bd87e98-8d45-423d-894d-6daa6f6fa47c-cd49db3f-c067-400c-b9d2-eb5f8da3d24d-ed05",
+      "fromNodeId": "8bd87e98-8d45-423d-894d-6daa6f6fa47c",
+      "toNodeId": "cd49db3f-c067-400c-b9d2-eb5f8da3d24d"
     },
     {
-      "lineId": "line-eac5b9f8-2c8f-4621-91d9-828f37c22fd4-a1f5da0b-2136-4ee4-b4dc-4dbcca8419ca-7d50",
-      "fromNodeId": "eac5b9f8-2c8f-4621-91d9-828f37c22fd4",
-      "toNodeId": "a1f5da0b-2136-4ee4-b4dc-4dbcca8419ca"
+      "lineId": "line-a5a2cb3c-485b-44e0-82f7-c608bfb67f1b-8bd87e98-8d45-423d-894d-6daa6f6fa47c-1af6",
+      "fromNodeId": "a5a2cb3c-485b-44e0-82f7-c608bfb67f1b",
+      "toNodeId": "8bd87e98-8d45-423d-894d-6daa6f6fa47c"
     }
   ]
 }
