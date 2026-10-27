@@ -3,19 +3,20 @@ declare(strict_types=1);
 
 header('Content-Type: application/json; charset=utf-8');
 
-require_once __DIR__ . '/../client/users/ApiClient.php';
+require_once __DIR__ . '/../clients/ApiClient.php';
 
 // 1. Configuración de conexión y credenciales
-$baseUrl = 'http://localhost/myflow/public/controllers/consume_users_create.php';
-$token = 'token_3075b5bded622b2113aba9daf51d90f0';
-$primaryKey = 'id_user';
+
+$baseUrl = 'http://localhost/myflow/public/controllers/consume_usuarios_create.php';
+$token = 'token_72df870e596604dcec52604d0f127216';
+$primaryKey = 'id_usuario';
 
 $api = new ApiClient($baseUrl, $token, $primaryKey);
 
 
 $data = [];
-$data['user_name'] = 'user_name20';
-$data['user_password'] = 'user_password20';
+$data['usuario_nombre'] = 'user_name99';
+$data['usuario_email'] = 'user_password99';
 
 try {
     $response = $api->create($data);

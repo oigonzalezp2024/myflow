@@ -44,6 +44,15 @@ $input = file_get_contents('php://input');
 $data = json_decode($input, true);
 $action = $data['action'] ?? 'generate_consumer';
 
+$api_path = $data['api_path'] ?? 'clients/ApiClient.php';
+// Configuración de conexión a la base de datos
+$host     = $data['host'] ?? '127.0.0.1';
+$db       = $data['db'] ?? 'myflow';
+$user     = $data['user'] ?? 'root';
+$pass     = $data['pass'] ?? '';
+$port     = $data['port'] ?? '3306';
+$charset  = $data['charset'] ?? 'utf8mb4';
+
 if ($action === 'generate_consumer') {
     $endpointUrl = $data['endpointUrl'] ?? 'http://localhost/api/MiApi.php';
     
@@ -55,14 +64,6 @@ if ($action === 'generate_consumer') {
     
     $defaultFileName = 'consume_' . $tableName . '.php';
     $outputPath = $data['outputPath'] ?? __DIR__ . '/' . $defaultFileName;
-
-    // Configuración de conexión a la base de datos
-    $host = '127.0.0.1';
-    $db   = 'my_app_db';
-    $user = 'root';
-    $pass = '';
-    $port = '3306';
-    $charset = 'utf8mb4';
 
     $primaryKey = 'id';
     $tableColumns = [];
@@ -104,7 +105,7 @@ if ($action === 'generate_consumer') {
     $consumerCode = "<?php\n";
     $consumerCode .= "declare(strict_types=1);\n\n";
     $consumerCode .= "header('Content-Type: application/json; charset=utf-8');\n\n";
-    $consumerCode .= "require_once __DIR__ . '/../client/users/ApiClient.php';\n\n";
+    $consumerCode .= "require_once __DIR__ . '/../{$api_path}';\n\n";
     $consumerCode .= "// 1. Configuración de conexión y credenciales\n";
     $consumerCode .= "\$baseUrl = '{$endpointUrl}';\n";
     $consumerCode .= "\$token = '{$targetServiceToken}';\n";
@@ -177,7 +178,7 @@ if ($action === 'generate_consumer') {
         $consumerCode = "<?php\n";
         $consumerCode .= "declare(strict_types=1);\n\n";
         $consumerCode .= "header('Content-Type: application/json; charset=utf-8');\n\n";
-        $consumerCode .= "require_once __DIR__ . '/../client/users/ApiClient.php';\n\n";
+        $consumerCode .= "require_once __DIR__ . '/../{$api_path}';\n\n";
         $consumerCode .= "// 1. Configuración de conexión y credenciales\n";
         $consumerCode .= "\$baseUrl = '{$endpointUrl}';\n";
         $consumerCode .= "\$token = '{$targetServiceToken}';\n";
@@ -189,7 +190,7 @@ if ($action === 'generate_consumer') {
         $consumerCode = "<?php\n";
         $consumerCode .= "declare(strict_types=1);\n\n";
         $consumerCode .= "header('Content-Type: application/json; charset=utf-8');\n\n";
-        $consumerCode .= "require_once __DIR__ . '/../client/users/ApiClient.php';\n\n";
+        $consumerCode .= "require_once __DIR__ . '/../{$api_path}';\n\n";
         $consumerCode .= "// 1. Configuración de conexión y credenciales\n";
         $consumerCode .= "\$baseUrl = '{$endpointUrl}';\n";
         $consumerCode .= "\$token = '{$targetServiceToken}';\n";

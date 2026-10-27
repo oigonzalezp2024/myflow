@@ -1,7 +1,7 @@
 <?php
 /**
  * Cliente PHP cURL autogenerado para consumir la API
- * Endpoint: http://localhost/myflow/public/api/users/UsersApi.php
+ * Endpoint: http://localhost/api/UsuariosApi.php
  */
 
 class ApiClient {
@@ -9,7 +9,7 @@ class ApiClient {
     private $token;
     private $primaryKey;
 
-    public function __construct($baseUrl = 'http://localhost/myflow/public/api/users/UsersApi.php', $token = 'token_f5f6271b63096ef7737409e644e72cfd', $primaryKey = 'id_user') {
+    public function __construct($baseUrl = 'http://localhost/api/UsuariosApi.php', $token = 'token_72df870e596604dcec52604d0f127216', $primaryKey = 'id_usuario') {
         $this->baseUrl = $baseUrl;
         $this->token = $token;
         $this->primaryKey = $primaryKey;
