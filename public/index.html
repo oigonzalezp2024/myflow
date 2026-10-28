@@ -356,6 +356,57 @@
             </div>
         </div>
     </div>
+    <!-- Modal de Configuración para Envío de Datos y Formulario Dinámico -->
+    <div id="sendDataModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-paper-plane"></i> Generar Formulario y Envío (POST)</h2>
+                <button class="close-modal-btn" id="closeSendDataModalBtn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="sendDataModalNodeId">
+
+                <fieldset>
+                    <legend>Conexión y Selección de Tabla</legend>
+                    <div class="input-group">
+                        <label for="sendDataEndpointUrl">URL Endpoint (POST):</label>
+                        <input type="text" id="sendDataEndpointUrl" placeholder="http://localhost/api/endpoint.php">
+                    </div>
+                    <div class="input-group">
+                        <label for="sendDataDbName">Base de Datos SQL:</label>
+                        <input type="text" id="sendDataDbName" placeholder="ej. mi_base_datos">
+                    </div>
+                    <div class="input-group">
+                        <label for="sendDataTableName">Tabla a Consultar:</label>
+                        <input type="text" id="sendDataTableName" placeholder="ej. usuarios">
+                    </div>
+                    <button id="fetchTableStructureBtn" class="action-btn"
+                        style="background-color: #17a2b8; margin-top: 10px;">
+                        <i class="fas fa-database"></i> Leer Estructura de Tabla y Crear Formulario
+                    </button>
+                </fieldset>
+
+                <div id="formStructureContainer" style="display:none; margin-top: 15px;">
+                    <fieldset>
+                        <legend>Campos del Formulario Generados</legend>
+                        <div id="dynamicFormFieldsList" class="dynamic-fields-container"
+                            style="max-height: 200px; overflow-y: auto;">
+                            <!-- Los campos se inyectarán dinámicamente aquí -->
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+            <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center;">
+                <button id="executePostBtn" class="action-btn" style="background-color: #28a745;">
+                    <i class="fas fa-paper-plane"></i> Enviar POST Ahora
+                </button>
+                <div>
+                    <button id="saveSendDataBtn" class="action-btn"><i class="fas fa-save"></i> Guardar
+                        Configuración</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>

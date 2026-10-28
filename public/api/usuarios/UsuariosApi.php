@@ -8,7 +8,7 @@ header('Access-Control-Allow-Headers: Content-Type, Authorization');
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { exit(0); }
 
 // Token de acceso requerido en la cabecera Authorization: Bearer <token>
-define('API_TOKEN', 'token_72df870e596604dcec52604d0f127216');
+define('API_TOKEN', 'token_db2f71a88ef4d12f921c5c58849e828d');
 
 $headers = apache_request_headers();
 $authHeader = $headers['Authorization'] ?? $headers['authorization'] ?? '';
