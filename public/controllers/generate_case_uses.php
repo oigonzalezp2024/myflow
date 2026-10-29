@@ -67,7 +67,7 @@ $primaryKey = 'id_proveedor';
 $apiClient = new ApiClientPHP($endpointIntermediary, $intermediaryToken, $primaryKey);
 
 $methods = ['getAll', 'getById', 'create', 'update', 'delete'];
-$tableName = 'proveedores';
+$tableName = 'pedidos';
 $targetServiceEndpoint = 'http://localhost/myflow/public/api/insumos/proveedores/';
 $targetServiceTokenVal = 'token_e146b7073904f432bfc121ea3e396708'; // Token que usará el código generado
 
