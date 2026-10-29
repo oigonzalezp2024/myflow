@@ -1,0 +1,276 @@
+{
+  "nodes": [
+    {
+      "id": "6f4e92ba-696a-43d6-8279-3cd0c16e4335",
+      "type": "send-data",
+      "title": "Crear Pedido",
+      "subtitle": "Formulario Dinámico",
+      "x": 316.79425048828125,
+      "y": 215.75780487060547,
+      "icon": "fas fa-paper-plane",
+      "sendDataConfig": {}
+    },
+    {
+      "id": "ce16da99-b8e2-45cc-ae37-ff9138e875b4",
+      "type": "send-data",
+      "title": "Cotizar a Proveedor A",
+      "subtitle": "Formulario Dinámico",
+      "x": 28.93487548828125,
+      "y": 24.911460876464844,
+      "icon": "fas fa-paper-plane",
+      "sendDataConfig": {}
+    },
+    {
+      "id": "008f7db9-b6d5-4b18-8958-1fc2e54d6569",
+      "type": "send-data",
+      "title": "Aprobar Pedido A",
+      "subtitle": "Formulario Dinámico",
+      "x": 569.9861450195312,
+      "y": 29.986122131347656,
+      "icon": "fas fa-paper-plane",
+      "sendDataConfig": {}
+    },
+    {
+      "id": "8294644f-bad7-43d1-9573-1492d75f37be",
+      "type": "send-data",
+      "title": "Envío Pedido",
+      "subtitle": "Formulario Dinámico",
+      "x": 837.9791259765625,
+      "y": 215.96875762939453,
+      "icon": "fas fa-paper-plane",
+      "sendDataConfig": {}
+    },
+    {
+      "id": "16304d50-ca04-4389-a962-2e734843c806",
+      "type": "send-data",
+      "title": "Cotizar a Provedor B",
+      "subtitle": "Formulario Dinámico",
+      "x": 28.971343994140625,
+      "y": 215.98699188232422,
+      "icon": "fas fa-paper-plane",
+      "sendDataConfig": {}
+    },
+    {
+      "id": "da4d300f-1f91-4ee8-8d34-52c7abba1faf",
+      "type": "send-data",
+      "title": "Cotizar Proveedor C",
+      "subtitle": "Formulario Dinámico",
+      "x": 31,
+      "y": 419.99739837646484,
+      "icon": "fas fa-paper-plane",
+      "sendDataConfig": {}
+    },
+    {
+      "id": "2f230a46-6c75-420b-85d5-be6701c302c4",
+      "type": "send-data",
+      "title": "Comprar a Proveedor A",
+      "subtitle": "Formulario Dinámico",
+      "x": 1098.9869384765625,
+      "y": 32.989585876464844,
+      "icon": "fas fa-paper-plane",
+      "sendDataConfig": {}
+    },
+    {
+      "id": "d87ab1d7-d44e-4b88-9bf1-f13b302aa1ee",
+      "type": "send-data",
+      "title": "Comprar a Proveedor B",
+      "subtitle": "Formulario Dinámico",
+      "x": 1102.9921875,
+      "y": 212.98958587646484,
+      "icon": "fas fa-paper-plane",
+      "sendDataConfig": {}
+    },
+    {
+      "id": "d403a06b-aa00-40f4-869a-aff436bb83ce",
+      "type": "send-data",
+      "title": "Comprar a Proveedor C",
+      "subtitle": "Formulario Dinámico",
+      "x": 1099.9895629882812,
+      "y": 396.98958587646484,
+      "icon": "fas fa-paper-plane",
+      "sendDataConfig": {}
+    },
+    {
+      "id": "e6669388-506c-4e06-a5fa-a692b4d2f6d5",
+      "type": "send-data",
+      "title": "Aprobar Pedido B",
+      "subtitle": "Formulario Dinámico",
+      "x": 566,
+      "y": 224.00000762939453,
+      "icon": "fas fa-paper-plane",
+      "sendDataConfig": {}
+    },
+    {
+      "id": "505a094e-c113-49f6-a17f-f8746273d678",
+      "type": "send-data",
+      "title": "Aprobar Pedido C",
+      "subtitle": "Formulario Dinámico",
+      "x": 575,
+      "y": 420.99999237060547,
+      "icon": "fas fa-paper-plane",
+      "sendDataConfig": {}
+    },
+    {
+      "id": "7010146b-751a-403e-a7c4-1459af14d62f",
+      "type": "send-data",
+      "title": "Auditoría de Compra",
+      "subtitle": "Formulario Dinámico",
+      "x": 1967.8472290039062,
+      "y": 204.98612213134766,
+      "icon": "fas fa-paper-plane",
+      "sendDataConfig": {}
+    },
+    {
+      "id": "af8d7408-671a-4ecc-9ac3-e3183d1f474d",
+      "type": "send-data",
+      "title": "Aprobación de Compra",
+      "subtitle": "Formulario Dinámico",
+      "x": 1624,
+      "y": 32.986106872558594,
+      "icon": "fas fa-paper-plane",
+      "sendDataConfig": {}
+    },
+    {
+      "id": "f19bd9c6-55f2-443a-b275-e3cfdd2ad953",
+      "type": "send-data",
+      "title": "Rechazo de compra",
+      "subtitle": "Formulario Dinámico",
+      "x": 1623,
+      "y": 399.9999771118164,
+      "icon": "fas fa-paper-plane",
+      "sendDataConfig": {}
+    },
+    {
+      "id": "e437e959-dfc4-426c-98d2-c609d754b2f7",
+      "type": "send-data",
+      "title": "Notificación de Pago",
+      "subtitle": "Formulario Dinámico",
+      "x": 2293,
+      "y": 48.97222137451172,
+      "icon": "fas fa-paper-plane",
+      "sendDataConfig": {}
+    },
+    {
+      "id": "78b6bd66-c89a-4b4c-9aea-cb337cf0d60e",
+      "type": "send-data",
+      "title": "Notificación de Rechazo",
+      "subtitle": "Formulario Dinámico",
+      "x": 2281,
+      "y": 370.00000762939453,
+      "icon": "fas fa-paper-plane",
+      "sendDataConfig": {}
+    }
+  ],
+  "connections": [
+    {
+      "lineId": "line-6f4e92ba-696a-43d6-8279-3cd0c16e4335-008f7db9-b6d5-4b18-8958-1fc2e54d6569-f06f",
+      "fromNodeId": "6f4e92ba-696a-43d6-8279-3cd0c16e4335",
+      "toNodeId": "008f7db9-b6d5-4b18-8958-1fc2e54d6569"
+    },
+    {
+      "lineId": "line-008f7db9-b6d5-4b18-8958-1fc2e54d6569-8294644f-bad7-43d1-9573-1492d75f37be-b792",
+      "fromNodeId": "008f7db9-b6d5-4b18-8958-1fc2e54d6569",
+      "toNodeId": "8294644f-bad7-43d1-9573-1492d75f37be"
+    },
+    {
+      "lineId": "line-ce16da99-b8e2-45cc-ae37-ff9138e875b4-6f4e92ba-696a-43d6-8279-3cd0c16e4335-b54e",
+      "fromNodeId": "ce16da99-b8e2-45cc-ae37-ff9138e875b4",
+      "toNodeId": "6f4e92ba-696a-43d6-8279-3cd0c16e4335"
+    },
+    {
+      "lineId": "line-16304d50-ca04-4389-a962-2e734843c806-6f4e92ba-696a-43d6-8279-3cd0c16e4335-6cd6",
+      "fromNodeId": "16304d50-ca04-4389-a962-2e734843c806",
+      "toNodeId": "6f4e92ba-696a-43d6-8279-3cd0c16e4335"
+    },
+    {
+      "lineId": "line-da4d300f-1f91-4ee8-8d34-52c7abba1faf-6f4e92ba-696a-43d6-8279-3cd0c16e4335-806b",
+      "fromNodeId": "da4d300f-1f91-4ee8-8d34-52c7abba1faf",
+      "toNodeId": "6f4e92ba-696a-43d6-8279-3cd0c16e4335"
+    },
+    {
+      "lineId": "line-8294644f-bad7-43d1-9573-1492d75f37be-2f230a46-6c75-420b-85d5-be6701c302c4-bf15",
+      "fromNodeId": "8294644f-bad7-43d1-9573-1492d75f37be",
+      "toNodeId": "2f230a46-6c75-420b-85d5-be6701c302c4"
+    },
+    {
+      "lineId": "line-8294644f-bad7-43d1-9573-1492d75f37be-d87ab1d7-d44e-4b88-9bf1-f13b302aa1ee-d2b1",
+      "fromNodeId": "8294644f-bad7-43d1-9573-1492d75f37be",
+      "toNodeId": "d87ab1d7-d44e-4b88-9bf1-f13b302aa1ee"
+    },
+    {
+      "lineId": "line-8294644f-bad7-43d1-9573-1492d75f37be-d403a06b-aa00-40f4-869a-aff436bb83ce-ac4c",
+      "fromNodeId": "8294644f-bad7-43d1-9573-1492d75f37be",
+      "toNodeId": "d403a06b-aa00-40f4-869a-aff436bb83ce"
+    },
+    {
+      "lineId": "line-6f4e92ba-696a-43d6-8279-3cd0c16e4335-e6669388-506c-4e06-a5fa-a692b4d2f6d5-f7b0",
+      "fromNodeId": "6f4e92ba-696a-43d6-8279-3cd0c16e4335",
+      "toNodeId": "e6669388-506c-4e06-a5fa-a692b4d2f6d5"
+    },
+    {
+      "lineId": "line-6f4e92ba-696a-43d6-8279-3cd0c16e4335-505a094e-c113-49f6-a17f-f8746273d678-4cb6",
+      "fromNodeId": "6f4e92ba-696a-43d6-8279-3cd0c16e4335",
+      "toNodeId": "505a094e-c113-49f6-a17f-f8746273d678"
+    },
+    {
+      "lineId": "line-e6669388-506c-4e06-a5fa-a692b4d2f6d5-8294644f-bad7-43d1-9573-1492d75f37be-1f9b",
+      "fromNodeId": "e6669388-506c-4e06-a5fa-a692b4d2f6d5",
+      "toNodeId": "8294644f-bad7-43d1-9573-1492d75f37be"
+    },
+    {
+      "lineId": "line-505a094e-c113-49f6-a17f-f8746273d678-8294644f-bad7-43d1-9573-1492d75f37be-4237",
+      "fromNodeId": "505a094e-c113-49f6-a17f-f8746273d678",
+      "toNodeId": "8294644f-bad7-43d1-9573-1492d75f37be"
+    },
+    {
+      "lineId": "line-2f230a46-6c75-420b-85d5-be6701c302c4-af8d7408-671a-4ecc-9ac3-e3183d1f474d-9d7f",
+      "fromNodeId": "2f230a46-6c75-420b-85d5-be6701c302c4",
+      "toNodeId": "af8d7408-671a-4ecc-9ac3-e3183d1f474d"
+    },
+    {
+      "lineId": "line-d87ab1d7-d44e-4b88-9bf1-f13b302aa1ee-af8d7408-671a-4ecc-9ac3-e3183d1f474d-4125",
+      "fromNodeId": "d87ab1d7-d44e-4b88-9bf1-f13b302aa1ee",
+      "toNodeId": "af8d7408-671a-4ecc-9ac3-e3183d1f474d"
+    },
+    {
+      "lineId": "line-d87ab1d7-d44e-4b88-9bf1-f13b302aa1ee-f19bd9c6-55f2-443a-b275-e3cfdd2ad953-66d5",
+      "fromNodeId": "d87ab1d7-d44e-4b88-9bf1-f13b302aa1ee",
+      "toNodeId": "f19bd9c6-55f2-443a-b275-e3cfdd2ad953"
+    },
+    {
+      "lineId": "line-2f230a46-6c75-420b-85d5-be6701c302c4-f19bd9c6-55f2-443a-b275-e3cfdd2ad953-ff14",
+      "fromNodeId": "2f230a46-6c75-420b-85d5-be6701c302c4",
+      "toNodeId": "f19bd9c6-55f2-443a-b275-e3cfdd2ad953"
+    },
+    {
+      "lineId": "line-d403a06b-aa00-40f4-869a-aff436bb83ce-f19bd9c6-55f2-443a-b275-e3cfdd2ad953-c53c",
+      "fromNodeId": "d403a06b-aa00-40f4-869a-aff436bb83ce",
+      "toNodeId": "f19bd9c6-55f2-443a-b275-e3cfdd2ad953"
+    },
+    {
+      "lineId": "line-d403a06b-aa00-40f4-869a-aff436bb83ce-af8d7408-671a-4ecc-9ac3-e3183d1f474d-c575",
+      "fromNodeId": "d403a06b-aa00-40f4-869a-aff436bb83ce",
+      "toNodeId": "af8d7408-671a-4ecc-9ac3-e3183d1f474d"
+    },
+    {
+      "lineId": "line-f19bd9c6-55f2-443a-b275-e3cfdd2ad953-7010146b-751a-403e-a7c4-1459af14d62f-a777",
+      "fromNodeId": "f19bd9c6-55f2-443a-b275-e3cfdd2ad953",
+      "toNodeId": "7010146b-751a-403e-a7c4-1459af14d62f"
+    },
+    {
+      "lineId": "line-af8d7408-671a-4ecc-9ac3-e3183d1f474d-7010146b-751a-403e-a7c4-1459af14d62f-af7c",
+      "fromNodeId": "af8d7408-671a-4ecc-9ac3-e3183d1f474d",
+      "toNodeId": "7010146b-751a-403e-a7c4-1459af14d62f"
+    },
+    {
+      "lineId": "line-7010146b-751a-403e-a7c4-1459af14d62f-e437e959-dfc4-426c-98d2-c609d754b2f7-d6e2",
+      "fromNodeId": "7010146b-751a-403e-a7c4-1459af14d62f",
+      "toNodeId": "e437e959-dfc4-426c-98d2-c609d754b2f7"
+    },
+    {
+      "lineId": "line-7010146b-751a-403e-a7c4-1459af14d62f-78b6bd66-c89a-4b4c-9aea-cb337cf0d60e-63d3",
+      "fromNodeId": "7010146b-751a-403e-a7c4-1459af14d62f",
+      "toNodeId": "78b6bd66-c89a-4b4c-9aea-cb337cf0d60e"
+    }
+  ]
+}
