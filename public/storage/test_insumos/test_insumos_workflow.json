@@ -4,19 +4,35 @@
       "id": "6f4e92ba-696a-43d6-8279-3cd0c16e4335",
       "type": "send-data",
       "title": "Crear Pedido",
-      "subtitle": "Formulario Dinámico",
-      "x": 1558.7942504882812,
-      "y": 259.75780487060547,
+      "subtitle": "Tabla: proveedores",
+      "x": 1388.7750244140625,
+      "y": 95.72500610351562,
       "icon": "fas fa-paper-plane",
-      "sendDataConfig": {}
+      "sendDataConfig": {
+        "endpointUrl": "http://localhost/myflow/public/controllers_project_test/consume_pedidos_create_test.php",
+        "dbName": "test_insumos",
+        "tableName": "proveedores",
+        "formFields": [
+          {
+            "Field": "proveedor_nombre",
+            "Type": "VARCHAR",
+            "value": "11"
+          },
+          {
+            "Field": "vendedor",
+            "Type": "VARCHAR",
+            "value": "2025-12-11"
+          }
+        ]
+      }
     },
     {
       "id": "ce16da99-b8e2-45cc-ae37-ff9138e875b4",
       "type": "send-data",
       "title": "Cotizar a Proveedor A",
       "subtitle": "Tabla: proveedores",
-      "x": 1268.8999061584473,
-      "y": 61.89373779296875,
+      "x": 1053.875,
+      "y": -79.14999389648438,
       "icon": "fas fa-paper-plane",
       "sendDataConfig": {
         "endpointUrl": "http://localhost/myflow/public/controllers_project/create_proveedores.php",
@@ -41,8 +57,8 @@
       "type": "send-data",
       "title": "Aprobar Pedido A",
       "subtitle": "Formulario Dinámico",
-      "x": 1811.9861450195312,
-      "y": 73.98612213134766,
+      "x": 1641.9861450195312,
+      "y": -84.01387786865234,
       "icon": "fas fa-paper-plane",
       "sendDataConfig": {}
     },
@@ -51,8 +67,8 @@
       "type": "send-data",
       "title": "Envío Pedido",
       "subtitle": "Formulario Dinámico",
-      "x": 2079.9791259765625,
-      "y": 259.96875762939453,
+      "x": 1909.9791259765625,
+      "y": 101.96875762939453,
       "icon": "fas fa-paper-plane",
       "sendDataConfig": {}
     },
@@ -61,8 +77,8 @@
       "type": "send-data",
       "title": "Cotizar a Provedor B",
       "subtitle": "Formulario Dinámico",
-      "x": 1270.9713439941406,
-      "y": 259.9869918823242,
+      "x": 1055.9500122070312,
+      "y": 109.97499084472656,
       "icon": "fas fa-paper-plane",
       "sendDataConfig": {}
     },
@@ -71,8 +87,8 @@
       "type": "send-data",
       "title": "Cotizar Proveedor C",
       "subtitle": "Formulario Dinámico",
-      "x": 1273,
-      "y": 463.99739837646484,
+      "x": 1059,
+      "y": 286.9750213623047,
       "icon": "fas fa-paper-plane",
       "sendDataConfig": {}
     },
@@ -81,8 +97,8 @@
       "type": "send-data",
       "title": "Comprar a Proveedor A",
       "subtitle": "Formulario Dinámico",
-      "x": 2340.9869384765625,
-      "y": 76.98958587646484,
+      "x": 2170.9869384765625,
+      "y": -81.01041412353516,
       "icon": "fas fa-paper-plane",
       "sendDataConfig": {}
     },
@@ -91,8 +107,8 @@
       "type": "send-data",
       "title": "Comprar a Proveedor B",
       "subtitle": "Formulario Dinámico",
-      "x": 2344.9921875,
-      "y": 256.98958587646484,
+      "x": 2174.9921875,
+      "y": 98.98958587646484,
       "icon": "fas fa-paper-plane",
       "sendDataConfig": {}
     },
@@ -101,8 +117,8 @@
       "type": "send-data",
       "title": "Comprar a Proveedor C",
       "subtitle": "Formulario Dinámico",
-      "x": 2341.9895629882812,
-      "y": 440.98958587646484,
+      "x": 2171.9895629882812,
+      "y": 282.98958587646484,
       "icon": "fas fa-paper-plane",
       "sendDataConfig": {}
     },
@@ -111,8 +127,8 @@
       "type": "send-data",
       "title": "Aprobar Pedido B",
       "subtitle": "Formulario Dinámico",
-      "x": 1808,
-      "y": 268.00000762939453,
+      "x": 1638,
+      "y": 110.00000762939453,
       "icon": "fas fa-paper-plane",
       "sendDataConfig": {}
     },
@@ -121,8 +137,8 @@
       "type": "send-data",
       "title": "Aprobar Pedido C",
       "subtitle": "Formulario Dinámico",
-      "x": 1817,
-      "y": 464.99999237060547,
+      "x": 1647,
+      "y": 306.99999237060547,
       "icon": "fas fa-paper-plane",
       "sendDataConfig": {}
     },
@@ -131,8 +147,8 @@
       "type": "send-data",
       "title": "Auditoría de Compra",
       "subtitle": "Formulario Dinámico",
-      "x": 3209.8472290039062,
-      "y": 248.98612213134766,
+      "x": 3039.8472290039062,
+      "y": 90.98612213134766,
       "icon": "fas fa-paper-plane",
       "sendDataConfig": {}
     },
@@ -141,8 +157,8 @@
       "type": "send-data",
       "title": "Aprobación de Compra",
       "subtitle": "Formulario Dinámico",
-      "x": 2866,
-      "y": 76.9861068725586,
+      "x": 2696,
+      "y": -81.0138931274414,
       "icon": "fas fa-paper-plane",
       "sendDataConfig": {}
     },
@@ -151,8 +167,8 @@
       "type": "send-data",
       "title": "Rechazo de compra",
       "subtitle": "Formulario Dinámico",
-      "x": 2865,
-      "y": 443.9999771118164,
+      "x": 2695,
+      "y": 285.9999771118164,
       "icon": "fas fa-paper-plane",
       "sendDataConfig": {}
     },
@@ -161,8 +177,8 @@
       "type": "send-data",
       "title": "Notificación de Pago",
       "subtitle": "Formulario Dinámico",
-      "x": 3535,
-      "y": 92.97222137451172,
+      "x": 3365,
+      "y": -65.02777862548828,
       "icon": "fas fa-paper-plane",
       "sendDataConfig": {}
     },
@@ -171,8 +187,8 @@
       "type": "send-data",
       "title": "Notificación de Rechazo",
       "subtitle": "Formulario Dinámico",
-      "x": 3523,
-      "y": 414.00000762939453,
+      "x": 3353,
+      "y": 256.00000762939453,
       "icon": "fas fa-paper-plane",
       "sendDataConfig": {}
     },
@@ -181,8 +197,8 @@
       "type": "database",
       "title": "Proveedores",
       "subtitle": "Formulario Dinámico",
-      "x": 65.96875,
-      "y": 267.953125,
+      "x": -651.0499877929688,
+      "y": 125.94999694824219,
       "icon": "fas fa-database",
       "dbConfig": {
         "host": "localhost",
@@ -213,8 +229,8 @@
       "type": "crud-api",
       "title": "ProveedoresApi",
       "subtitle": "Formulario Dinámico",
-      "x": 332.75,
-      "y": 266.484375,
+      "x": -345.25,
+      "y": 123.44999694824219,
       "icon": "fas fa-laptop-code",
       "apiConfig": {
         "action": "generate",
@@ -233,8 +249,8 @@
       "type": "crud-client",
       "title": "ProveedoresClient",
       "subtitle": "Formulario Dinámico",
-      "x": 592.921875,
-      "y": 262.9375,
+      "x": -48.0999755859375,
+      "y": 121.92499542236328,
       "icon": "fas fa-plug",
       "clientConfig": {
         "action": "generate_client",
@@ -251,8 +267,94 @@
       "type": "case-uses",
       "title": "ProvedoresCaseUses",
       "subtitle": "Formulario Dinámico",
-      "x": 857.984375,
-      "y": 259.953125,
+      "x": 242.9749755859375,
+      "y": 124.94999694824219,
+      "icon": "fas fa-solid fa-rss",
+      "caseUsesConfig": {
+        "title": "Envío POST",
+        "description": "",
+        "status": "pending",
+        "endpointUrl": "http://localhost/myflow/public/controllers/generate_case_uses.php"
+      },
+      "sendDataConfig": {}
+    },
+    {
+      "id": "8fcc5301-8c5f-4c11-9541-c6ce9eaf3c53",
+      "type": "database",
+      "title": "Pedidos",
+      "subtitle": "Formulario Dinámico",
+      "x": 68.95001220703125,
+      "y": 829.9750213623047,
+      "icon": "fas fa-database",
+      "dbConfig": {
+        "host": "localhost",
+        "port": "",
+        "username": "root",
+        "password": "",
+        "dbName": "test_insumos",
+        "tableName": "pedidos",
+        "fields": [
+          {
+            "key": "id_pedido",
+            "value": "int(11)"
+          },
+          {
+            "key": "pedido_nro",
+            "value": "int(11)"
+          },
+          {
+            "key": "provedor_id",
+            "value": "int(11)"
+          }
+        ]
+      },
+      "sendDataConfig": {}
+    },
+    {
+      "id": "72058392-c55f-4c10-bdd8-ca9fc61fab91",
+      "type": "crud-api",
+      "title": "Envío POST",
+      "subtitle": "Formulario Dinámico",
+      "x": 359,
+      "y": 825.7250213623047,
+      "icon": "fas fa-laptop-code",
+      "apiConfig": {
+        "action": "generate",
+        "host": "localhost",
+        "port": "3306",
+        "username": "root",
+        "password": "",
+        "dbName": "test_insumos",
+        "tableName": "pedidos"
+      },
+      "sendDataConfig": {},
+      "generatedCode": "<?php\n// API REST Autogenerada con Token para la tabla 'pedidos'\nheader('Content-Type: application/json');\nheader('Access-Control-Allow-Origin: *');\nheader('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');\nheader('Access-Control-Allow-Headers: Content-Type, Authorization');\n\nif ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { exit(0); }\n\n// Token de acceso requerido en la cabecera Authorization: Bearer <token>\ndefine('API_TOKEN', 'token_fd2cd01afc151faa68c72baf82e6da16');\n\n$headers = apache_request_headers();\n$authHeader = $headers['Authorization'] ?? $headers['authorization'] ?? '';\n$tokenValido = false;\n\nif (preg_match('/Bearer\\s(\\S+)/', $authHeader, $matches)) {\n    if ($matches[1] === API_TOKEN) {\n        $tokenValido = true;\n    }\n}\n\nif (!$tokenValido) {\n    http_response_code(401);\n    echo json_encode(['success' => false, 'error' => 'Acceso no autorizado. Token inválido o ausente.']);\n    exit();\n}\n\n$pdo = new PDO('mysql:host=localhost;port=3306;dbname=test_insumos;charset=utf8mb4', 'root', '', [\n    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,\n    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC\n]);\n\n$method = $_SERVER['REQUEST_METHOD'];\n$input = json_decode(file_get_contents('php://input'), true);\n$id = $_GET['id_pedido'] ?? null;\n\nswitch ($method) {\n    case 'GET':\n        if ($id) {\n            $stmt = $pdo->prepare('SELECT * FROM `pedidos` WHERE `id_pedido` = ?');\n            $stmt->execute([$id]);\n            echo json_encode($stmt->fetch() ?: ['message' => 'Registro no encontrado']);\n        } else {\n            $stmt = $pdo->query('SELECT * FROM `pedidos`');\n            echo json_encode($stmt->fetchAll());\n        }\n        break;\n\n    case 'POST':\n        $sql = 'INSERT INTO `pedidos` (`proveedor_id`, `fecha`) VALUES (:proveedor_id, :fecha)';\n        $stmt = $pdo->prepare($sql);\n        $stmt->execute($input);\n        echo json_encode(['success' => true, 'id_pedido' => $pdo->lastInsertId()]);\n        break;\n\n    case 'PUT':\n        if (!$id) { echo json_encode(['error' => 'Se requiere el campo id_pedido']); break; }\n        $sql = 'UPDATE `pedidos` SET `proveedor_id` = :proveedor_id, `fecha` = :fecha WHERE `id_pedido` = :id_pedido';\n        $input['id_pedido'] = $id;\n        $stmt = $pdo->prepare($sql);\n        $stmt->execute($input);\n        echo json_encode(['success' => true, 'updated' => $stmt->rowCount()]);\n        break;\n\n    case 'DELETE':\n        if (!$id) { echo json_encode(['error' => 'Se requiere el campo id_pedido']); break; }\n        $stmt = $pdo->prepare('DELETE FROM `pedidos` WHERE `id_pedido` = ?');\n        $stmt->execute([$id]);\n        echo json_encode(['success' => true, 'deleted' => $stmt->rowCount()]);\n        break;\n}\n"
+    },
+    {
+      "id": "ea94b812-d460-47de-a78c-f6463c496dd5",
+      "type": "crud-client",
+      "title": "Envío POST",
+      "subtitle": "Formulario Dinámico",
+      "x": 644,
+      "y": 820.9250335693359,
+      "icon": "fas fa-plug",
+      "clientConfig": {
+        "action": "generate_client",
+        "endpointUrl": "http://localhost/myflow/public/api/insumos/pedidos/index.php",
+        "token": "token_fd2cd01afc151faa68c72baf82e6da16",
+        "primaryKey": "id_pedido",
+        "clientLanguage": "php"
+      },
+      "sendDataConfig": {},
+      "generatedClientCode": "<?php\n/**\n * Cliente PHP cURL autogenerado para consumir la API\n * Endpoint: http://localhost/myflow/public/api/insumos/pedidos/index.php\n */\n\nclass ApiClient {\n    private $baseUrl;\n    private $token;\n    private $primaryKey;\n\n    public function __construct($baseUrl = 'http://localhost/myflow/public/api/insumos/pedidos/index.php', $token = 'token_fd2cd01afc151faa68c72baf82e6da16', $primaryKey = 'id_pedido') {\n        $this->baseUrl = $baseUrl;\n        $this->token = $token;\n        $this->primaryKey = $primaryKey;\n    }\n\n    private function send($method, $data = null, $id = null) {\n        $url = $this->baseUrl;\n        if ($id !== null) {\n            $url .= '?' . $this->primaryKey . '=' . $id;\n        }\n\n        $ch = curl_init($url);\n        $headers = [\n            'Content-Type: application/json',\n            'Authorization: Bearer ' . $this->token\n        ];\n\n        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);\n        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\n\n        if ($data !== null && ($method === 'POST' || $method === 'PUT')) {\n            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));\n        }\n\n        $response = curl_exec($ch);\n        curl_close($ch);\n        return json_decode($response, true);\n    }\n\n    public function getAll() { return $this->send('GET'); }\n    public function getById($id) { return $this->send('GET', null, $id); }\n    public function create($data) { return $this->send('POST', $data); }\n    public function update($id, $data) { return $this->send('PUT', $data, $id); }\n    public function delete($id) { return $this->send('DELETE', null, $id); }\n}\n"
+    },
+    {
+      "id": "a53c8a09-71b4-404a-a40b-0d0dad87866e",
+      "type": "case-uses",
+      "title": "Envío POST",
+      "subtitle": "Formulario Dinámico",
+      "x": 926,
+      "y": 824.7250213623047,
       "icon": "fas fa-solid fa-rss",
       "caseUsesConfig": {
         "title": "Envío POST",
@@ -403,6 +505,26 @@
       "lineId": "line-09298dc5-eb42-4c22-9083-b8942ba36bfe-da4d300f-1f91-4ee8-8d34-52c7abba1faf-0b09",
       "fromNodeId": "09298dc5-eb42-4c22-9083-b8942ba36bfe",
       "toNodeId": "da4d300f-1f91-4ee8-8d34-52c7abba1faf"
+    },
+    {
+      "lineId": "line-8fcc5301-8c5f-4c11-9541-c6ce9eaf3c53-72058392-c55f-4c10-bdd8-ca9fc61fab91-af17",
+      "fromNodeId": "8fcc5301-8c5f-4c11-9541-c6ce9eaf3c53",
+      "toNodeId": "72058392-c55f-4c10-bdd8-ca9fc61fab91"
+    },
+    {
+      "lineId": "line-72058392-c55f-4c10-bdd8-ca9fc61fab91-ea94b812-d460-47de-a78c-f6463c496dd5-4de8",
+      "fromNodeId": "72058392-c55f-4c10-bdd8-ca9fc61fab91",
+      "toNodeId": "ea94b812-d460-47de-a78c-f6463c496dd5"
+    },
+    {
+      "lineId": "line-ea94b812-d460-47de-a78c-f6463c496dd5-a53c8a09-71b4-404a-a40b-0d0dad87866e-9815",
+      "fromNodeId": "ea94b812-d460-47de-a78c-f6463c496dd5",
+      "toNodeId": "a53c8a09-71b4-404a-a40b-0d0dad87866e"
+    },
+    {
+      "lineId": "line-a53c8a09-71b4-404a-a40b-0d0dad87866e-6f4e92ba-696a-43d6-8279-3cd0c16e4335-e803",
+      "fromNodeId": "a53c8a09-71b4-404a-a40b-0d0dad87866e",
+      "toNodeId": "6f4e92ba-696a-43d6-8279-3cd0c16e4335"
     }
   ]
 }
