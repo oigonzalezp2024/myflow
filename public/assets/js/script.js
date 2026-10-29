@@ -15,7 +15,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const addFieldBtn = document.getElementById('addFieldBtn');
     const dbFieldsContainer = document.getElementById('dbFieldsContainer');
 
-    // Input fields for DB credentials
     const dbHostInput = document.getElementById('dbHost');
     const dbPortInput = document.getElementById('dbPort');
     const dbUsernameInput = document.getElementById('dbUsername');
@@ -71,34 +70,42 @@ document.addEventListener('DOMContentLoaded', () => {
     const caseStatusSelect = document.getElementById('caseStatus');
     const caseUsesEndpointInput = document.getElementById('caseUsesEndpoint') || document.getElementById('caseUsesClientEndpointUrl');
 
+    // --- Send Data Modal Elements ---
+    const sendDataModal = document.getElementById('sendDataModal');
+    const sendDataModalNodeIdInput = document.getElementById('sendDataModalNodeId');
+    const closeSendDataModalBtn = document.getElementById('closeSendDataModalBtn');
+    const saveSendDataBtn = document.getElementById('saveSendDataBtn');
+    const executePostBtn = document.getElementById('executePostBtn');
+    const sendDataEndpointUrlInput = document.getElementById('sendDataEndpointUrl');
+    const sendDataDbNameInput = document.getElementById('sendDataDbName');
+    const sendDataTableNameInput = document.getElementById('sendDataTableName');
+    const fetchTableStructureBtn = document.getElementById('fetchTableStructureBtn');
+    const formStructureContainer = document.getElementById('formStructureContainer');
+    const dynamicFormFieldsList = document.getElementById('dynamicFormFieldsList');
+
     let activeNode = null;
     let offsetX, offsetY;
     let nodesData = [];
     let connectionsData = [];
 
-    // --- Variables para la creación de conexiones ---
     let isDrawingConnection = false;
     let startNodeId = null;
-    let startPortType = null; // 'input' or 'output'
+    let startPortType = null;
     let tempLine = null;
     let targetPortElement = null;
 
-    // --- Variables para el Panning del Fondo (Canvas) ---
     let isCanvasPanning = false;
     let canvasPanStartX = 0;
     let canvasPanStartY = 0;
 
-    // --- Context Menu (for connections) ---
     const connectionContextMenu = document.createElement('ul');
     connectionContextMenu.classList.add('context-menu');
     document.body.appendChild(connectionContextMenu);
 
-    // --- Icon Selection Menu ---
     const iconSelectionMenu = document.createElement('div');
     iconSelectionMenu.classList.add('icon-selection-menu');
     document.body.appendChild(iconSelectionMenu);
 
-    // List of available Font Awesome icons
     const availableIcons = [
         'fas fa-cogs', 'fas fa-comment-dots', 'fas fa-code', 'fas fa-globe',
         'fas fa-pencil-alt', 'fas fa-file-invoice', 'fas fa-database', 'fas fa-cloud',
@@ -106,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'fas fa-hdd', 'fas fa-sitemap', 'fas fa-chart-bar', 'fas fa-server',
         'fas fa-users', 'fas fa-credit-card', 'fas fa-laptop-code', 'fas fa-plug',
         'fas fa-wifi', 'fas fa-shield-alt', 'fas fa-truck', 'fas fa-shopping-cart',
-        'fas fa-solid fa-rss', 'fas fa-project-diagram'
+        'fas fa-solid fa-rss', 'fas fa-project-diagram', 'fas fa-paper-plane'
     ];
 
     function generateUniqueId() {
@@ -115,8 +122,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return v.toString(16);
         });
     }
-
-    // --- Funciones de Renderizado ---
 
     function createNodeElement(nodeConfig) {
         const nodeDiv = document.createElement('div');
@@ -159,6 +164,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 nodeTypeClass = 'node-process';
                 headerContent = 'case Uses';
                 break;
+            case 'send-data':
+                nodeTypeClass = 'node-process';
+                headerContent = 'Envío POST';
+                break;
             default:
                 nodeTypeClass = 'node-process';
                 headerContent = '';
@@ -168,7 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let iconColorClass = '';
         if (nodeConfig.type === 'start') iconColorClass = 'type-chat-message';
         else if (nodeConfig.type === 'code') iconColorClass = 'type-code';
-        else if (nodeConfig.type === 'api' || nodeConfig.type === 'crud-api' || nodeConfig.type === 'crud-client') iconColorClass = 'type-api';
+        else if (nodeConfig.type === 'api' || nodeConfig.type === 'crud-api' || nodeConfig.type === 'crud-client' || nodeConfig.type === 'send-data') iconColorClass = 'type-api';
         else if (nodeConfig.type === 'edit-fields') iconColorClass = 'type-edit-fields';
         else if (nodeConfig.type === 'disk') iconColorClass = 'type-disk';
         else if (nodeConfig.type === 'database') iconColorClass = 'type-database';
@@ -198,6 +207,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     showDatabaseConfigModal(nodeConfig.id);
                 } else if (nodeConfig.type === 'case-uses' || (nodeConfig.icon && (nodeConfig.icon.includes('fa-project-diagram') || nodeConfig.icon.includes('fa-rss')))) {
                     showCaseUsesModal(nodeConfig.id);
+                } else if (nodeConfig.type === 'send-data' || (nodeConfig.icon && nodeConfig.icon.includes('fa-paper-plane'))) {
+                    showSendDataModal(nodeConfig.id);
                 }
             }
         });
@@ -258,8 +269,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- CRUD de Datos ---
-
     function addNode(type, title, subtitle = '', x, y, icon = 'fas fa-cogs') {
         const newNode = {
             id: generateUniqueId(),
@@ -272,7 +281,8 @@ document.addEventListener('DOMContentLoaded', () => {
             dbConfig: type === 'database' ? {} : undefined,
             apiConfig: type === 'crud-api' ? {} : undefined,
             clientConfig: type === 'crud-client' ? {} : undefined,
-            caseUsesConfig: type === 'case-uses' ? {} : undefined
+            caseUsesConfig: type === 'case-uses' ? {} : undefined,
+            sendDataConfig: type === 'send-data' ? {} : undefined
         };
         nodesData.push(newNode);
         createNodeElement(newNode);
@@ -304,7 +314,10 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (newIconClass.includes('fa-rss') || newIconClass.includes('fa-project-diagram')) {
                 nodesData[nodeIndex].type = 'case-uses';
                 if (!nodesData[nodeIndex].caseUsesConfig) nodesData[nodeIndex].caseUsesConfig = {};
-            } else if (['database', 'crud-api', 'crud-client', 'case-uses'].includes(nodesData[nodeIndex].type)) {
+            } else if (newIconClass.includes('fa-paper-plane')) {
+                nodesData[nodeIndex].type = 'send-data';
+                if (!nodesData[nodeIndex].sendDataConfig) nodesData[nodeIndex].sendDataConfig = {};
+            } else if (['database', 'crud-api', 'crud-client', 'case-uses', 'send-data'].includes(nodesData[nodeIndex].type)) {
                 nodesData[nodeIndex].type = 'generic';
             }
 
@@ -321,7 +334,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     let newIconColorClass = '';
                     if (nodesData[nodeIndex].type === 'start') newIconColorClass = 'type-chat-message';
                     else if (nodesData[nodeIndex].type === 'code') newIconColorClass = 'type-code';
-                    else if (['api', 'crud-api', 'crud-client', 'case-uses'].includes(nodesData[nodeIndex].type)) newIconColorClass = 'type-api';
+                    else if (['api', 'crud-api', 'crud-client', 'case-uses', 'send-data'].includes(nodesData[nodeIndex].type)) newIconColorClass = 'type-api';
                     else if (nodesData[nodeIndex].type === 'edit-fields') newIconColorClass = 'type-edit-fields';
                     else if (nodesData[nodeIndex].type === 'disk') newIconColorClass = 'type-disk';
                     else if (nodesData[nodeIndex].type === 'database') newIconColorClass = 'type-database';
@@ -384,8 +397,6 @@ document.addEventListener('DOMContentLoaded', () => {
             saveWorkflowToLocalStorage();
         }
     }
-
-    // --- Persistencia ---
 
     const LOCAL_STORAGE_KEY = 'n8nWorkflowData';
 
@@ -454,8 +465,6 @@ document.addEventListener('DOMContentLoaded', () => {
         reader.readAsText(file);
     }
 
-    // --- Drag & Drop y Panning del Fondo ---
-
     function addDragListeners(nodeElement) {
         nodeElement.addEventListener('mousedown', (e) => {
             if (e.target.classList.contains('node-port') ||
@@ -474,7 +483,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Evento para activar el Panning al hacer clic en el fondo del canvas
     workflowCanvas.addEventListener('mousedown', (e) => {
         if (e.target === workflowCanvas || e.target.classList.contains('canvas-background') || e.target.tagName.toLowerCase() === 'svg') {
             isCanvasPanning = true;
@@ -505,7 +513,6 @@ document.addEventListener('DOMContentLoaded', () => {
             updateConnectedLines(activeNode);
         }
 
-        // Lógica de Panning (Mover todos los nodos/esquemas en conjunto)
         if (isCanvasPanning) {
             const deltaX = e.clientX - canvasPanStartX;
             const deltaY = e.clientY - canvasPanStartY;
@@ -607,8 +614,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- Conexiones ---
-
     function startConnectionDrawing(e) {
         if (e.button !== 0 || isDrawingConnection) return;
 
@@ -681,8 +686,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- Menús Contextuales ---
-
     function showConnectionContextMenu(e, lineId) {
         hideAllContextMenus();
         connectionContextMenu.innerHTML = '';
@@ -736,9 +739,8 @@ document.addEventListener('DOMContentLoaded', () => {
         hideApiGeneratorModal();
         hideClientGeneratorModal();
         hideCaseUsesModal();
+        hideSendDataModal();
     }
-
-    // --- Modal Configuración Base de Datos ---
 
     function showDatabaseConfigModal(nodeId) {
         hideAllContextMenus();
@@ -828,8 +830,6 @@ document.addEventListener('DOMContentLoaded', () => {
             hideDatabaseConfigModal();
         }
     }
-
-    // --- Modal Generador API CRUD PHP ---
 
     function showApiGeneratorModal(nodeId) {
         hideAllContextMenus();
@@ -957,8 +957,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- Modal Generador de Cliente API ---
-
     function showClientGeneratorModal(nodeId) {
         hideAllContextMenus();
         const node = nodesData.find(n => n.id === nodeId);
@@ -1075,8 +1073,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- Modal Casos de Uso ---
-
     function showCaseUsesModal(nodeId) {
         hideAllContextMenus();
         const node = nodesData.find(n => n.id === nodeId);
@@ -1139,7 +1135,156 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- Global Click & Key Listeners ---
+    // --- Modal Envío de Datos y Formulario Dinámico ---
+
+    function showSendDataModal(nodeId) {
+        hideAllContextMenus();
+        const node = nodesData.find(n => n.id === nodeId);
+        if (!node || !sendDataModal) return;
+
+        if (sendDataModalNodeIdInput) sendDataModalNodeIdInput.value = nodeId;
+        const config = node.sendDataConfig || {};
+
+        if (sendDataEndpointUrlInput) sendDataEndpointUrlInput.value = config.endpointUrl || '';
+        if (sendDataDbNameInput) sendDataDbNameInput.value = config.dbName || '';
+        if (sendDataTableNameInput) sendDataTableNameInput.value = config.tableName || '';
+
+        if (config.formFields && config.formFields.length > 0) {
+            renderDynamicFormFields(config.formFields);
+            if (formStructureContainer) formStructureContainer.style.display = 'block';
+        } else {
+            if (formStructureContainer) formStructureContainer.style.display = 'none';
+            if (dynamicFormFieldsList) dynamicFormFieldsList.innerHTML = '';
+        }
+
+        sendDataModal.classList.add('show');
+    }
+
+    function hideSendDataModal() {
+        if (sendDataModal) sendDataModal.classList.remove('show');
+    }
+
+    if (closeSendDataModalBtn) {
+        closeSendDataModalBtn.addEventListener('click', hideSendDataModal);
+    }
+
+    function renderDynamicFormFields(fields) {
+        if (!dynamicFormFieldsList) return;
+        dynamicFormFieldsList.innerHTML = '';
+        fields.forEach(field => {
+            if (field.Extra && field.Extra.includes('auto_increment')) return;
+            const row = document.createElement('div');
+            row.classList.add('dynamic-field-row');
+            row.style.cssText = "display: flex; gap: 10px; margin-bottom: 8px; align-items: center;";
+            row.innerHTML = `
+                <label style="color: #fff; flex: 1; font-size: 13px;">${field.Field} <small style="color: #aaa;">(${field.Type})</small></label>
+                <input type="text" class="field-value" placeholder="Valor para ${field.Field}" data-field-name="${field.Field}" value="${field.value || ''}" style="flex: 2; padding: 6px; background: #3a3a3a; border: 1px solid #555; color: #fff; border-radius: 4px;">
+            `;
+            dynamicFormFieldsList.appendChild(row);
+        });
+    }
+
+    if (fetchTableStructureBtn) {
+        fetchTableStructureBtn.addEventListener('click', async () => {
+            const dbName = sendDataDbNameInput ? sendDataDbNameInput.value.trim() : '';
+            const tableName = sendDataTableNameInput ? sendDataTableNameInput.value.trim() : '';
+
+            if (!dbName || !tableName) {
+                alert('Por favor especifica el nombre de la base de datos y la tabla.');
+                return;
+            }
+
+            try {
+                const response = await fetch('./controllers/get_table_schema.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ dbName, tableName, host: 'localhost', port: '3306', username: 'root', password: '' })
+                });
+
+                const result = await response.json();
+                if (response.ok && result.success) {
+                    renderDynamicFormFields(result.fields);
+                    if (formStructureContainer) formStructureContainer.style.display = 'block';
+                    alert('¡Estructura leída con éxito! Formulario generado.');
+                } else {
+                    alert(`Error al leer tabla: ${result.message}`);
+                }
+            } catch (err) {
+                console.error('Error de conexión:', err);
+                alert('No se pudo conectar con el servidor para leer la estructura de la tabla.');
+            }
+        });
+    }
+
+    // Funcionalidad interactiva del botón "Enviar POST Ahora"
+    if (executePostBtn) {
+        executePostBtn.addEventListener('click', async () => {
+            const endpointUrl = sendDataEndpointUrlInput ? sendDataEndpointUrlInput.value.trim() : '';
+            if (!endpointUrl) {
+                alert('Por favor especifica la URL del Endpoint de destino.');
+                return;
+            }
+
+            const payload = {};
+            if (dynamicFormFieldsList) {
+                dynamicFormFieldsList.querySelectorAll('.field-value').forEach(input => {
+                    payload[input.dataset.fieldName] = input.value.trim();
+                });
+            }
+
+            try {
+                const response = await fetch(endpointUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                const result = await response.json().catch(() => ({}));
+                if (response.ok) {
+                    alert('¡Petición POST ejecutada con éxito! Respuesta: ' + JSON.stringify(result));
+                } else {
+                    alert('Error en el servidor de destino: ' + (result.message || response.statusText));
+                }
+            } catch (err) {
+                console.error('Error al realizar el envío POST:', err);
+                alert('Error de red al intentar conectar con el endpoint.');
+            }
+        });
+    }
+
+    if (saveSendDataBtn) {
+        saveSendDataBtn.addEventListener('click', () => {
+            const nodeId = sendDataModalNodeIdInput ? sendDataModalNodeIdInput.value : null;
+            const nodeIndex = nodesData.findIndex(n => n.id === nodeId);
+
+            const formFields = [];
+            if (dynamicFormFieldsList) {
+                dynamicFormFieldsList.querySelectorAll('.field-value').forEach(input => {
+                    formFields.push({
+                        Field: input.dataset.fieldName,
+                        Type: 'VARCHAR',
+                        value: input.value.trim()
+                    });
+                });
+            }
+
+            const sendDataConfig = {
+                endpointUrl: sendDataEndpointUrlInput ? sendDataEndpointUrlInput.value.trim() : '',
+                dbName: sendDataDbNameInput ? sendDataDbNameInput.value.trim() : '',
+                tableName: sendDataTableNameInput ? sendDataTableNameInput.value.trim() : '',
+                formFields: formFields
+            };
+
+            if (nodeIndex !== -1) {
+                nodesData[nodeIndex].sendDataConfig = sendDataConfig;
+                nodesData[nodeIndex].subtitle = sendDataConfig.tableName ? `Tabla: ${sendDataConfig.tableName}` : 'Formulario POST';
+                renderWorkflow();
+                saveWorkflowToLocalStorage();
+                alert('Configuración y formulario guardados correctamente.');
+            }
+            hideSendDataModal();
+        });
+    }
 
     document.addEventListener('click', (e) => {
         if (!e.target.closest('.context-menu') && !e.target.closest('.icon-selection-menu') && !e.target.closest('.modal-content') && !e.target.closest('.floating-show-chat-btn')) {
@@ -1173,8 +1318,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- Inicialización del Workflow ---
-
     const initialNodes = [
         { id: 'node-start', type: 'start', title: 'When chat message received', x: 100, y: 150, icon: 'fas fa-comment-dots' },
         { id: 'node-aiquery4', type: 'code', title: 'AIQuery4', x: 350, y: 150, icon: 'fas fa-code' },
@@ -1201,7 +1344,7 @@ document.addEventListener('DOMContentLoaded', () => {
     addNodeBtn.addEventListener('click', () => {
         const randomX = Math.floor(Math.random() * (workflowCanvas.offsetWidth - 200));
         const randomY = Math.floor(Math.random() * (workflowCanvas.offsetHeight - 300));
-        addNode('case-uses', 'case Uses', 'Nuevo caso', randomX, randomY, 'fas fa-rss');
+        addNode('send-data', 'Envío POST', 'Formulario Dinámico', randomX, randomY, 'fas fa-paper-plane');
     });
 
     downloadWorkflowBtn.addEventListener('click', downloadWorkflowAsJson);
@@ -1221,8 +1364,6 @@ document.addEventListener('DOMContentLoaded', () => {
         renderWorkflow();
         saveWorkflowToLocalStorage();
     }
-    
-    // --- Lógica para colapsar/aplastar la barra inferior de chat con botón flotante ---
     
     const bottomPanel = document.querySelector('.bottom-panel');
     const hideChatBtn = document.querySelector('.hide-chat-btn');
