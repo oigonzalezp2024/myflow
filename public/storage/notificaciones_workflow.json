@@ -1,0 +1,283 @@
+{
+  "nodes": [
+    {
+      "id": "e437e959-dfc4-426c-98d2-c609d754b2f7",
+      "type": "send-data",
+      "title": "Notificación de Pago",
+      "subtitle": "Formulario Dinámico",
+      "x": 1374,
+      "y": 1160.90625,
+      "icon": "fas fa-paper-plane",
+      "sendDataConfig": {}
+    },
+    {
+      "id": "78b6bd66-c89a-4b4c-9aea-cb337cf0d60e",
+      "type": "send-data",
+      "title": "Notificación de Rechazo de Factura",
+      "subtitle": "Formulario Dinámico",
+      "x": 1390,
+      "y": 1311.5,
+      "icon": "fas fa-paper-plane",
+      "sendDataConfig": {}
+    },
+    {
+      "id": "6b28eca7-c632-44bd-9f7e-16a0f59bebb2",
+      "type": "database",
+      "title": "notificaciones",
+      "subtitle": "Formulario Dinámico",
+      "x": 2542.25,
+      "y": 677.90625,
+      "icon": "fas fa-database",
+      "dbConfig": {
+        "host": "localhost",
+        "port": "",
+        "username": "root",
+        "password": "",
+        "dbName": "test_insumos",
+        "tableName": "proveedores",
+        "fields": [
+          {
+            "key": "id_proveedor",
+            "value": "int(11)"
+          },
+          {
+            "key": "proveedor_nombre",
+            "value": "varchar(190)"
+          },
+          {
+            "key": "vendedor",
+            "value": "varchar(190)"
+          }
+        ]
+      },
+      "sendDataConfig": {}
+    },
+    {
+      "id": "391bf00a-911f-4cff-bbb3-b81478db5188",
+      "type": "crud-api",
+      "title": "NotificacionesAPI",
+      "subtitle": "Formulario Dinámico",
+      "x": 2294.75,
+      "y": 685.5,
+      "icon": "fas fa-laptop-code",
+      "apiConfig": {
+        "action": "generate",
+        "host": "localhost",
+        "port": "3306",
+        "username": "root",
+        "password": "",
+        "dbName": "test_insumos",
+        "tableName": "proveedores"
+      },
+      "sendDataConfig": {},
+      "generatedCode": "<?php\n// API REST Autogenerada con Token para la tabla 'proveedores'\nheader('Content-Type: application/json');\nheader('Access-Control-Allow-Origin: *');\nheader('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');\nheader('Access-Control-Allow-Headers: Content-Type, Authorization');\n\nif ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { exit(0); }\n\n// Token de acceso requerido en la cabecera Authorization: Bearer <token>\ndefine('API_TOKEN', 'token_e146b7073904f432bfc121ea3e396708');\n\n$headers = apache_request_headers();\n$authHeader = $headers['Authorization'] ?? $headers['authorization'] ?? '';\n$tokenValido = false;\n\nif (preg_match('/Bearer\\s(\\S+)/', $authHeader, $matches)) {\n    if ($matches[1] === API_TOKEN) {\n        $tokenValido = true;\n    }\n}\n\nif (!$tokenValido) {\n    http_response_code(401);\n    echo json_encode(['success' => false, 'error' => 'Acceso no autorizado. Token inválido o ausente.']);\n    exit();\n}\n\n$pdo = new PDO('mysql:host=localhost;port=3306;dbname=test_insumos;charset=utf8mb4', 'root', '', [\n    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,\n    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC\n]);\n\n$method = $_SERVER['REQUEST_METHOD'];\n$input = json_decode(file_get_contents('php://input'), true);\n$id = $_GET['id_proveedor'] ?? null;\n\nswitch ($method) {\n    case 'GET':\n        if ($id) {\n            $stmt = $pdo->prepare('SELECT * FROM `proveedores` WHERE `id_proveedor` = ?');\n            $stmt->execute([$id]);\n            echo json_encode($stmt->fetch() ?: ['message' => 'Registro no encontrado']);\n        } else {\n            $stmt = $pdo->query('SELECT * FROM `proveedores`');\n            echo json_encode($stmt->fetchAll());\n        }\n        break;\n\n    case 'POST':\n        $sql = 'INSERT INTO `proveedores` (`proveedor_nombre`, `vendedor`) VALUES (:proveedor_nombre, :vendedor)';\n        $stmt = $pdo->prepare($sql);\n        $stmt->execute($input);\n        echo json_encode(['success' => true, 'id_proveedor' => $pdo->lastInsertId()]);\n        break;\n\n    case 'PUT':\n        if (!$id) { echo json_encode(['error' => 'Se requiere el campo id_proveedor']); break; }\n        $sql = 'UPDATE `proveedores` SET `proveedor_nombre` = :proveedor_nombre, `vendedor` = :vendedor WHERE `id_proveedor` = :id_proveedor';\n        $input['id_proveedor'] = $id;\n        $stmt = $pdo->prepare($sql);\n        $stmt->execute($input);\n        echo json_encode(['success' => true, 'updated' => $stmt->rowCount()]);\n        break;\n\n    case 'DELETE':\n        if (!$id) { echo json_encode(['error' => 'Se requiere el campo id_proveedor']); break; }\n        $stmt = $pdo->prepare('DELETE FROM `proveedores` WHERE `id_proveedor` = ?');\n        $stmt->execute([$id]);\n        echo json_encode(['success' => true, 'deleted' => $stmt->rowCount()]);\n        break;\n}\n"
+    },
+    {
+      "id": "51a12474-02fd-4203-9781-aaaca4f6e20a",
+      "type": "crud-client",
+      "title": "NotificacionesAPIClient",
+      "subtitle": "Formulario Dinámico",
+      "x": 2003.90625,
+      "y": 692.90625,
+      "icon": "fas fa-plug",
+      "clientConfig": {
+        "action": "generate_client",
+        "endpointUrl": "http://localhost/myflow/public/api/insumos/proveedores/",
+        "token": "token_e146b7073904f432bfc121ea3e396708",
+        "primaryKey": "id_proveedor",
+        "clientLanguage": "php"
+      },
+      "sendDataConfig": {},
+      "generatedClientCode": "<?php\n/**\n * Cliente PHP cURL autogenerado para consumir la API\n * Endpoint: http://localhost/myflow/public/api/insumos/proveedores/\n */\n\nclass ApiClient {\n    private $baseUrl;\n    private $token;\n    private $primaryKey;\n\n    public function __construct($baseUrl = 'http://localhost/myflow/public/api/insumos/proveedores/', $token = 'token_e146b7073904f432bfc121ea3e396708', $primaryKey = 'id_proveedor') {\n        $this->baseUrl = $baseUrl;\n        $this->token = $token;\n        $this->primaryKey = $primaryKey;\n    }\n\n    private function send($method, $data = null, $id = null) {\n        $url = $this->baseUrl;\n        if ($id !== null) {\n            $url .= '?' . $this->primaryKey . '=' . $id;\n        }\n\n        $ch = curl_init($url);\n        $headers = [\n            'Content-Type: application/json',\n            'Authorization: Bearer ' . $this->token\n        ];\n\n        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);\n        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\n\n        if ($data !== null && ($method === 'POST' || $method === 'PUT')) {\n            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));\n        }\n\n        $response = curl_exec($ch);\n        curl_close($ch);\n        return json_decode($response, true);\n    }\n\n    public function getAll() { return $this->send('GET'); }\n    public function getById($id) { return $this->send('GET', null, $id); }\n    public function create($data) { return $this->send('POST', $data); }\n    public function update($id, $data) { return $this->send('PUT', $data, $id); }\n    public function delete($id) { return $this->send('DELETE', null, $id); }\n}\n"
+    },
+    {
+      "id": "4fc4a262-aa28-420e-9cc7-343a81cef0fd",
+      "type": "case-uses",
+      "title": "Notificar Requerimiento",
+      "subtitle": "Formulario Dinámico",
+      "x": 1366,
+      "y": 145,
+      "icon": "fas fa-solid fa-rss",
+      "caseUsesConfig": {},
+      "sendDataConfig": {}
+    },
+    {
+      "id": "7f8ecca6-b48e-4b81-b41f-1445b68e39c0",
+      "type": "case-uses",
+      "title": "Notificar Cotizaciones",
+      "subtitle": "Formulario Dinámico",
+      "x": 1262,
+      "y": 310,
+      "icon": "fas fa-solid fa-rss",
+      "caseUsesConfig": {},
+      "sendDataConfig": {}
+    },
+    {
+      "id": "3884500d-59e8-4442-97e0-724e3b2a91c3",
+      "type": "case-uses",
+      "title": "Notificar Pedido",
+      "subtitle": "Formulario Dinámico",
+      "x": 1165,
+      "y": 468,
+      "icon": "fas fa-solid fa-rss",
+      "caseUsesConfig": {},
+      "sendDataConfig": {}
+    },
+    {
+      "id": "098007b2-bb44-492e-97d8-8f175c504e85",
+      "type": "case-uses",
+      "title": "Notificar Aceptación de Pedido",
+      "subtitle": "Formulario Dinámico",
+      "x": 1057,
+      "y": 620,
+      "icon": "fas fa-solid fa-rss",
+      "caseUsesConfig": {},
+      "sendDataConfig": {}
+    },
+    {
+      "id": "e89672b8-7af9-49d4-b517-b04f254785ad",
+      "type": "case-uses",
+      "title": "Notificar Rechazo de Pedido",
+      "subtitle": "Formulario Dinámico",
+      "x": 843,
+      "y": 780,
+      "icon": "fas fa-solid fa-rss",
+      "caseUsesConfig": {},
+      "sendDataConfig": {}
+    },
+    {
+      "id": "b525d4f3-4b41-4cc9-8399-e546c4489d25",
+      "type": "case-uses",
+      "title": "Notificación de Aceptación de Compra",
+      "subtitle": "Formulario Dinámico",
+      "x": 1096,
+      "y": 863,
+      "icon": "fas fa-solid fa-rss",
+      "caseUsesConfig": {},
+      "sendDataConfig": {}
+    },
+    {
+      "id": "4ec70c42-1c66-4a80-910f-9ab311a92d7e",
+      "type": "case-uses",
+      "title": "Notificación de Rechazo de Compra",
+      "subtitle": "Formulario Dinámico",
+      "x": 1196,
+      "y": 1017,
+      "icon": "fas fa-solid fa-rss",
+      "caseUsesConfig": {},
+      "sendDataConfig": {}
+    },
+    {
+      "id": "4265a870-a6dd-48b5-896a-eb9981cd1f49",
+      "type": "generic",
+      "title": "NotificacionesDTO",
+      "subtitle": "Formulario Dinámico",
+      "x": 301,
+      "y": 833,
+      "icon": "fas fa-bell",
+      "sendDataConfig": {}
+    }
+  ],
+  "connections": [
+    {
+      "lineId": "line-391bf00a-911f-4cff-bbb3-b81478db5188-6b28eca7-c632-44bd-9f7e-16a0f59bebb2-8f6f",
+      "fromNodeId": "391bf00a-911f-4cff-bbb3-b81478db5188",
+      "toNodeId": "6b28eca7-c632-44bd-9f7e-16a0f59bebb2"
+    },
+    {
+      "lineId": "line-51a12474-02fd-4203-9781-aaaca4f6e20a-391bf00a-911f-4cff-bbb3-b81478db5188-da84",
+      "fromNodeId": "51a12474-02fd-4203-9781-aaaca4f6e20a",
+      "toNodeId": "391bf00a-911f-4cff-bbb3-b81478db5188"
+    },
+    {
+      "lineId": "line-098007b2-bb44-492e-97d8-8f175c504e85-51a12474-02fd-4203-9781-aaaca4f6e20a-482c",
+      "fromNodeId": "098007b2-bb44-492e-97d8-8f175c504e85",
+      "toNodeId": "51a12474-02fd-4203-9781-aaaca4f6e20a"
+    },
+    {
+      "lineId": "line-b525d4f3-4b41-4cc9-8399-e546c4489d25-51a12474-02fd-4203-9781-aaaca4f6e20a-55f2",
+      "fromNodeId": "b525d4f3-4b41-4cc9-8399-e546c4489d25",
+      "toNodeId": "51a12474-02fd-4203-9781-aaaca4f6e20a"
+    },
+    {
+      "lineId": "line-4ec70c42-1c66-4a80-910f-9ab311a92d7e-51a12474-02fd-4203-9781-aaaca4f6e20a-2ae6",
+      "fromNodeId": "4ec70c42-1c66-4a80-910f-9ab311a92d7e",
+      "toNodeId": "51a12474-02fd-4203-9781-aaaca4f6e20a"
+    },
+    {
+      "lineId": "line-3884500d-59e8-4442-97e0-724e3b2a91c3-51a12474-02fd-4203-9781-aaaca4f6e20a-2d27",
+      "fromNodeId": "3884500d-59e8-4442-97e0-724e3b2a91c3",
+      "toNodeId": "51a12474-02fd-4203-9781-aaaca4f6e20a"
+    },
+    {
+      "lineId": "line-7f8ecca6-b48e-4b81-b41f-1445b68e39c0-51a12474-02fd-4203-9781-aaaca4f6e20a-4754",
+      "fromNodeId": "7f8ecca6-b48e-4b81-b41f-1445b68e39c0",
+      "toNodeId": "51a12474-02fd-4203-9781-aaaca4f6e20a"
+    },
+    {
+      "lineId": "line-4fc4a262-aa28-420e-9cc7-343a81cef0fd-51a12474-02fd-4203-9781-aaaca4f6e20a-6680",
+      "fromNodeId": "4fc4a262-aa28-420e-9cc7-343a81cef0fd",
+      "toNodeId": "51a12474-02fd-4203-9781-aaaca4f6e20a"
+    },
+    {
+      "lineId": "line-e89672b8-7af9-49d4-b517-b04f254785ad-51a12474-02fd-4203-9781-aaaca4f6e20a-e21f",
+      "fromNodeId": "e89672b8-7af9-49d4-b517-b04f254785ad",
+      "toNodeId": "51a12474-02fd-4203-9781-aaaca4f6e20a"
+    },
+    {
+      "lineId": "line-4265a870-a6dd-48b5-896a-eb9981cd1f49-098007b2-bb44-492e-97d8-8f175c504e85-0d2f",
+      "fromNodeId": "4265a870-a6dd-48b5-896a-eb9981cd1f49",
+      "toNodeId": "098007b2-bb44-492e-97d8-8f175c504e85"
+    },
+    {
+      "lineId": "line-4265a870-a6dd-48b5-896a-eb9981cd1f49-e89672b8-7af9-49d4-b517-b04f254785ad-f5bf",
+      "fromNodeId": "4265a870-a6dd-48b5-896a-eb9981cd1f49",
+      "toNodeId": "e89672b8-7af9-49d4-b517-b04f254785ad"
+    },
+    {
+      "lineId": "line-4265a870-a6dd-48b5-896a-eb9981cd1f49-b525d4f3-4b41-4cc9-8399-e546c4489d25-7c3c",
+      "fromNodeId": "4265a870-a6dd-48b5-896a-eb9981cd1f49",
+      "toNodeId": "b525d4f3-4b41-4cc9-8399-e546c4489d25"
+    },
+    {
+      "lineId": "line-4265a870-a6dd-48b5-896a-eb9981cd1f49-4ec70c42-1c66-4a80-910f-9ab311a92d7e-5d33",
+      "fromNodeId": "4265a870-a6dd-48b5-896a-eb9981cd1f49",
+      "toNodeId": "4ec70c42-1c66-4a80-910f-9ab311a92d7e"
+    },
+    {
+      "lineId": "line-4265a870-a6dd-48b5-896a-eb9981cd1f49-3884500d-59e8-4442-97e0-724e3b2a91c3-e16f",
+      "fromNodeId": "4265a870-a6dd-48b5-896a-eb9981cd1f49",
+      "toNodeId": "3884500d-59e8-4442-97e0-724e3b2a91c3"
+    },
+    {
+      "lineId": "line-4265a870-a6dd-48b5-896a-eb9981cd1f49-7f8ecca6-b48e-4b81-b41f-1445b68e39c0-a65b",
+      "fromNodeId": "4265a870-a6dd-48b5-896a-eb9981cd1f49",
+      "toNodeId": "7f8ecca6-b48e-4b81-b41f-1445b68e39c0"
+    },
+    {
+      "lineId": "line-4265a870-a6dd-48b5-896a-eb9981cd1f49-4fc4a262-aa28-420e-9cc7-343a81cef0fd-2446",
+      "fromNodeId": "4265a870-a6dd-48b5-896a-eb9981cd1f49",
+      "toNodeId": "4fc4a262-aa28-420e-9cc7-343a81cef0fd"
+    },
+    {
+      "lineId": "line-4265a870-a6dd-48b5-896a-eb9981cd1f49-e437e959-dfc4-426c-98d2-c609d754b2f7-01c6",
+      "fromNodeId": "4265a870-a6dd-48b5-896a-eb9981cd1f49",
+      "toNodeId": "e437e959-dfc4-426c-98d2-c609d754b2f7"
+    },
+    {
+      "lineId": "line-4265a870-a6dd-48b5-896a-eb9981cd1f49-78b6bd66-c89a-4b4c-9aea-cb337cf0d60e-4f47",
+      "fromNodeId": "4265a870-a6dd-48b5-896a-eb9981cd1f49",
+      "toNodeId": "78b6bd66-c89a-4b4c-9aea-cb337cf0d60e"
+    },
+    {
+      "lineId": "line-e437e959-dfc4-426c-98d2-c609d754b2f7-51a12474-02fd-4203-9781-aaaca4f6e20a-b766",
+      "fromNodeId": "e437e959-dfc4-426c-98d2-c609d754b2f7",
+      "toNodeId": "51a12474-02fd-4203-9781-aaaca4f6e20a"
+    },
+    {
+      "lineId": "line-78b6bd66-c89a-4b4c-9aea-cb337cf0d60e-51a12474-02fd-4203-9781-aaaca4f6e20a-d024",
+      "fromNodeId": "78b6bd66-c89a-4b4c-9aea-cb337cf0d60e",
+      "toNodeId": "51a12474-02fd-4203-9781-aaaca4f6e20a"
+    }
+  ]
+}
