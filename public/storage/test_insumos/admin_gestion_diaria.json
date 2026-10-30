@@ -1,0 +1,82 @@
+{
+  "nodes": [
+    {
+      "id": "f598f175-e022-4824-b5c5-007a34a041ed",
+      "type": "send-data",
+      "title": "Materiales O.P.",
+      "subtitle": "Formulario Dinámico",
+      "x": 459,
+      "y": 196.00001525878906,
+      "icon": "fas fa-paper-plane",
+      "sendDataConfig": {}
+    },
+    {
+      "id": "8dc735e4-f6af-48db-b467-bad7bdf6bf3a",
+      "type": "send-data",
+      "title": "Entrada de Material",
+      "subtitle": "Formulario Dinámico",
+      "x": 178,
+      "y": 121,
+      "icon": "fas fa-paper-plane",
+      "sendDataConfig": {}
+    },
+    {
+      "id": "91862254-bc0a-4ebd-af61-959b5e29c928",
+      "type": "send-data",
+      "title": "Ferretería Fábrica",
+      "subtitle": "Formulario Dinámico",
+      "x": 459,
+      "y": 34,
+      "icon": "fas fa-paper-plane",
+      "sendDataConfig": {}
+    },
+    {
+      "id": "671af26d-80f8-4d30-ba10-0ccf9c918093",
+      "type": "send-data",
+      "title": "Almacenar Reporte",
+      "subtitle": "Formulario Dinámico",
+      "x": 740,
+      "y": 113,
+      "icon": "fas fa-paper-plane",
+      "sendDataConfig": {}
+    },
+    {
+      "id": "0712dc77-51ba-4713-a02a-9f6a5f88060c",
+      "type": "case-uses",
+      "title": "Notificar Gestión",
+      "subtitle": "Formulario Dinámico",
+      "x": 1024,
+      "y": 119,
+      "icon": "fas fa-solid fa-rss",
+      "caseUsesConfig": {},
+      "sendDataConfig": {}
+    }
+  ],
+  "connections": [
+    {
+      "lineId": "line-8dc735e4-f6af-48db-b467-bad7bdf6bf3a-91862254-bc0a-4ebd-af61-959b5e29c928-1c36",
+      "fromNodeId": "8dc735e4-f6af-48db-b467-bad7bdf6bf3a",
+      "toNodeId": "91862254-bc0a-4ebd-af61-959b5e29c928"
+    },
+    {
+      "lineId": "line-8dc735e4-f6af-48db-b467-bad7bdf6bf3a-f598f175-e022-4824-b5c5-007a34a041ed-7437",
+      "fromNodeId": "8dc735e4-f6af-48db-b467-bad7bdf6bf3a",
+      "toNodeId": "f598f175-e022-4824-b5c5-007a34a041ed"
+    },
+    {
+      "lineId": "line-91862254-bc0a-4ebd-af61-959b5e29c928-671af26d-80f8-4d30-ba10-0ccf9c918093-6526",
+      "fromNodeId": "91862254-bc0a-4ebd-af61-959b5e29c928",
+      "toNodeId": "671af26d-80f8-4d30-ba10-0ccf9c918093"
+    },
+    {
+      "lineId": "line-f598f175-e022-4824-b5c5-007a34a041ed-671af26d-80f8-4d30-ba10-0ccf9c918093-c7cf",
+      "fromNodeId": "f598f175-e022-4824-b5c5-007a34a041ed",
+      "toNodeId": "671af26d-80f8-4d30-ba10-0ccf9c918093"
+    },
+    {
+      "lineId": "line-671af26d-80f8-4d30-ba10-0ccf9c918093-0712dc77-51ba-4713-a02a-9f6a5f88060c-2310",
+      "fromNodeId": "671af26d-80f8-4d30-ba10-0ccf9c918093",
+      "toNodeId": "0712dc77-51ba-4713-a02a-9f6a5f88060c"
+    }
+  ]
+}
