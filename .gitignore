@@ -1,0 +1,29 @@
+# Dependencias y entornos virtuales (por si añades Composer o Node.js más adelante)
+/vendor/
+/node_modules/
+
+# Archivos de configuración del sistema operativo
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Editores de código e IDEs (VS Code, PhpStorm, etc.)
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Archivos de configuración local o credenciales de bases de datos
+# (Si decides separar la conexión en un archivo como config.php o .env en el futuro)
+config.php
+.env
+
+# Archivos de bases de datos locales exportados o volcados por error
+*.sql
+*.sqlite
+*.sqlite3
+
+# Archivos de logs de errores del servidor o PHP
+*.log
+error_log
