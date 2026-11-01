@@ -31,16 +31,16 @@ $pdo = new PDOMock();
 $transactionManager = new PdoTransactionManager($pdo);
 $categoryRepo = new CategoryRepository($pdo);
 $productRepo = new ProductRepository($pdo);
-$crearProductoUseCase = new CreateProductUseCase($transactionManager, $categoryRepo, $productRepo);
+$createProductUseCase = new CreateProductUseCase($transactionManager, $categoryRepo, $productRepo);
 
 // Ejecutamos CLI
-$cliCommand = new ProductConsoleCommand($crearProductoUseCase);
+$cliCommand = new ProductConsoleCommand($createProductUseCase);
 $cliCommand->run($_argv ?? ['script.php', 'Electrónica', 'Electrolavadora']);
 
 echo "\n----------------------------------------\n\n";
 
 // Simulamos API REST de forma limpia sin romper cabeceras
-$apiController = new ProductApiController($crearProductoUseCase);
+$apiController = new ProductApiController($createProductUseCase);
 echo "=> Simulando respuesta API REST:\n";
 $apiController->handleRequest([
     'category_name' => 'Electrónica',
