@@ -10,32 +10,9 @@ use App\Domain\Interface\Infrastructure\Repositories\CategoryRepositoryInterface
 use App\Domain\Interface\Infrastructure\Repositories\ProductRepositoryInterface;
 use App\Domain\Interface\Infrastructure\Persistence\TransactionManagerInterface;
 
+use App\Infrastructure\Persistence\PdoTransactionManager;
 use App\Infrastructure\Repositories\CategoryRepository;
 use App\Infrastructure\Repositories\ProductRepository;
-
-class PdoTransactionManager implements TransactionManagerInterface
-{
-    private PDO $pdo;
-
-    public function __construct(PDO $pdo)
-    {
-        $this->pdo = $pdo;
-    }
-
-    public function transactional(callable $callback): mixed
-    {
-        $this->pdo->beginTransaction();
-
-        try {
-            $result = $callback();
-            $this->pdo->commit();
-            return $result;
-        } catch (\Throwable $e) {
-            $this->pdo->rollBack();
-            throw $e;
-        }
-    }
-}
 
 // ==========================================
 // 3. DOBLES DE PRUEBA (MOCKS DE PDO Y PDOSTATEMENT)
