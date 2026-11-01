@@ -10,74 +10,8 @@ use App\Domain\Interface\Infrastructure\Repositories\CategoryRepositoryInterface
 use App\Domain\Interface\Infrastructure\Repositories\ProductRepositoryInterface;
 use App\Domain\Interface\Infrastructure\Persistence\TransactionManagerInterface;
 
-// ==========================================
-// 2. CAPA DE INFRAESTRUCTURA (Repositorios y Transacciones PDO)
-// ==========================================
-
-class CategoryRepository implements CategoryRepositoryInterface
-{
-    private PDO $pdo;
-
-    public function __construct(PDO $pdo)
-    {
-        $this->pdo = $pdo;
-    }
-
-    public function findByName(string $name): ?Category
-    {
-        $stmt = $this->pdo->prepare("SELECT id, name FROM categories WHERE name = :name LIMIT 1");
-        $paramName = trim($name);
-        $stmt->bindParam(':name', $paramName, PDO::PARAM_STR);
-        $stmt->execute();
-        $row = $stmt->fetch();
-
-        if (!$row) {
-            return null;
-        }
-
-        return new Category($row['name'], (int) $row['id']);
-    }
-
-    public function create(Category $category): Category
-    {
-        $stmt = $this->pdo->prepare("INSERT INTO categories (name) VALUES (:name)");
-        $categoryName = $category->getName();
-        $stmt->bindParam(':name', $categoryName, PDO::PARAM_STR);
-        $stmt->execute();
-
-        return new Category($category->getName(), (int) $this->pdo->lastInsertId());
-    }
-}
-
-class ProductRepository implements ProductRepositoryInterface
-{
-    private PDO $pdo;
-
-    public function __construct(PDO $pdo)
-    {
-        $this->pdo = $pdo;
-    }
-
-    public function create(Product $product): Product
-    {
-        $category = $product->getCategory();
-        if ($category->getId() === null) {
-            throw new LogicException("La categoría debe estar persistida antes de asociarle un producto.");
-        }
-
-        $stmt = $this->pdo->prepare("INSERT INTO products (category_id, name) VALUES (:category_id, :name)");
-
-        $categoryId = $category->getId();
-        $productName = $product->getName();
-
-        $stmt->bindParam(':category_id', $categoryId, PDO::PARAM_INT);
-        $stmt->bindParam(':name', $productName, PDO::PARAM_STR);
-
-        $stmt->execute();
-
-        return new Product($category, $product->getName(), (int) $this->pdo->lastInsertId());
-    }
-}
+use App\Infrastructure\Repositories\CategoryRepository;
+use App\Infrastructure\Repositories\ProductRepository;
 
 class PdoTransactionManager implements TransactionManagerInterface
 {
