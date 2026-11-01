@@ -25,13 +25,13 @@ class ProductRepository implements ProductRepositoryInterface
             throw new LogicException("La categoría debe estar persistida antes de asociarle un producto.");
         }
 
-        $stmt = $this->pdo->prepare("INSERT INTO products (category_id, name) VALUES (:category_id, :name)");
+        $stmt = $this->pdo->prepare("INSERT INTO productos (categoria_id, producto_nombre) VALUES (:categoria_id, :producto_nombre)");
 
         $categoryId = $category->getId();
         $productName = $product->getName();
 
-        $stmt->bindParam(':category_id', $categoryId, PDO::PARAM_INT);
-        $stmt->bindParam(':name', $productName, PDO::PARAM_STR);
+        $stmt->bindParam(':categoria_id', $categoryId, PDO::PARAM_INT);
+        $stmt->bindParam(':producto_nombre', $productName, PDO::PARAM_STR);
 
         $stmt->execute();
 

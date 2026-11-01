@@ -1,0 +1,158 @@
+{
+  "nodes": [
+    {
+      "id": "f598f175-e022-4824-b5c5-007a34a041ed",
+      "type": "send-data",
+      "title": "Materiales O.P.",
+      "subtitle": "Formulario Dinámico",
+      "x": 1190,
+      "y": 492.00001525878906,
+      "icon": "fas fa-paper-plane",
+      "sendDataConfig": {}
+    },
+    {
+      "id": "8dc735e4-f6af-48db-b467-bad7bdf6bf3a",
+      "type": "send-data",
+      "title": "Entrada de Material",
+      "subtitle": "Tabla: productos",
+      "x": 909,
+      "y": 417,
+      "icon": "fas fa-paper-plane",
+      "sendDataConfig": {
+        "endpointUrl": "http://localhost/myflow/public/controllers_project/create_product_test.php",
+        "dbName": "productos_db",
+        "tableName": "productos",
+        "formFields": [
+          {
+            "Field": "category_name",
+            "Type": "VARCHAR",
+            "value": "cangrejos"
+          },
+          {
+            "Field": "product_name",
+            "Type": "VARCHAR",
+            "value": "sexis"
+          }
+        ]
+      }
+    },
+    {
+      "id": "91862254-bc0a-4ebd-af61-959b5e29c928",
+      "type": "send-data",
+      "title": "Ferretería Fábrica",
+      "subtitle": "Formulario Dinámico",
+      "x": 1190,
+      "y": 330,
+      "icon": "fas fa-paper-plane",
+      "sendDataConfig": {}
+    },
+    {
+      "id": "671af26d-80f8-4d30-ba10-0ccf9c918093",
+      "type": "send-data",
+      "title": "Almacenar Reporte",
+      "subtitle": "Formulario Dinámico",
+      "x": 1471,
+      "y": 409,
+      "icon": "fas fa-paper-plane",
+      "sendDataConfig": {}
+    },
+    {
+      "id": "0712dc77-51ba-4713-a02a-9f6a5f88060c",
+      "type": "case-uses",
+      "title": "Notificar Gestión",
+      "subtitle": "Formulario Dinámico",
+      "x": 1755,
+      "y": 415,
+      "icon": "fas fa-solid fa-rss",
+      "caseUsesConfig": {},
+      "sendDataConfig": {}
+    },
+    {
+      "id": "a04cfd4a-b74f-484a-84c2-903fd784c990",
+      "type": "database",
+      "title": "Productos",
+      "subtitle": "Formulario Dinámico",
+      "x": 591,
+      "y": 401,
+      "icon": "fas fa-database",
+      "dbConfig": {
+        "host": "localhost",
+        "port": "",
+        "username": "root",
+        "password": "",
+        "dbName": "productos_db",
+        "tableName": "productos",
+        "fields": [
+          {
+            "key": "id_producto",
+            "value": "int(11)"
+          },
+          {
+            "key": "category_name",
+            "value": "varchar(50)"
+          },
+          {
+            "key": "product_name",
+            "value": "varchar(50)"
+          }
+        ]
+      },
+      "sendDataConfig": {}
+    },
+    {
+      "id": "bbbfa347-4c63-49e1-929f-e5ebe00253e5",
+      "type": "database",
+      "title": "Envío POST",
+      "subtitle": "Formulario Dinámico",
+      "x": 593,
+      "y": 247,
+      "icon": "fas fa-database",
+      "dbConfig": {
+        "host": "localhost",
+        "port": "",
+        "username": "root",
+        "password": "",
+        "dbName": "productos_db",
+        "tableName": "categorias_productos",
+        "fields": [
+          {
+            "key": "id_categoria_productos",
+            "value": "int(11)"
+          },
+          {
+            "key": "categoria_nombre",
+            "value": "text"
+          }
+        ]
+      },
+      "sendDataConfig": {}
+    }
+  ],
+  "connections": [
+    {
+      "lineId": "line-8dc735e4-f6af-48db-b467-bad7bdf6bf3a-91862254-bc0a-4ebd-af61-959b5e29c928-1c36",
+      "fromNodeId": "8dc735e4-f6af-48db-b467-bad7bdf6bf3a",
+      "toNodeId": "91862254-bc0a-4ebd-af61-959b5e29c928"
+    },
+    {
+      "lineId": "line-8dc735e4-f6af-48db-b467-bad7bdf6bf3a-f598f175-e022-4824-b5c5-007a34a041ed-7437",
+      "fromNodeId": "8dc735e4-f6af-48db-b467-bad7bdf6bf3a",
+      "toNodeId": "f598f175-e022-4824-b5c5-007a34a041ed"
+    },
+    {
+      "lineId": "line-91862254-bc0a-4ebd-af61-959b5e29c928-671af26d-80f8-4d30-ba10-0ccf9c918093-6526",
+      "fromNodeId": "91862254-bc0a-4ebd-af61-959b5e29c928",
+      "toNodeId": "671af26d-80f8-4d30-ba10-0ccf9c918093"
+    },
+    {
+      "lineId": "line-f598f175-e022-4824-b5c5-007a34a041ed-671af26d-80f8-4d30-ba10-0ccf9c918093-c7cf",
+      "fromNodeId": "f598f175-e022-4824-b5c5-007a34a041ed",
+      "toNodeId": "671af26d-80f8-4d30-ba10-0ccf9c918093"
+    },
+    {
+      "lineId": "line-671af26d-80f8-4d30-ba10-0ccf9c918093-0712dc77-51ba-4713-a02a-9f6a5f88060c-2310",
+      "fromNodeId": "671af26d-80f8-4d30-ba10-0ccf9c918093",
+      "toNodeId": "0712dc77-51ba-4713-a02a-9f6a5f88060c"
+    }
+  ]
+}
