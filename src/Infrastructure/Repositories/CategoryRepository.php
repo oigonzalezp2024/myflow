@@ -19,9 +19,9 @@ class CategoryRepository implements CategoryRepositoryInterface
 
     public function findByName(string $name): ?Category
     {
-        $stmt = $this->pdo->prepare("SELECT id, name FROM categories WHERE name = :name LIMIT 1");
+        $stmt = $this->pdo->prepare("SELECT id_categoria, categoria_nombre FROM categorias_producto WHERE categoria_nombre = :categoria_nombre LIMIT 1");
         $paramName = trim($name);
-        $stmt->bindParam(':name', $paramName, PDO::PARAM_STR);
+        $stmt->bindParam(':categoria_nombre', $paramName, PDO::PARAM_STR);
         $stmt->execute();
         $row = $stmt->fetch();
 
@@ -29,14 +29,14 @@ class CategoryRepository implements CategoryRepositoryInterface
             return null;
         }
 
-        return new Category($row['name'], (int) $row['id']);
+        return new Category($row['categoria_nombre'], (int) $row['id_categoria']);
     }
 
     public function create(Category $category): Category
     {
-        $stmt = $this->pdo->prepare("INSERT INTO categories (name) VALUES (:name)");
+        $stmt = $this->pdo->prepare("INSERT INTO categorias_producto (categoria_nombre) VALUES (:categoria_nombre)");
         $categoryName = $category->getName();
-        $stmt->bindParam(':name', $categoryName, PDO::PARAM_STR);
+        $stmt->bindParam(':categoria_nombre', $categoryName, PDO::PARAM_STR);
         $stmt->execute();
 
         return new Category($category->getName(), (int) $this->pdo->lastInsertId());
