@@ -6,22 +6,9 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 use App\Domain\Entities\Category;
 use App\Domain\Entities\Product;
-
-interface CategoryRepositoryInterface
-{
-    public function findByName(string $name): ?Category;
-    public function create(Category $category): Category;
-}
-
-interface ProductRepositoryInterface
-{
-    public function create(Product $product): Product;
-}
-
-interface TransactionManagerInterface
-{
-    public function transactional(callable $callback): mixed;
-}
+use App\Domain\Interface\Infrastructure\Repositories\CategoryRepositoryInterface;
+use App\Domain\Interface\Infrastructure\Repositories\ProductRepositoryInterface;
+use App\Domain\Interface\Infrastructure\Persistence\TransactionManagerInterface;
 
 // ==========================================
 // 2. CAPA DE INFRAESTRUCTURA (Repositorios y Transacciones PDO)
