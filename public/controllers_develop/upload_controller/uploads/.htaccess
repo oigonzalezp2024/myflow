@@ -1,0 +1,9 @@
+# Desactivar el motor PHP en esta carpeta
+<Files *>
+    SetHandler default-handler
+</Files>
+
+# O alternativamente (dependiendo de la versión de PHP de tu hosting):
+<IfModule mod_php.c>
+    php_flag engine off
+</IfModule>
