@@ -16,6 +16,6 @@
         "psr-4": {
             "Tests\\": "tests/"
         }
-    }
+    },
     "minimum-stability": "stable"
 }

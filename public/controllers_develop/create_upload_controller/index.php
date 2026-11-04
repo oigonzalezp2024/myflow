@@ -15,8 +15,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'PUT') {
 
 require_once __DIR__ . '/../../../vendor/autoload.php';
 
-use App\Infrastructure\FileHandling\CopyDirectoryRequest;
-use App\Infrastructure\FileHandling\FileHandlingCopyDirectory;
+use Olimpo\Infrastructure\FileHandling\CopyDirectoryRequest;
+use Olimpo\Infrastructure\FileHandling\FileHandlingCopyDirectory;
 
 try {
     $rawInput = file_get_contents('php://input');
