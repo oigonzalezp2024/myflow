@@ -5,10 +5,27 @@
       "type": "database",
       "title": "proveedores",
       "subtitle": "Formulario Dinámico",
-      "x": 2361,
-      "y": 902,
+      "x": 483,
+      "y": 249,
       "icon": "fas fa-database",
-      "dbConfig": {},
+      "dbConfig": {
+        "host": "localhost",
+        "port": "",
+        "username": "root",
+        "password": "",
+        "dbName": "adquisicion_insumos",
+        "tableName": "proveedores",
+        "fields": [
+          {
+            "key": "id_proveedor",
+            "value": "int(11)"
+          },
+          {
+            "key": "proveedor_nombre",
+            "value": "varchar(190)"
+          }
+        ]
+      },
       "sendDataConfig": {}
     },
     {
@@ -16,8 +33,8 @@
       "type": "crud-api",
       "title": "ProveedoresAPI",
       "subtitle": "Formulario Dinámico",
-      "x": 3361,
-      "y": 902,
+      "x": 1483,
+      "y": 249,
       "icon": "fas fa-laptop-code",
       "apiConfig": {
         "action": "generate",
@@ -25,11 +42,11 @@
         "port": "3306",
         "username": "root",
         "password": "",
-        "dbName": "arq_adquisicion_insumos",
+        "dbName": "adquisicion_insumos",
         "tableName": "proveedores"
       },
       "sendDataConfig": {},
-      "generatedCode": "<?php\n// API REST Autogenerada con Token para la tabla 'proveedores'\nheader('Content-Type: application/json');\nheader('Access-Control-Allow-Origin: *');\nheader('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');\nheader('Access-Control-Allow-Headers: Content-Type, Authorization');\n\nif ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { exit(0); }\n\n// Token de acceso requerido en la cabecera Authorization: Bearer <token>\ndefine('API_TOKEN', 'token_faed9d35eed5d118c226559a3c8e20a7');\n\n$headers = apache_request_headers();\n$authHeader = $headers['Authorization'] ?? $headers['authorization'] ?? '';\n$tokenValido = false;\n\nif (preg_match('/Bearer\\s(\\S+)/', $authHeader, $matches)) {\n    if ($matches[1] === API_TOKEN) {\n        $tokenValido = true;\n    }\n}\n\nif (!$tokenValido) {\n    http_response_code(401);\n    echo json_encode(['success' => false, 'error' => 'Acceso no autorizado. Token inválido o ausente.']);\n    exit();\n}\n\n$pdo = new PDO('mysql:host=localhost;port=3306;dbname=arq_adquisicion_insumos;charset=utf8mb4', 'root', '', [\n    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,\n    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC\n]);\n\n$method = $_SERVER['REQUEST_METHOD'];\n$input = json_decode(file_get_contents('php://input'), true);\n$id = $_GET['id_proveedor'] ?? null;\n\nswitch ($method) {\n    case 'GET':\n        if ($id) {\n            $stmt = $pdo->prepare('SELECT * FROM `proveedores` WHERE `id_proveedor` = ?');\n            $stmt->execute([$id]);\n            echo json_encode($stmt->fetch() ?: ['message' => 'Registro no encontrado']);\n        } else {\n            $stmt = $pdo->query('SELECT * FROM `proveedores`');\n            echo json_encode($stmt->fetchAll());\n        }\n        break;\n\n    case 'POST':\n        $sql = 'INSERT INTO `proveedores` (`proveedor_nombre`, `proveedor_celular`, `proveedor_telefono`, `proveedor_direccion`) VALUES (:proveedor_nombre, :proveedor_celular, :proveedor_telefono, :proveedor_direccion)';\n        $stmt = $pdo->prepare($sql);\n        $stmt->execute($input);\n        echo json_encode(['success' => true, 'id_proveedor' => $pdo->lastInsertId()]);\n        break;\n\n    case 'PUT':\n        if (!$id) { echo json_encode(['error' => 'Se requiere el campo id_proveedor']); break; }\n        $sql = 'UPDATE `proveedores` SET `proveedor_nombre` = :proveedor_nombre, `proveedor_celular` = :proveedor_celular, `proveedor_telefono` = :proveedor_telefono, `proveedor_direccion` = :proveedor_direccion WHERE `id_proveedor` = :id_proveedor';\n        $input['id_proveedor'] = $id;\n        $stmt = $pdo->prepare($sql);\n        $stmt->execute($input);\n        echo json_encode(['success' => true, 'updated' => $stmt->rowCount()]);\n        break;\n\n    case 'DELETE':\n        if (!$id) { echo json_encode(['error' => 'Se requiere el campo id_proveedor']); break; }\n        $stmt = $pdo->prepare('DELETE FROM `proveedores` WHERE `id_proveedor` = ?');\n        $stmt->execute([$id]);\n        echo json_encode(['success' => true, 'deleted' => $stmt->rowCount()]);\n        break;\n}\n"
+      "generatedCode": "<?php\n// API REST Autogenerada con Token para la tabla 'proveedores'\nheader('Content-Type: application/json');\nheader('Access-Control-Allow-Origin: *');\nheader('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');\nheader('Access-Control-Allow-Headers: Content-Type, Authorization');\n\nif ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { exit(0); }\n\n// Token de acceso requerido en la cabecera Authorization: Bearer <token>\ndefine('API_TOKEN', 'token_211629f37ef480cb12a4fa73a78cac3d');\n\n$headers = apache_request_headers();\n$authHeader = $headers['Authorization'] ?? $headers['authorization'] ?? '';\n$tokenValido = false;\n\nif (preg_match('/Bearer\\s(\\S+)/', $authHeader, $matches)) {\n    if ($matches[1] === API_TOKEN) {\n        $tokenValido = true;\n    }\n}\n\nif (!$tokenValido) {\n    http_response_code(401);\n    echo json_encode(['success' => false, 'error' => 'Acceso no autorizado. Token inválido o ausente.']);\n    exit();\n}\n\n$pdo = new PDO('mysql:host=localhost;port=3306;dbname=adquisicion_insumos;charset=utf8mb4', 'root', '', [\n    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,\n    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC\n]);\n\n$method = $_SERVER['REQUEST_METHOD'];\n$input = json_decode(file_get_contents('php://input'), true);\n$id = $_GET['id_proveedor'] ?? null;\n\nswitch ($method) {\n    case 'GET':\n        if ($id) {\n            $stmt = $pdo->prepare('SELECT * FROM `proveedores` WHERE `id_proveedor` = ?');\n            $stmt->execute([$id]);\n            echo json_encode($stmt->fetch() ?: ['message' => 'Registro no encontrado']);\n        } else {\n            $stmt = $pdo->query('SELECT * FROM `proveedores`');\n            echo json_encode($stmt->fetchAll());\n        }\n        break;\n\n    case 'POST':\n        $sql = 'INSERT INTO `proveedores` (`proveedor_nombre`) VALUES (:proveedor_nombre)';\n        $stmt = $pdo->prepare($sql);\n        $stmt->execute($input);\n        echo json_encode(['success' => true, 'id_proveedor' => $pdo->lastInsertId()]);\n        break;\n\n    case 'PUT':\n        if (!$id) { echo json_encode(['error' => 'Se requiere el campo id_proveedor']); break; }\n        $sql = 'UPDATE `proveedores` SET `proveedor_nombre` = :proveedor_nombre WHERE `id_proveedor` = :id_proveedor';\n        $input['id_proveedor'] = $id;\n        $stmt = $pdo->prepare($sql);\n        $stmt->execute($input);\n        echo json_encode(['success' => true, 'updated' => $stmt->rowCount()]);\n        break;\n\n    case 'DELETE':\n        if (!$id) { echo json_encode(['error' => 'Se requiere el campo id_proveedor']); break; }\n        $stmt = $pdo->prepare('DELETE FROM `proveedores` WHERE `id_proveedor` = ?');\n        $stmt->execute([$id]);\n        echo json_encode(['success' => true, 'deleted' => $stmt->rowCount()]);\n        break;\n}\n"
     }
   ],
   "connections": []

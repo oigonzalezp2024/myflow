@@ -8,7 +8,7 @@ header('Access-Control-Allow-Headers: Content-Type, Authorization');
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { exit(0); }
 
 // Token de acceso requerido en la cabecera Authorization: Bearer <token>
-define('API_TOKEN', 'token_faed9d35eed5d118c226559a3c8e20a7');
+define('API_TOKEN', 'token_211629f37ef480cb12a4fa73a78cac3d');
 
 $headers = apache_request_headers();
 $authHeader = $headers['Authorization'] ?? $headers['authorization'] ?? '';
@@ -26,7 +26,7 @@ if (!$tokenValido) {
     exit();
 }
 
-$pdo = new PDO('mysql:host=localhost;port=3306;dbname=arq_adquisicion_insumos;charset=utf8mb4', 'root', '', [
+$pdo = new PDO('mysql:host=localhost;port=3306;dbname=adquisicion_insumos;charset=utf8mb4', 'root', '', [
     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
 ]);
@@ -48,7 +48,7 @@ switch ($method) {
         break;
 
     case 'POST':
-        $sql = 'INSERT INTO `proveedores` (`proveedor_nombre`, `proveedor_celular`, `proveedor_telefono`, `proveedor_direccion`) VALUES (:proveedor_nombre, :proveedor_celular, :proveedor_telefono, :proveedor_direccion)';
+        $sql = 'INSERT INTO `proveedores` (`proveedor_nombre`) VALUES (:proveedor_nombre)';
         $stmt = $pdo->prepare($sql);
         $stmt->execute($input);
         echo json_encode(['success' => true, 'id_proveedor' => $pdo->lastInsertId()]);
@@ -56,7 +56,7 @@ switch ($method) {
 
     case 'PUT':
         if (!$id) { echo json_encode(['error' => 'Se requiere el campo id_proveedor']); break; }
-        $sql = 'UPDATE `proveedores` SET `proveedor_nombre` = :proveedor_nombre, `proveedor_celular` = :proveedor_celular, `proveedor_telefono` = :proveedor_telefono, `proveedor_direccion` = :proveedor_direccion WHERE `id_proveedor` = :id_proveedor';
+        $sql = 'UPDATE `proveedores` SET `proveedor_nombre` = :proveedor_nombre WHERE `id_proveedor` = :id_proveedor';
         $input['id_proveedor'] = $id;
         $stmt = $pdo->prepare($sql);
         $stmt->execute($input);
