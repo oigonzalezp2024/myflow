@@ -1106,7 +1106,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 title: caseTitleInput ? caseTitleInput.value.trim() : 'Case Uses',
                 description: caseDescriptionInput ? caseDescriptionInput.value.trim() : '',
                 status: caseStatusSelect ? caseStatusSelect.value : 'pending',
-                endpointUrl: caseUsesEndpointInput ? caseUsesEndpointInput.value.trim() : 'http://localhost/myflow/public/controllers/generate_case_uses.php'
+                endpointUrl: caseUsesEndpointInput ? caseUsesEndpointInput.value.trim() : 'http://localhost/myflow/public/controllers/generate_case_uses.php',
+                primaryKey: 'id_proveedor',
+                tableName: 'pedidos',
+                db: 'test_insumos',
+                targetServiceEndpoint: 'http://localhost/myflow/public/api/insumos/proveedores/',
+                targetServiceTokenVal: 'token_e146b7073904f432bfc121ea3e396708'
             };
 
             if (caseConfig.endpointUrl) {
