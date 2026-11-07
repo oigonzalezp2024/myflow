@@ -1,337 +1,12 @@
 {
   "nodes": [
     {
-      "id": "6f4e92ba-696a-43d6-8279-3cd0c16e4335",
-      "type": "send-data",
-      "title": "Crear Pedido",
-      "subtitle": "Tabla: pedidos",
-      "x": 3165.7708740234375,
-      "y": 231.5208740234375,
-      "icon": "fas fa-paper-plane",
-      "sendDataConfig": {
-        "endpointUrl": "http://localhost/myflow/public/controllers_project_test/consume_pedidos_create_test.php",
-        "dbName": "test_insumos",
-        "tableName": "pedidos",
-        "formFields": [
-          {
-            "Field": "proveedor_id",
-            "Type": "VARCHAR",
-            "value": ""
-          },
-          {
-            "Field": "fecha",
-            "Type": "VARCHAR",
-            "value": ""
-          }
-        ]
-      }
-    },
-    {
-      "id": "ce16da99-b8e2-45cc-ae37-ff9138e875b4",
-      "type": "send-data",
-      "title": "Cotizar a Proveedor",
-      "subtitle": "Tabla: proveedores",
-      "x": 2943.8958740234375,
-      "y": 60.875,
-      "icon": "fas fa-paper-plane",
-      "sendDataConfig": {
-        "endpointUrl": "http://localhost/myflow/public/controllers_project/create_proveedores.php",
-        "dbName": "test_insumos",
-        "tableName": "proveedores",
-        "formFields": [
-          {
-            "Field": "proveedor_nombre",
-            "Type": "VARCHAR",
-            "value": "uuuuo"
-          },
-          {
-            "Field": "vendedor",
-            "Type": "VARCHAR",
-            "value": "uuuuuo"
-          }
-        ]
-      }
-    },
-    {
-      "id": "7010146b-751a-403e-a7c4-1459af14d62f",
-      "type": "send-data",
-      "title": "Auditoría de Compra",
-      "subtitle": "Formulario Dinámico",
-      "x": 3149.8125,
-      "y": 1171.9583740234375,
-      "icon": "fas fa-paper-plane",
-      "sendDataConfig": {}
-    },
-    {
-      "id": "af8d7408-671a-4ecc-9ac3-e3183d1f474d",
-      "type": "send-data",
-      "title": "Aceptación de Compra",
-      "subtitle": "Formulario Dinámico",
-      "x": 3498,
-      "y": 715.5208740234375,
-      "icon": "fas fa-paper-plane",
-      "sendDataConfig": {},
-      "caseUsesConfig": {}
-    },
-    {
-      "id": "f19bd9c6-55f2-443a-b275-e3cfdd2ad953",
-      "type": "send-data",
-      "title": "Rechazo de Compra",
-      "subtitle": "Formulario Dinámico",
-      "x": 3494,
-      "y": 907.9583740234375,
-      "icon": "fas fa-paper-plane",
-      "sendDataConfig": {},
-      "caseUsesConfig": {}
-    },
-    {
-      "id": "e437e959-dfc4-426c-98d2-c609d754b2f7",
-      "type": "send-data",
-      "title": "Notificación de Pago",
-      "subtitle": "Formulario Dinámico",
-      "x": 3412,
-      "y": 1073.9375,
-      "icon": "fas fa-paper-plane",
-      "sendDataConfig": {}
-    },
-    {
-      "id": "78b6bd66-c89a-4b4c-9aea-cb337cf0d60e",
-      "type": "send-data",
-      "title": "Notificación de Rechazo",
-      "subtitle": "Formulario Dinámico",
-      "x": 3410,
-      "y": 1281.5208740234375,
-      "icon": "fas fa-paper-plane",
-      "sendDataConfig": {}
-    },
-    {
-      "id": "b07661f6-88a9-46c6-92ba-45a70c99c1a2",
-      "type": "send-data",
-      "title": "Solicitar Compra",
-      "subtitle": "Formulario Dinámico",
-      "x": 2928,
-      "y": 809.5208740234375,
-      "icon": "fas fa-paper-plane",
-      "caseUsesConfig": {
-        "title": "PedidosCaseUses",
-        "description": "",
-        "status": "pending",
-        "endpointUrl": "http://localhost/myflow/public/controllers/generate_case_uses.php"
-      },
-      "sendDataConfig": {}
-    },
-    {
-      "id": "f71948f7-d434-496c-b35f-d042cef6d0db",
-      "type": "send-data",
-      "title": "Aprobar pedido",
-      "subtitle": "Formulario Dinámico",
-      "x": 2930,
-      "y": 401,
-      "icon": "fas fa-paper-plane",
-      "sendDataConfig": {}
-    },
-    {
-      "id": "1f93d944-3be8-4898-b627-a028dd8dc89a",
-      "type": "send-data",
-      "title": "Requerimiento Insumos",
-      "subtitle": "Formulario Dinámico",
-      "x": 2618,
-      "y": -111,
-      "icon": "fas fa-paper-plane",
-      "sendDataConfig": {}
-    },
-    {
-      "id": "990df948-42fc-476f-b7ba-b305a871d6a9",
-      "type": "case-uses",
-      "title": "Recepción Requerimiento Insumos",
-      "subtitle": "Formulario Dinámico",
-      "x": 2618,
-      "y": 56,
-      "icon": "fas fa-solid fa-rss",
-      "caseUsesConfig": {},
-      "sendDataConfig": {}
-    },
-    {
-      "id": "c2a6e126-7802-40ae-a5a7-daedc64ca8e7",
-      "type": "send-data",
-      "title": "Analisis de Cotizaciones",
-      "subtitle": "Formulario Dinámico",
-      "x": 2906,
-      "y": 231,
-      "icon": "fas fa-paper-plane",
-      "sendDataConfig": {}
-    },
-    {
-      "id": "24c45879-f9db-46ef-be5d-67b457f6abd2",
-      "type": "case-uses",
-      "title": "Recepción de Cotizaciones",
-      "subtitle": "Formulario Dinámico",
-      "x": 2615,
-      "y": 230,
-      "icon": "fas fa-solid fa-rss",
-      "caseUsesConfig": {},
-      "sendDataConfig": {}
-    },
-    {
-      "id": "b6facb03-e00b-4af8-a8e8-ac35d391cfa9",
-      "type": "case-uses",
-      "title": "Recepción de Solicitud de Pedido",
-      "subtitle": "Formulario Dinámico",
-      "x": 2587,
-      "y": 507,
-      "icon": "fas fa-solid fa-rss",
-      "caseUsesConfig": {},
-      "sendDataConfig": {}
-    },
-    {
-      "id": "f8e933c0-371d-4ce8-912c-e1c0d459dd21",
-      "type": "send-data",
-      "title": "Rechaza del Pedido",
-      "subtitle": "Formulario Dinámico",
-      "x": 2931,
-      "y": 603,
-      "icon": "fas fa-paper-plane",
-      "sendDataConfig": {}
-    },
-    {
-      "id": "4fc4a262-aa28-420e-9cc7-343a81cef0fd",
-      "type": "case-uses",
-      "title": "Notificar Requerimiento",
-      "subtitle": "Formulario Dinámico",
-      "x": 2880,
-      "y": -110,
-      "icon": "fas fa-solid fa-rss",
-      "caseUsesConfig": {},
-      "sendDataConfig": {}
-    },
-    {
-      "id": "7f8ecca6-b48e-4b81-b41f-1445b68e39c0",
-      "type": "case-uses",
-      "title": "Notificar Cotizaciones",
-      "subtitle": "Formulario Dinámico",
-      "x": 3191,
-      "y": 63,
-      "icon": "fas fa-solid fa-rss",
-      "caseUsesConfig": {},
-      "sendDataConfig": {}
-    },
-    {
-      "id": "3884500d-59e8-4442-97e0-724e3b2a91c3",
-      "type": "case-uses",
-      "title": "Notificar Pedido",
-      "subtitle": "Formulario Dinámico",
-      "x": 3410,
-      "y": 235,
-      "icon": "fas fa-solid fa-rss",
-      "caseUsesConfig": {},
-      "sendDataConfig": {}
-    },
-    {
-      "id": "098007b2-bb44-492e-97d8-8f175c504e85",
-      "type": "case-uses",
-      "title": "Notificar Aceptación",
-      "subtitle": "Formulario Dinámico",
-      "x": 3174,
-      "y": 408,
-      "icon": "fas fa-solid fa-rss",
-      "caseUsesConfig": {},
-      "sendDataConfig": {}
-    },
-    {
-      "id": "e89672b8-7af9-49d4-b517-b04f254785ad",
-      "type": "case-uses",
-      "title": "Notificar Rechazo",
-      "subtitle": "Formulario Dinámico",
-      "x": 3175,
-      "y": 609,
-      "icon": "fas fa-solid fa-rss",
-      "caseUsesConfig": {},
-      "sendDataConfig": {}
-    },
-    {
-      "id": "0b29c0d5-c924-42e4-b3fc-241d2dbbee8b",
-      "type": "case-uses",
-      "title": "Recepción de Estado de Pedido",
-      "subtitle": "Formulario Dinámico",
-      "x": 2623,
-      "y": 806,
-      "icon": "fas fa-solid fa-rss",
-      "caseUsesConfig": {},
-      "sendDataConfig": {}
-    },
-    {
-      "id": "ffdfbc30-c2a0-423c-8325-d75cc7301392",
-      "type": "send-data",
-      "title": "Notificar intensión de compra",
-      "subtitle": "Formulario Dinámico",
-      "x": 3173,
-      "y": 812,
-      "icon": "fas fa-paper-plane",
-      "caseUsesConfig": {},
-      "sendDataConfig": {}
-    },
-    {
-      "id": "ae5e1216-107f-476a-9725-518e4a03eb71",
-      "type": "case-uses",
-      "title": "Recepción de factura",
-      "subtitle": "Formulario Dinámico",
-      "x": 2624,
-      "y": 1162,
-      "icon": "fas fa-solid fa-rss",
-      "caseUsesConfig": {},
-      "sendDataConfig": {}
-    },
-    {
-      "id": "b525d4f3-4b41-4cc9-8399-e546c4489d25",
-      "type": "case-uses",
-      "title": "Notificación de Aceptación de Compra",
-      "subtitle": "Formulario Dinámico",
-      "x": 3776,
-      "y": 712,
-      "icon": "fas fa-solid fa-rss",
-      "caseUsesConfig": {},
-      "sendDataConfig": {}
-    },
-    {
-      "id": "4ec70c42-1c66-4a80-910f-9ab311a92d7e",
-      "type": "case-uses",
-      "title": "Notificación de Rechazo de Compra",
-      "subtitle": "Formulario Dinámico",
-      "x": 3778,
-      "y": 913,
-      "icon": "fas fa-solid fa-rss",
-      "caseUsesConfig": {},
-      "sendDataConfig": {}
-    },
-    {
-      "id": "ae50f098-7d0f-4038-96e4-37b036732f41",
-      "type": "send-data",
-      "title": "Registrar Pago de Factura",
-      "subtitle": "Formulario Dinámico",
-      "x": 2868,
-      "y": 1067,
-      "icon": "fas fa-paper-plane",
-      "caseUsesConfig": {},
-      "sendDataConfig": {}
-    },
-    {
-      "id": "021fbbfa-e137-403a-8690-48c9f9afeda0",
-      "type": "send-data",
-      "title": "Registrar Rechazo de Factura",
-      "subtitle": "Formulario Dinámico",
-      "x": 2868,
-      "y": 1274,
-      "icon": "fas fa-paper-plane",
-      "caseUsesConfig": {},
-      "sendDataConfig": {}
-    },
-    {
       "id": "d14da605-953f-4446-82ca-e96205e94075",
       "type": "database",
       "title": "recep_req_insumos",
       "subtitle": "Formulario Dinámico",
-      "x": 103,
-      "y": 192,
+      "x": 840,
+      "y": 405,
       "icon": "fas fa-database",
       "dbConfig": {},
       "sendDataConfig": {}
@@ -341,8 +16,8 @@
       "type": "database",
       "title": "recep_cotizaciones",
       "subtitle": "Formulario Dinámico",
-      "x": 99,
-      "y": 379,
+      "x": 840,
+      "y": 577,
       "icon": "fas fa-database",
       "dbConfig": {},
       "sendDataConfig": {}
@@ -352,8 +27,8 @@
       "type": "database",
       "title": "recep_solicitud_pedido",
       "subtitle": "Formulario Dinámico",
-      "x": 102,
-      "y": 559,
+      "x": 839,
+      "y": 747,
       "icon": "fas fa-database",
       "dbConfig": {},
       "sendDataConfig": {}
@@ -363,8 +38,8 @@
       "type": "database",
       "title": "recep_estado_pedido",
       "subtitle": "Formulario Dinámico",
-      "x": 103,
-      "y": 756.5208740234375,
+      "x": 838,
+      "y": 918.5,
       "icon": "fas fa-database",
       "dbConfig": {},
       "sendDataConfig": {}
@@ -374,8 +49,8 @@
       "type": "database",
       "title": "cotizaciones",
       "subtitle": "Formulario Dinámico",
-      "x": 822,
-      "y": 249,
+      "x": 1479,
+      "y": 411,
       "icon": "fas fa-database",
       "dbConfig": {},
       "sendDataConfig": {}
@@ -385,8 +60,8 @@
       "type": "database",
       "title": "analisis_cotizaciones",
       "subtitle": "Formulario Dinámico",
-      "x": 1154,
-      "y": 381,
+      "x": 1859,
+      "y": 586,
       "icon": "fas fa-database",
       "dbConfig": {},
       "sendDataConfig": {}
@@ -396,8 +71,8 @@
       "type": "database",
       "title": "pedidos",
       "subtitle": "Formulario Dinámico",
-      "x": 1586,
-      "y": 388,
+      "x": 2266,
+      "y": 585,
       "icon": "fas fa-database",
       "dbConfig": {},
       "sendDataConfig": {}
@@ -407,8 +82,8 @@
       "type": "database",
       "title": "notificaciones_pedido",
       "subtitle": "Formulario Dinámico",
-      "x": 1861,
-      "y": 383,
+      "x": 2602,
+      "y": 578,
       "icon": "fas fa-database",
       "dbConfig": {},
       "sendDataConfig": {}
@@ -418,8 +93,8 @@
       "type": "database",
       "title": "proveedores",
       "subtitle": "Formulario Dinámico",
-      "x": 335,
-      "y": -4,
+      "x": 837,
+      "y": 36,
       "icon": "fas fa-database",
       "dbConfig": {},
       "sendDataConfig": {}
@@ -429,8 +104,8 @@
       "type": "database",
       "title": "notificacion_cotizaciones",
       "subtitle": "Formulario Dinámico",
-      "x": 1770,
-      "y": 229,
+      "x": 2585,
+      "y": 405,
       "icon": "fas fa-database",
       "dbConfig": {},
       "sendDataConfig": {}
@@ -440,8 +115,8 @@
       "type": "database",
       "title": "vereditos_proveedor",
       "subtitle": "Formulario Dinámico",
-      "x": 1025,
-      "y": 553,
+      "x": 1697,
+      "y": 761,
       "icon": "fas fa-database",
       "dbConfig": {},
       "sendDataConfig": {}
@@ -451,8 +126,8 @@
       "type": "database",
       "title": "notif_vereditos_proveedor",
       "subtitle": "Formulario Dinámico",
-      "x": 1770,
-      "y": 591,
+      "x": 2582,
+      "y": 748,
       "icon": "fas fa-database",
       "dbConfig": {},
       "sendDataConfig": {}
@@ -462,8 +137,8 @@
       "type": "database",
       "title": "veredictos_gerencia",
       "subtitle": "Formulario Dinámico",
-      "x": 1773,
-      "y": 781,
+      "x": 2268,
+      "y": 921,
       "icon": "fas fa-database",
       "dbConfig": {},
       "sendDataConfig": {}
@@ -473,8 +148,8 @@
       "type": "database",
       "title": "notif_vereditos_gerencia",
       "subtitle": "Formulario Dinámico",
-      "x": 2066,
-      "y": 776,
+      "x": 2593,
+      "y": 920,
       "icon": "fas fa-database",
       "dbConfig": {},
       "sendDataConfig": {}
@@ -484,8 +159,8 @@
       "type": "database",
       "title": "recep_veredicto_gerencia",
       "subtitle": "Formulario Dinámico",
-      "x": 103,
-      "y": 933,
+      "x": 821,
+      "y": 1091,
       "icon": "fas fa-database",
       "dbConfig": {},
       "sendDataConfig": {}
@@ -495,8 +170,8 @@
       "type": "database",
       "title": "factura",
       "subtitle": "Formulario Dinámico",
-      "x": 833,
-      "y": 927,
+      "x": 1698,
+      "y": 1089,
       "icon": "fas fa-database",
       "dbConfig": {},
       "sendDataConfig": {}
@@ -506,8 +181,8 @@
       "type": "database",
       "title": "recep_factura",
       "subtitle": "Formulario Dinámico",
-      "x": 120,
-      "y": 1241,
+      "x": 839,
+      "y": 1264,
       "icon": "fas fa-database",
       "dbConfig": {},
       "sendDataConfig": {}
@@ -517,8 +192,8 @@
       "type": "database",
       "title": "pagos_facturas",
       "subtitle": "Formulario Dinámico",
-      "x": 1397,
-      "y": 1093,
+      "x": 2268,
+      "y": 1191,
       "icon": "fas fa-database",
       "dbConfig": {},
       "sendDataConfig": {}
@@ -528,8 +203,8 @@
       "type": "database",
       "title": "rechazos_factura",
       "subtitle": "Formulario Dinámico",
-      "x": 1425,
-      "y": 1296,
+      "x": 2268,
+      "y": 1369,
       "icon": "fas fa-database",
       "dbConfig": {},
       "sendDataConfig": {}
@@ -539,8 +214,8 @@
       "type": "database",
       "title": "auditoria_facturas",
       "subtitle": "Formulario Dinámico",
-      "x": 1129,
-      "y": 1215,
+      "x": 1989,
+      "y": 1268,
       "icon": "fas fa-database",
       "dbConfig": {},
       "sendDataConfig": {}
@@ -550,8 +225,8 @@
       "type": "database",
       "title": "notificacion_estados_facturas",
       "subtitle": "Formulario Dinámico",
-      "x": 1901,
-      "y": 1159,
+      "x": 2554,
+      "y": 1264,
       "icon": "fas fa-database",
       "dbConfig": {},
       "sendDataConfig": {}
@@ -561,124 +236,14 @@
       "type": "database",
       "title": "envio_factura",
       "subtitle": "Formulario Dinámico",
-      "x": 1138,
-      "y": 931,
+      "x": 2602,
+      "y": 1091,
       "icon": "fas fa-database",
       "dbConfig": {},
       "sendDataConfig": {}
     }
   ],
   "connections": [
-    {
-      "lineId": "line-7010146b-751a-403e-a7c4-1459af14d62f-e437e959-dfc4-426c-98d2-c609d754b2f7-d6e2",
-      "fromNodeId": "7010146b-751a-403e-a7c4-1459af14d62f",
-      "toNodeId": "e437e959-dfc4-426c-98d2-c609d754b2f7"
-    },
-    {
-      "lineId": "line-7010146b-751a-403e-a7c4-1459af14d62f-78b6bd66-c89a-4b4c-9aea-cb337cf0d60e-63d3",
-      "fromNodeId": "7010146b-751a-403e-a7c4-1459af14d62f",
-      "toNodeId": "78b6bd66-c89a-4b4c-9aea-cb337cf0d60e"
-    },
-    {
-      "lineId": "line-990df948-42fc-476f-b7ba-b305a871d6a9-ce16da99-b8e2-45cc-ae37-ff9138e875b4-489f",
-      "fromNodeId": "990df948-42fc-476f-b7ba-b305a871d6a9",
-      "toNodeId": "ce16da99-b8e2-45cc-ae37-ff9138e875b4"
-    },
-    {
-      "lineId": "line-24c45879-f9db-46ef-be5d-67b457f6abd2-c2a6e126-7802-40ae-a5a7-daedc64ca8e7-68eb",
-      "fromNodeId": "24c45879-f9db-46ef-be5d-67b457f6abd2",
-      "toNodeId": "c2a6e126-7802-40ae-a5a7-daedc64ca8e7"
-    },
-    {
-      "lineId": "line-c2a6e126-7802-40ae-a5a7-daedc64ca8e7-6f4e92ba-696a-43d6-8279-3cd0c16e4335-0340",
-      "fromNodeId": "c2a6e126-7802-40ae-a5a7-daedc64ca8e7",
-      "toNodeId": "6f4e92ba-696a-43d6-8279-3cd0c16e4335"
-    },
-    {
-      "lineId": "line-b6facb03-e00b-4af8-a8e8-ac35d391cfa9-f71948f7-d434-496c-b35f-d042cef6d0db-e9d8",
-      "fromNodeId": "b6facb03-e00b-4af8-a8e8-ac35d391cfa9",
-      "toNodeId": "f71948f7-d434-496c-b35f-d042cef6d0db"
-    },
-    {
-      "lineId": "line-b6facb03-e00b-4af8-a8e8-ac35d391cfa9-f8e933c0-371d-4ce8-912c-e1c0d459dd21-0896",
-      "fromNodeId": "b6facb03-e00b-4af8-a8e8-ac35d391cfa9",
-      "toNodeId": "f8e933c0-371d-4ce8-912c-e1c0d459dd21"
-    },
-    {
-      "lineId": "line-1f93d944-3be8-4898-b627-a028dd8dc89a-4fc4a262-aa28-420e-9cc7-343a81cef0fd-6c38",
-      "fromNodeId": "1f93d944-3be8-4898-b627-a028dd8dc89a",
-      "toNodeId": "4fc4a262-aa28-420e-9cc7-343a81cef0fd"
-    },
-    {
-      "lineId": "line-ce16da99-b8e2-45cc-ae37-ff9138e875b4-7f8ecca6-b48e-4b81-b41f-1445b68e39c0-ad31",
-      "fromNodeId": "ce16da99-b8e2-45cc-ae37-ff9138e875b4",
-      "toNodeId": "7f8ecca6-b48e-4b81-b41f-1445b68e39c0"
-    },
-    {
-      "lineId": "line-6f4e92ba-696a-43d6-8279-3cd0c16e4335-3884500d-59e8-4442-97e0-724e3b2a91c3-b471",
-      "fromNodeId": "6f4e92ba-696a-43d6-8279-3cd0c16e4335",
-      "toNodeId": "3884500d-59e8-4442-97e0-724e3b2a91c3"
-    },
-    {
-      "lineId": "line-f71948f7-d434-496c-b35f-d042cef6d0db-098007b2-bb44-492e-97d8-8f175c504e85-6f18",
-      "fromNodeId": "f71948f7-d434-496c-b35f-d042cef6d0db",
-      "toNodeId": "098007b2-bb44-492e-97d8-8f175c504e85"
-    },
-    {
-      "lineId": "line-f8e933c0-371d-4ce8-912c-e1c0d459dd21-e89672b8-7af9-49d4-b517-b04f254785ad-166e",
-      "fromNodeId": "f8e933c0-371d-4ce8-912c-e1c0d459dd21",
-      "toNodeId": "e89672b8-7af9-49d4-b517-b04f254785ad"
-    },
-    {
-      "lineId": "line-0b29c0d5-c924-42e4-b3fc-241d2dbbee8b-b07661f6-88a9-46c6-92ba-45a70c99c1a2-3122",
-      "fromNodeId": "0b29c0d5-c924-42e4-b3fc-241d2dbbee8b",
-      "toNodeId": "b07661f6-88a9-46c6-92ba-45a70c99c1a2"
-    },
-    {
-      "lineId": "line-b07661f6-88a9-46c6-92ba-45a70c99c1a2-ffdfbc30-c2a0-423c-8325-d75cc7301392-17df",
-      "fromNodeId": "b07661f6-88a9-46c6-92ba-45a70c99c1a2",
-      "toNodeId": "ffdfbc30-c2a0-423c-8325-d75cc7301392"
-    },
-    {
-      "lineId": "line-ffdfbc30-c2a0-423c-8325-d75cc7301392-f19bd9c6-55f2-443a-b275-e3cfdd2ad953-b6c7",
-      "fromNodeId": "ffdfbc30-c2a0-423c-8325-d75cc7301392",
-      "toNodeId": "f19bd9c6-55f2-443a-b275-e3cfdd2ad953"
-    },
-    {
-      "lineId": "line-ffdfbc30-c2a0-423c-8325-d75cc7301392-af8d7408-671a-4ecc-9ac3-e3183d1f474d-8873",
-      "fromNodeId": "ffdfbc30-c2a0-423c-8325-d75cc7301392",
-      "toNodeId": "af8d7408-671a-4ecc-9ac3-e3183d1f474d"
-    },
-    {
-      "lineId": "line-af8d7408-671a-4ecc-9ac3-e3183d1f474d-b525d4f3-4b41-4cc9-8399-e546c4489d25-1606",
-      "fromNodeId": "af8d7408-671a-4ecc-9ac3-e3183d1f474d",
-      "toNodeId": "b525d4f3-4b41-4cc9-8399-e546c4489d25"
-    },
-    {
-      "lineId": "line-f19bd9c6-55f2-443a-b275-e3cfdd2ad953-4ec70c42-1c66-4a80-910f-9ab311a92d7e-b598",
-      "fromNodeId": "f19bd9c6-55f2-443a-b275-e3cfdd2ad953",
-      "toNodeId": "4ec70c42-1c66-4a80-910f-9ab311a92d7e"
-    },
-    {
-      "lineId": "line-ae5e1216-107f-476a-9725-518e4a03eb71-021fbbfa-e137-403a-8690-48c9f9afeda0-5d4b",
-      "fromNodeId": "ae5e1216-107f-476a-9725-518e4a03eb71",
-      "toNodeId": "021fbbfa-e137-403a-8690-48c9f9afeda0"
-    },
-    {
-      "lineId": "line-ae5e1216-107f-476a-9725-518e4a03eb71-ae50f098-7d0f-4038-96e4-37b036732f41-8077",
-      "fromNodeId": "ae5e1216-107f-476a-9725-518e4a03eb71",
-      "toNodeId": "ae50f098-7d0f-4038-96e4-37b036732f41"
-    },
-    {
-      "lineId": "line-ae50f098-7d0f-4038-96e4-37b036732f41-7010146b-751a-403e-a7c4-1459af14d62f-5791",
-      "fromNodeId": "ae50f098-7d0f-4038-96e4-37b036732f41",
-      "toNodeId": "7010146b-751a-403e-a7c4-1459af14d62f"
-    },
-    {
-      "lineId": "line-021fbbfa-e137-403a-8690-48c9f9afeda0-7010146b-751a-403e-a7c4-1459af14d62f-509d",
-      "fromNodeId": "021fbbfa-e137-403a-8690-48c9f9afeda0",
-      "toNodeId": "7010146b-751a-403e-a7c4-1459af14d62f"
-    },
     {
       "lineId": "line-ca05a20c-deb2-4653-81f1-f20ad72fbb17-96cd9d91-9be6-4d8e-97f8-05c41f3da6c4-f440",
       "fromNodeId": "ca05a20c-deb2-4653-81f1-f20ad72fbb17",
