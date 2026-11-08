@@ -1,0 +1,250 @@
+{
+  "nodes": [
+    {
+      "id": "d6a6abc6-ac5a-4997-9467-7543ee074e4a",
+      "type": "database",
+      "title": "proveedores",
+      "subtitle": "Formulario Dinámico",
+      "x": 183.94790649414062,
+      "y": 22.94011688232422,
+      "icon": "fas fa-database",
+      "dbConfig": {
+        "host": "localhost",
+        "port": "",
+        "username": "root",
+        "password": "",
+        "dbName": "adquisicion_insumos",
+        "tableName": "proveedores",
+        "fields": [
+          {
+            "key": "id_proveedor",
+            "value": "int(11)"
+          },
+          {
+            "key": "proveedor_nombre",
+            "value": "varchar(190)"
+          }
+        ]
+      },
+      "sendDataConfig": {}
+    },
+    {
+      "id": "becc6920-30a3-4ec1-828d-caf8890a826e",
+      "type": "crud-api",
+      "title": "ProveedoresAPI",
+      "subtitle": "Formulario Dinámico",
+      "x": 445.9791259765625,
+      "y": 22.966148376464844,
+      "icon": "fas fa-laptop-code",
+      "apiConfig": {
+        "action": "generate",
+        "host": "localhost",
+        "port": "3306",
+        "username": "root",
+        "password": "",
+        "dbName": "adquisicion_insumos",
+        "tableName": "proveedores"
+      },
+      "sendDataConfig": {},
+      "generatedCode": "<?php\n// API REST Autogenerada con Token para la tabla 'proveedores'\nheader('Content-Type: application/json');\nheader('Access-Control-Allow-Origin: *');\nheader('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');\nheader('Access-Control-Allow-Headers: Content-Type, Authorization');\n\nif ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { exit(0); }\n\n// Token de acceso requerido en la cabecera Authorization: Bearer <token>\ndefine('API_TOKEN', 'token_e52d1fea2ec743cd8cb96334609cd199');\n\n$headers = apache_request_headers();\n$authHeader = $headers['Authorization'] ?? $headers['authorization'] ?? '';\n$tokenValido = false;\n\nif (preg_match('/Bearer\\s(\\S+)/', $authHeader, $matches)) {\n    if ($matches[1] === API_TOKEN) {\n        $tokenValido = true;\n    }\n}\n\nif (!$tokenValido) {\n    http_response_code(401);\n    echo json_encode(['success' => false, 'error' => 'Acceso no autorizado. Token inválido o ausente.']);\n    exit();\n}\n\n$pdo = new PDO('mysql:host=localhost;port=3306;dbname=adquisicion_insumos;charset=utf8mb4', 'root', '', [\n    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,\n    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC\n]);\n\n$method = $_SERVER['REQUEST_METHOD'];\n$input = json_decode(file_get_contents('php://input'), true);\n$id = $_GET['id_proveedor'] ?? null;\n\nswitch ($method) {\n    case 'GET':\n        if ($id) {\n            $stmt = $pdo->prepare('SELECT * FROM `proveedores` WHERE `id_proveedor` = ?');\n            $stmt->execute([$id]);\n            echo json_encode($stmt->fetch() ?: ['message' => 'Registro no encontrado']);\n        } else {\n            $stmt = $pdo->query('SELECT * FROM `proveedores`');\n            echo json_encode($stmt->fetchAll());\n        }\n        break;\n\n    case 'POST':\n        $sql = 'INSERT INTO `proveedores` (`proveedor_nombre`) VALUES (:proveedor_nombre)';\n        $stmt = $pdo->prepare($sql);\n        $stmt->execute($input);\n        echo json_encode(['success' => true, 'id_proveedor' => $pdo->lastInsertId()]);\n        break;\n\n    case 'PUT':\n        if (!$id) { echo json_encode(['error' => 'Se requiere el campo id_proveedor']); break; }\n        $sql = 'UPDATE `proveedores` SET `proveedor_nombre` = :proveedor_nombre WHERE `id_proveedor` = :id_proveedor';\n        $input['id_proveedor'] = $id;\n        $stmt = $pdo->prepare($sql);\n        $stmt->execute($input);\n        echo json_encode(['success' => true, 'updated' => $stmt->rowCount()]);\n        break;\n\n    case 'DELETE':\n        if (!$id) { echo json_encode(['error' => 'Se requiere el campo id_proveedor']); break; }\n        $stmt = $pdo->prepare('DELETE FROM `proveedores` WHERE `id_proveedor` = ?');\n        $stmt->execute([$id]);\n        echo json_encode(['success' => true, 'deleted' => $stmt->rowCount()]);\n        break;\n}\n"
+    },
+    {
+      "id": "e112e6cf-c2d6-4fb3-bc70-98113bc47cca",
+      "type": "crud-client",
+      "title": "APIClient",
+      "subtitle": "Formulario Dinámico",
+      "x": 859.9869384765625,
+      "y": 417.97916412353516,
+      "icon": "fas fa-plug",
+      "clientConfig": {
+        "action": "generate_client",
+        "endpointUrl": "http://localhost/myflow/examples/adquisicion_insumos/public/api/ProveedoresApi.php",
+        "token": "token_e52d1fea2ec743cd8cb96334609cd199",
+        "primaryKey": "id_proveedor",
+        "clientLanguage": "php"
+      },
+      "sendDataConfig": {},
+      "generatedClientCode": "<?php\n/**\n * Cliente PHP cURL autogenerado para consumir la API\n * Endpoint: http://localhost/myflow/examples/adquisicion_insumos/public/api/ProveedoresApi.php\n */\n\nclass ApiClient {\n    private $baseUrl;\n    private $token;\n    private $primaryKey;\n\n    public function __construct($baseUrl = 'http://localhost/myflow/examples/adquisicion_insumos/public/api/ProveedoresApi.php', $token = 'token_e52d1fea2ec743cd8cb96334609cd199', $primaryKey = 'id_proveedor') {\n        $this->baseUrl = $baseUrl;\n        $this->token = $token;\n        $this->primaryKey = $primaryKey;\n    }\n\n    private function send($method, $data = null, $id = null) {\n        $url = $this->baseUrl;\n        if ($id !== null) {\n            $url .= '?' . $this->primaryKey . '=' . $id;\n        }\n\n        $ch = curl_init($url);\n        $headers = [\n            'Content-Type: application/json',\n            'Authorization: Bearer ' . $this->token\n        ];\n\n        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);\n        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\n\n        if ($data !== null && ($method === 'POST' || $method === 'PUT')) {\n            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));\n        }\n\n        $response = curl_exec($ch);\n        curl_close($ch);\n        return json_decode($response, true);\n    }\n\n    public function getAll() { return $this->send('GET'); }\n    public function getById($id) { return $this->send('GET', null, $id); }\n    public function create($data) { return $this->send('POST', $data); }\n    public function update($id, $data) { return $this->send('PUT', $data, $id); }\n    public function delete($id) { return $this->send('DELETE', null, $id); }\n}\n"
+    },
+    {
+      "id": "9f69e869-ddbb-4abb-b0a6-3c0c98fe9c21",
+      "type": "case-uses",
+      "title": "CreaCasosUso",
+      "subtitle": "Formulario Dinámico",
+      "x": 1277.942626953125,
+      "y": 400.96094512939453,
+      "icon": "fas fa-solid fa-rss",
+      "caseUsesConfig": {
+        "title": "Envío POST",
+        "description": "caso de uso de proveedores",
+        "status": "completed",
+        "endpointUrl": "http://localhost/myflow/public/controllers/generate_case_uses.php",
+        "targetServiceEndpoint": "http://localhost/myflow/examples/adquisicion_insumos/public/api/PedidosApi.php",
+        "targetServiceTokenVal": "token_1fb2e703630c771e822959ffa07e84a3",
+        "db": "adquisicion_insumos",
+        "tableName": "pedidos",
+        "primaryKey": "id_pedido",
+        "tsClientFilePath": "examples/adquisicion_insumos/public/"
+      },
+      "sendDataConfig": {}
+    },
+    {
+      "id": "3b236f61-542a-4e08-82b1-7dd258a99d0c",
+      "type": "send-data",
+      "title": "CreaProveedor",
+      "subtitle": "Tabla: proveedores",
+      "x": 714.6328125,
+      "y": 28.42967987060547,
+      "icon": "fas fa-paper-plane",
+      "sendDataConfig": {
+        "endpointUrl": "http://localhost/myflow/examples/adquisicion_insumos/public/consume_proveedores_create.php",
+        "dbName": "adquisicion_insumos",
+        "tableName": "proveedores",
+        "formFields": [
+          {
+            "Field": "proveedor_nombre",
+            "Type": "VARCHAR",
+            "value": "ivan"
+          }
+        ]
+      }
+    },
+    {
+      "id": "5cf970d9-2d44-453f-8208-c9035009eda1",
+      "type": "database",
+      "title": "pedidos",
+      "subtitle": "Formulario Dinámico",
+      "x": 184.9635009765625,
+      "y": 194.97136688232422,
+      "icon": "fas fa-database",
+      "dbConfig": {
+        "host": "localhost",
+        "port": "",
+        "username": "root",
+        "password": "",
+        "dbName": "adquisicion_insumos",
+        "tableName": "pedidos",
+        "fields": [
+          {
+            "key": "id_pedido",
+            "value": "int(11)"
+          },
+          {
+            "key": "proveedor_id",
+            "value": "int(11)"
+          }
+        ]
+      },
+      "sendDataConfig": {}
+    },
+    {
+      "id": "38067d9a-3d5b-44d5-bc9e-43fb99fa24ef",
+      "type": "send-data",
+      "title": "CreaPedido",
+      "subtitle": "Formulario Dinámico",
+      "x": 711.9791259765625,
+      "y": 211.97396087646484,
+      "icon": "fas fa-paper-plane",
+      "sendDataConfig": {}
+    },
+    {
+      "id": "a73bde30-52f1-4b1e-ad77-6887ed26b9a7",
+      "type": "crud-api",
+      "title": "PedidosAPI",
+      "subtitle": "Formulario Dinámico",
+      "x": 450.9609375,
+      "y": 198.96092987060547,
+      "icon": "fas fa-laptop-code",
+      "apiConfig": {
+        "action": "generate",
+        "host": "localhost",
+        "port": "3306",
+        "username": "root",
+        "password": "",
+        "dbName": "adquisicion_insumos",
+        "tableName": "pedidos"
+      },
+      "sendDataConfig": {},
+      "generatedCode": "<?php\n// API REST Autogenerada con Token para la tabla 'pedidos'\nheader('Content-Type: application/json');\nheader('Access-Control-Allow-Origin: *');\nheader('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');\nheader('Access-Control-Allow-Headers: Content-Type, Authorization');\n\nif ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { exit(0); }\n\n// Token de acceso requerido en la cabecera Authorization: Bearer <token>\ndefine('API_TOKEN', 'token_1fb2e703630c771e822959ffa07e84a3');\n\n$headers = apache_request_headers();\n$authHeader = $headers['Authorization'] ?? $headers['authorization'] ?? '';\n$tokenValido = false;\n\nif (preg_match('/Bearer\\s(\\S+)/', $authHeader, $matches)) {\n    if ($matches[1] === API_TOKEN) {\n        $tokenValido = true;\n    }\n}\n\nif (!$tokenValido) {\n    http_response_code(401);\n    echo json_encode(['success' => false, 'error' => 'Acceso no autorizado. Token inválido o ausente.']);\n    exit();\n}\n\n$pdo = new PDO('mysql:host=localhost;port=3306;dbname=adquisicion_insumos;charset=utf8mb4', 'root', '', [\n    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,\n    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC\n]);\n\n$method = $_SERVER['REQUEST_METHOD'];\n$input = json_decode(file_get_contents('php://input'), true);\n$id = $_GET['id_pedido'] ?? null;\n\nswitch ($method) {\n    case 'GET':\n        if ($id) {\n            $stmt = $pdo->prepare('SELECT * FROM `pedidos` WHERE `id_pedido` = ?');\n            $stmt->execute([$id]);\n            echo json_encode($stmt->fetch() ?: ['message' => 'Registro no encontrado']);\n        } else {\n            $stmt = $pdo->query('SELECT * FROM `pedidos`');\n            echo json_encode($stmt->fetchAll());\n        }\n        break;\n\n    case 'POST':\n        $sql = 'INSERT INTO `pedidos` (`proveedor_id`) VALUES (:proveedor_id)';\n        $stmt = $pdo->prepare($sql);\n        $stmt->execute($input);\n        echo json_encode(['success' => true, 'id_pedido' => $pdo->lastInsertId()]);\n        break;\n\n    case 'PUT':\n        if (!$id) { echo json_encode(['error' => 'Se requiere el campo id_pedido']); break; }\n        $sql = 'UPDATE `pedidos` SET `proveedor_id` = :proveedor_id WHERE `id_pedido` = :id_pedido';\n        $input['id_pedido'] = $id;\n        $stmt = $pdo->prepare($sql);\n        $stmt->execute($input);\n        echo json_encode(['success' => true, 'updated' => $stmt->rowCount()]);\n        break;\n\n    case 'DELETE':\n        if (!$id) { echo json_encode(['error' => 'Se requiere el campo id_pedido']); break; }\n        $stmt = $pdo->prepare('DELETE FROM `pedidos` WHERE `id_pedido` = ?');\n        $stmt->execute([$id]);\n        echo json_encode(['success' => true, 'deleted' => $stmt->rowCount()]);\n        break;\n}\n"
+    },
+    {
+      "id": "394c63a3-1cb4-4573-afda-c7b430aa2384",
+      "type": "database",
+      "title": "creaTabla",
+      "subtitle": "Formulario Dinámico",
+      "x": 191.9739532470703,
+      "y": 581.9713363647461,
+      "icon": "fas fa-database",
+      "dbConfig": {},
+      "sendDataConfig": {}
+    },
+    {
+      "id": "f7117179-5142-4376-80f4-b47e01e546cf",
+      "type": "crud-api",
+      "title": "CreateAPI",
+      "subtitle": "Formulario Dinámico",
+      "x": 435.9869384765625,
+      "y": 575.9895858764648,
+      "icon": "fas fa-laptop-code",
+      "apiConfig": {},
+      "sendDataConfig": {}
+    },
+    {
+      "id": "ff647428-8c5f-4ef8-9064-9e68060f6a42",
+      "type": "send-data",
+      "title": "APIPrueba",
+      "subtitle": "Formulario Dinámico",
+      "x": 1284.973876953125,
+      "y": 580.9687423706055,
+      "icon": "fas fa-paper-plane",
+      "sendDataConfig": {}
+    }
+  ],
+  "connections": [
+    {
+      "lineId": "line-e112e6cf-c2d6-4fb3-bc70-98113bc47cca-9f69e869-ddbb-4abb-b0a6-3c0c98fe9c21-2ed1",
+      "fromNodeId": "e112e6cf-c2d6-4fb3-bc70-98113bc47cca",
+      "toNodeId": "9f69e869-ddbb-4abb-b0a6-3c0c98fe9c21"
+    },
+    {
+      "lineId": "line-becc6920-30a3-4ec1-828d-caf8890a826e-3b236f61-542a-4e08-82b1-7dd258a99d0c-a649",
+      "fromNodeId": "becc6920-30a3-4ec1-828d-caf8890a826e",
+      "toNodeId": "3b236f61-542a-4e08-82b1-7dd258a99d0c"
+    },
+    {
+      "lineId": "line-d6a6abc6-ac5a-4997-9467-7543ee074e4a-becc6920-30a3-4ec1-828d-caf8890a826e-f413",
+      "fromNodeId": "d6a6abc6-ac5a-4997-9467-7543ee074e4a",
+      "toNodeId": "becc6920-30a3-4ec1-828d-caf8890a826e"
+    },
+    {
+      "lineId": "line-a73bde30-52f1-4b1e-ad77-6887ed26b9a7-38067d9a-3d5b-44d5-bc9e-43fb99fa24ef-8294",
+      "fromNodeId": "a73bde30-52f1-4b1e-ad77-6887ed26b9a7",
+      "toNodeId": "38067d9a-3d5b-44d5-bc9e-43fb99fa24ef"
+    },
+    {
+      "lineId": "line-394c63a3-1cb4-4573-afda-c7b430aa2384-f7117179-5142-4376-80f4-b47e01e546cf-db38",
+      "fromNodeId": "394c63a3-1cb4-4573-afda-c7b430aa2384",
+      "toNodeId": "f7117179-5142-4376-80f4-b47e01e546cf"
+    },
+    {
+      "lineId": "line-5cf970d9-2d44-453f-8208-c9035009eda1-a73bde30-52f1-4b1e-ad77-6887ed26b9a7-6d3e",
+      "fromNodeId": "5cf970d9-2d44-453f-8208-c9035009eda1",
+      "toNodeId": "a73bde30-52f1-4b1e-ad77-6887ed26b9a7"
+    },
+    {
+      "lineId": "line-f7117179-5142-4376-80f4-b47e01e546cf-e112e6cf-c2d6-4fb3-bc70-98113bc47cca-d22d",
+      "fromNodeId": "f7117179-5142-4376-80f4-b47e01e546cf",
+      "toNodeId": "e112e6cf-c2d6-4fb3-bc70-98113bc47cca"
+    },
+    {
+      "lineId": "line-f7117179-5142-4376-80f4-b47e01e546cf-ff647428-8c5f-4ef8-9064-9e68060f6a42-dd96",
+      "fromNodeId": "f7117179-5142-4376-80f4-b47e01e546cf",
+      "toNodeId": "ff647428-8c5f-4ef8-9064-9e68060f6a42"
+    },
+    {
+      "lineId": "line-e112e6cf-c2d6-4fb3-bc70-98113bc47cca-ff647428-8c5f-4ef8-9064-9e68060f6a42-3444",
+      "fromNodeId": "e112e6cf-c2d6-4fb3-bc70-98113bc47cca",
+      "toNodeId": "ff647428-8c5f-4ef8-9064-9e68060f6a42"
+    }
+  ]
+}
