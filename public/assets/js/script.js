@@ -69,6 +69,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const caseDescriptionInput = document.getElementById('caseDescription');
     const caseStatusSelect = document.getElementById('caseStatus');
     const caseUsesEndpointInput = document.getElementById('caseUsesEndpoint') || document.getElementById('caseUsesClientEndpointUrl');
+    const targetServiceEndpoint = document.getElementById('targetServiceEndpoint');
+    const targetServiceTokenVal = document.getElementById('targetServiceTokenVal');
+    const targetServiceDB = document.getElementById('targetServiceDB');
+    const tServiceDBTable = document.getElementById('tServiceDBTable');
+    const tsTablePrimaryKey = document.getElementById('tsTablePrimaryKey');
+    const tsClientFilePath = document.getElementById('tsClientFilePath');
 
     // --- Send Data Modal Elements ---
     const sendDataModal = document.getElementById('sendDataModal');
@@ -1107,11 +1113,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 description: caseDescriptionInput ? caseDescriptionInput.value.trim() : '',
                 status: caseStatusSelect ? caseStatusSelect.value : 'pending',
                 endpointUrl: caseUsesEndpointInput ? caseUsesEndpointInput.value.trim() : 'http://localhost/myflow/public/controllers/generate_case_uses.php',
-                primaryKey: 'id_proveedor',
-                tableName: 'pedidos',
-                db: 'test_insumos',
-                targetServiceEndpoint: 'http://localhost/myflow/public/api/insumos/proveedores/',
-                targetServiceTokenVal: 'token_e146b7073904f432bfc121ea3e396708'
+                targetServiceEndpoint: targetServiceEndpoint.value.trim(),
+                targetServiceTokenVal: targetServiceTokenVal.value.trim(),
+                db:                    targetServiceDB.value.trim(),
+                tableName:             tServiceDBTable.value.trim(),
+                primaryKey:            tsTablePrimaryKey.value.trim(),
+                tsClientFilePath:      tsClientFilePath.value.trim()
             };
 
             if (caseConfig.endpointUrl) {

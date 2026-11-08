@@ -31,6 +31,7 @@ $tableName             = $data['tableName'] ?? 'pedidos';
 $db                    = $data['db'] ?? 'test_insumos';
 $targetServiceEndpoint = $data['targetServiceEndpoint'] ?? 'http://localhost/myflow/public/api/insumos/proveedores/';
 $targetServiceTokenVal = $data['targetServiceTokenVal'] ?? 'token_e146b7073904f432bfc121ea3e396708';
+$tsClientFilePath      = $data['tsClientFilePath'];
 
 // Token con el que este cliente se autentica ante el API Intermediario
 $intermediaryToken = 'TU_TOKEN_INTERMEDIARIO_SECRETO';
@@ -55,7 +56,7 @@ foreach ($methods as $targetMethod) {
     $data['tableName'] = $tableName;    
     
     $defaultFileName = 'consume_' . $tableName . '_' . $targetMethod . '.php';
-    $data['outputPath'] = __DIR__ . '/../controllers/' . $defaultFileName;
+    $data['outputPath'] = __DIR__ . "/../../$tsClientFilePath/" . $defaultFileName;
 
     echo "Generando consumidor para método: [{$targetMethod}]...\n";
     $result = $apiClient->create($data);
