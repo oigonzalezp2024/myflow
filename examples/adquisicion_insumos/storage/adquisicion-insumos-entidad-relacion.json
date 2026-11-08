@@ -1,0 +1,368 @@
+{
+  "nodes": [
+    {
+      "id": "d14da605-953f-4446-82ca-e96205e94075",
+      "type": "database",
+      "title": "recep_req_insumos",
+      "subtitle": "Formulario Dinámico",
+      "x": 840,
+      "y": 405,
+      "icon": "fas fa-database",
+      "dbConfig": {},
+      "sendDataConfig": {}
+    },
+    {
+      "id": "ca05a20c-deb2-4653-81f1-f20ad72fbb17",
+      "type": "database",
+      "title": "recep_cotizaciones",
+      "subtitle": "Formulario Dinámico",
+      "x": 840,
+      "y": 577,
+      "icon": "fas fa-database",
+      "dbConfig": {},
+      "sendDataConfig": {}
+    },
+    {
+      "id": "b41a251a-4414-4173-a351-77fb38f5e142",
+      "type": "database",
+      "title": "recep_solicitud_pedido",
+      "subtitle": "Formulario Dinámico",
+      "x": 839,
+      "y": 747,
+      "icon": "fas fa-database",
+      "dbConfig": {},
+      "sendDataConfig": {}
+    },
+    {
+      "id": "d7704cdb-e09e-4d56-ab03-a187114d8980",
+      "type": "database",
+      "title": "recep_estado_pedido",
+      "subtitle": "Formulario Dinámico",
+      "x": 838,
+      "y": 918.5,
+      "icon": "fas fa-database",
+      "dbConfig": {},
+      "sendDataConfig": {}
+    },
+    {
+      "id": "d0d2eb35-8506-468a-b73c-49b078269c22",
+      "type": "database",
+      "title": "cotizaciones",
+      "subtitle": "Formulario Dinámico",
+      "x": 1479,
+      "y": 411,
+      "icon": "fas fa-database",
+      "dbConfig": {},
+      "sendDataConfig": {}
+    },
+    {
+      "id": "96cd9d91-9be6-4d8e-97f8-05c41f3da6c4",
+      "type": "database",
+      "title": "analisis_cotizaciones",
+      "subtitle": "Formulario Dinámico",
+      "x": 1859,
+      "y": 586,
+      "icon": "fas fa-database",
+      "dbConfig": {},
+      "sendDataConfig": {}
+    },
+    {
+      "id": "1ed32bb3-145d-4529-b272-b11f90a7564e",
+      "type": "database",
+      "title": "pedidos",
+      "subtitle": "Formulario Dinámico",
+      "x": 2266,
+      "y": 585,
+      "icon": "fas fa-database",
+      "dbConfig": {},
+      "sendDataConfig": {}
+    },
+    {
+      "id": "6b78a4aa-eee7-483f-9a29-ee1e5a3a7e7b",
+      "type": "database",
+      "title": "notificaciones_pedido",
+      "subtitle": "Formulario Dinámico",
+      "x": 2602,
+      "y": 578,
+      "icon": "fas fa-database",
+      "dbConfig": {},
+      "sendDataConfig": {}
+    },
+    {
+      "id": "d6a6abc6-ac5a-4997-9467-7543ee074e4a",
+      "type": "database",
+      "title": "proveedores",
+      "subtitle": "Formulario Dinámico",
+      "x": 837,
+      "y": 36,
+      "icon": "fas fa-database",
+      "dbConfig": {},
+      "sendDataConfig": {}
+    },
+    {
+      "id": "010cbd19-afb5-43cf-b84b-f160d105b7da",
+      "type": "database",
+      "title": "notificacion_cotizaciones",
+      "subtitle": "Formulario Dinámico",
+      "x": 2585,
+      "y": 405,
+      "icon": "fas fa-database",
+      "dbConfig": {},
+      "sendDataConfig": {}
+    },
+    {
+      "id": "6d00f013-b00e-43d0-b4f3-9e391e5f916f",
+      "type": "database",
+      "title": "vereditos_proveedor",
+      "subtitle": "Formulario Dinámico",
+      "x": 1697,
+      "y": 761,
+      "icon": "fas fa-database",
+      "dbConfig": {},
+      "sendDataConfig": {}
+    },
+    {
+      "id": "b9b25380-fd7a-49b0-883d-688ed4d47bac",
+      "type": "database",
+      "title": "notif_vereditos_proveedor",
+      "subtitle": "Formulario Dinámico",
+      "x": 2582,
+      "y": 748,
+      "icon": "fas fa-database",
+      "dbConfig": {},
+      "sendDataConfig": {}
+    },
+    {
+      "id": "11f98d00-127b-459d-86ae-1f29cfa5457a",
+      "type": "database",
+      "title": "veredictos_gerencia",
+      "subtitle": "Formulario Dinámico",
+      "x": 2268,
+      "y": 921,
+      "icon": "fas fa-database",
+      "dbConfig": {},
+      "sendDataConfig": {}
+    },
+    {
+      "id": "6d8cdea1-0acf-48a2-bea2-de97593a38b6",
+      "type": "database",
+      "title": "notif_vereditos_gerencia",
+      "subtitle": "Formulario Dinámico",
+      "x": 2593,
+      "y": 920,
+      "icon": "fas fa-database",
+      "dbConfig": {},
+      "sendDataConfig": {}
+    },
+    {
+      "id": "bb4710ad-8ff8-4e02-8512-51349cd7bbc1",
+      "type": "database",
+      "title": "recep_veredicto_gerencia",
+      "subtitle": "Formulario Dinámico",
+      "x": 821,
+      "y": 1091,
+      "icon": "fas fa-database",
+      "dbConfig": {},
+      "sendDataConfig": {}
+    },
+    {
+      "id": "263858f5-3dae-4cab-9345-265ad0da1b20",
+      "type": "database",
+      "title": "factura",
+      "subtitle": "Formulario Dinámico",
+      "x": 1698,
+      "y": 1089,
+      "icon": "fas fa-database",
+      "dbConfig": {},
+      "sendDataConfig": {}
+    },
+    {
+      "id": "d49c5fc8-a005-4b27-8d02-d31b256bd0b1",
+      "type": "database",
+      "title": "recep_factura",
+      "subtitle": "Formulario Dinámico",
+      "x": 839,
+      "y": 1264,
+      "icon": "fas fa-database",
+      "dbConfig": {},
+      "sendDataConfig": {}
+    },
+    {
+      "id": "43d2ad64-afc9-47c2-84f4-7838a2beed00",
+      "type": "database",
+      "title": "pagos_facturas",
+      "subtitle": "Formulario Dinámico",
+      "x": 2268,
+      "y": 1191,
+      "icon": "fas fa-database",
+      "dbConfig": {},
+      "sendDataConfig": {}
+    },
+    {
+      "id": "5d509b69-f1a5-4089-a036-a878d074546b",
+      "type": "database",
+      "title": "rechazos_factura",
+      "subtitle": "Formulario Dinámico",
+      "x": 2268,
+      "y": 1369,
+      "icon": "fas fa-database",
+      "dbConfig": {},
+      "sendDataConfig": {}
+    },
+    {
+      "id": "276ce62a-2f82-4a1c-8579-803f5e03aadf",
+      "type": "database",
+      "title": "auditoria_facturas",
+      "subtitle": "Formulario Dinámico",
+      "x": 1989,
+      "y": 1268,
+      "icon": "fas fa-database",
+      "dbConfig": {},
+      "sendDataConfig": {}
+    },
+    {
+      "id": "d9404db9-f395-4dce-b7d9-a312832df6ff",
+      "type": "database",
+      "title": "notificacion_estados_facturas",
+      "subtitle": "Formulario Dinámico",
+      "x": 2554,
+      "y": 1264,
+      "icon": "fas fa-database",
+      "dbConfig": {},
+      "sendDataConfig": {}
+    },
+    {
+      "id": "0a455798-6e90-4df7-97b6-0712279ca226",
+      "type": "database",
+      "title": "envio_factura",
+      "subtitle": "Formulario Dinámico",
+      "x": 2602,
+      "y": 1091,
+      "icon": "fas fa-database",
+      "dbConfig": {},
+      "sendDataConfig": {}
+    }
+  ],
+  "connections": [
+    {
+      "lineId": "line-ca05a20c-deb2-4653-81f1-f20ad72fbb17-96cd9d91-9be6-4d8e-97f8-05c41f3da6c4-f440",
+      "fromNodeId": "ca05a20c-deb2-4653-81f1-f20ad72fbb17",
+      "toNodeId": "96cd9d91-9be6-4d8e-97f8-05c41f3da6c4"
+    },
+    {
+      "lineId": "line-d0d2eb35-8506-468a-b73c-49b078269c22-96cd9d91-9be6-4d8e-97f8-05c41f3da6c4-a9b4",
+      "fromNodeId": "d0d2eb35-8506-468a-b73c-49b078269c22",
+      "toNodeId": "96cd9d91-9be6-4d8e-97f8-05c41f3da6c4"
+    },
+    {
+      "lineId": "line-d14da605-953f-4446-82ca-e96205e94075-d0d2eb35-8506-468a-b73c-49b078269c22-38e8",
+      "fromNodeId": "d14da605-953f-4446-82ca-e96205e94075",
+      "toNodeId": "d0d2eb35-8506-468a-b73c-49b078269c22"
+    },
+    {
+      "lineId": "line-d6a6abc6-ac5a-4997-9467-7543ee074e4a-d0d2eb35-8506-468a-b73c-49b078269c22-a17d",
+      "fromNodeId": "d6a6abc6-ac5a-4997-9467-7543ee074e4a",
+      "toNodeId": "d0d2eb35-8506-468a-b73c-49b078269c22"
+    },
+    {
+      "lineId": "line-d0d2eb35-8506-468a-b73c-49b078269c22-010cbd19-afb5-43cf-b84b-f160d105b7da-9938",
+      "fromNodeId": "d0d2eb35-8506-468a-b73c-49b078269c22",
+      "toNodeId": "010cbd19-afb5-43cf-b84b-f160d105b7da"
+    },
+    {
+      "lineId": "line-96cd9d91-9be6-4d8e-97f8-05c41f3da6c4-1ed32bb3-145d-4529-b272-b11f90a7564e-c9a4",
+      "fromNodeId": "96cd9d91-9be6-4d8e-97f8-05c41f3da6c4",
+      "toNodeId": "1ed32bb3-145d-4529-b272-b11f90a7564e"
+    },
+    {
+      "lineId": "line-1ed32bb3-145d-4529-b272-b11f90a7564e-6b78a4aa-eee7-483f-9a29-ee1e5a3a7e7b-3bf2",
+      "fromNodeId": "1ed32bb3-145d-4529-b272-b11f90a7564e",
+      "toNodeId": "6b78a4aa-eee7-483f-9a29-ee1e5a3a7e7b"
+    },
+    {
+      "lineId": "line-6d00f013-b00e-43d0-b4f3-9e391e5f916f-b9b25380-fd7a-49b0-883d-688ed4d47bac-204d",
+      "fromNodeId": "6d00f013-b00e-43d0-b4f3-9e391e5f916f",
+      "toNodeId": "b9b25380-fd7a-49b0-883d-688ed4d47bac"
+    },
+    {
+      "lineId": "line-b41a251a-4414-4173-a351-77fb38f5e142-6d00f013-b00e-43d0-b4f3-9e391e5f916f-4723",
+      "fromNodeId": "b41a251a-4414-4173-a351-77fb38f5e142",
+      "toNodeId": "6d00f013-b00e-43d0-b4f3-9e391e5f916f"
+    },
+    {
+      "lineId": "line-11f98d00-127b-459d-86ae-1f29cfa5457a-6d8cdea1-0acf-48a2-bea2-de97593a38b6-4ea7",
+      "fromNodeId": "11f98d00-127b-459d-86ae-1f29cfa5457a",
+      "toNodeId": "6d8cdea1-0acf-48a2-bea2-de97593a38b6"
+    },
+    {
+      "lineId": "line-d6a6abc6-ac5a-4997-9467-7543ee074e4a-1ed32bb3-145d-4529-b272-b11f90a7564e-b8d1",
+      "fromNodeId": "d6a6abc6-ac5a-4997-9467-7543ee074e4a",
+      "toNodeId": "1ed32bb3-145d-4529-b272-b11f90a7564e"
+    },
+    {
+      "lineId": "line-96cd9d91-9be6-4d8e-97f8-05c41f3da6c4-11f98d00-127b-459d-86ae-1f29cfa5457a-12c3",
+      "fromNodeId": "96cd9d91-9be6-4d8e-97f8-05c41f3da6c4",
+      "toNodeId": "11f98d00-127b-459d-86ae-1f29cfa5457a"
+    },
+    {
+      "lineId": "line-6d00f013-b00e-43d0-b4f3-9e391e5f916f-11f98d00-127b-459d-86ae-1f29cfa5457a-b362",
+      "fromNodeId": "6d00f013-b00e-43d0-b4f3-9e391e5f916f",
+      "toNodeId": "11f98d00-127b-459d-86ae-1f29cfa5457a"
+    },
+    {
+      "lineId": "line-d6a6abc6-ac5a-4997-9467-7543ee074e4a-6d00f013-b00e-43d0-b4f3-9e391e5f916f-51fb",
+      "fromNodeId": "d6a6abc6-ac5a-4997-9467-7543ee074e4a",
+      "toNodeId": "6d00f013-b00e-43d0-b4f3-9e391e5f916f"
+    },
+    {
+      "lineId": "line-d7704cdb-e09e-4d56-ab03-a187114d8980-11f98d00-127b-459d-86ae-1f29cfa5457a-6d62",
+      "fromNodeId": "d7704cdb-e09e-4d56-ab03-a187114d8980",
+      "toNodeId": "11f98d00-127b-459d-86ae-1f29cfa5457a"
+    },
+    {
+      "lineId": "line-bb4710ad-8ff8-4e02-8512-51349cd7bbc1-263858f5-3dae-4cab-9345-265ad0da1b20-7a89",
+      "fromNodeId": "bb4710ad-8ff8-4e02-8512-51349cd7bbc1",
+      "toNodeId": "263858f5-3dae-4cab-9345-265ad0da1b20"
+    },
+    {
+      "lineId": "line-d6a6abc6-ac5a-4997-9467-7543ee074e4a-263858f5-3dae-4cab-9345-265ad0da1b20-1c18",
+      "fromNodeId": "d6a6abc6-ac5a-4997-9467-7543ee074e4a",
+      "toNodeId": "263858f5-3dae-4cab-9345-265ad0da1b20"
+    },
+    {
+      "lineId": "line-d49c5fc8-a005-4b27-8d02-d31b256bd0b1-276ce62a-2f82-4a1c-8579-803f5e03aadf-d38e",
+      "fromNodeId": "d49c5fc8-a005-4b27-8d02-d31b256bd0b1",
+      "toNodeId": "276ce62a-2f82-4a1c-8579-803f5e03aadf"
+    },
+    {
+      "lineId": "line-263858f5-3dae-4cab-9345-265ad0da1b20-276ce62a-2f82-4a1c-8579-803f5e03aadf-63bf",
+      "fromNodeId": "263858f5-3dae-4cab-9345-265ad0da1b20",
+      "toNodeId": "276ce62a-2f82-4a1c-8579-803f5e03aadf"
+    },
+    {
+      "lineId": "line-276ce62a-2f82-4a1c-8579-803f5e03aadf-43d2ad64-afc9-47c2-84f4-7838a2beed00-b81e",
+      "fromNodeId": "276ce62a-2f82-4a1c-8579-803f5e03aadf",
+      "toNodeId": "43d2ad64-afc9-47c2-84f4-7838a2beed00"
+    },
+    {
+      "lineId": "line-276ce62a-2f82-4a1c-8579-803f5e03aadf-5d509b69-f1a5-4089-a036-a878d074546b-9684",
+      "fromNodeId": "276ce62a-2f82-4a1c-8579-803f5e03aadf",
+      "toNodeId": "5d509b69-f1a5-4089-a036-a878d074546b"
+    },
+    {
+      "lineId": "line-43d2ad64-afc9-47c2-84f4-7838a2beed00-d9404db9-f395-4dce-b7d9-a312832df6ff-4428",
+      "fromNodeId": "43d2ad64-afc9-47c2-84f4-7838a2beed00",
+      "toNodeId": "d9404db9-f395-4dce-b7d9-a312832df6ff"
+    },
+    {
+      "lineId": "line-5d509b69-f1a5-4089-a036-a878d074546b-d9404db9-f395-4dce-b7d9-a312832df6ff-9364",
+      "fromNodeId": "5d509b69-f1a5-4089-a036-a878d074546b",
+      "toNodeId": "d9404db9-f395-4dce-b7d9-a312832df6ff"
+    },
+    {
+      "lineId": "line-263858f5-3dae-4cab-9345-265ad0da1b20-0a455798-6e90-4df7-97b6-0712279ca226-44a3",
+      "fromNodeId": "263858f5-3dae-4cab-9345-265ad0da1b20",
+      "toNodeId": "0a455798-6e90-4df7-97b6-0712279ca226"
+    }
+  ]
+}

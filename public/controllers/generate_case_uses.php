@@ -1,80 +1,51 @@
 <?php
-declare(strict_types=1);
+// Configuración de cabeceras para CORS
+header("Access-Control-Allow-Origin: *"); // AJUSTA ESTO EN PRODUCCIÓN POR SEGURIDAD
+header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
+header("Content-Type: application/json");
 
-/**
- * Cliente PHP cURL autogenerado para consumir el API Gateway / Intermediario
- */
-class ApiClientPHP {
-    private $baseUrl;
-    private $token;
-    private $primaryKey;
+require __DIR__ . '/../clients/ApiClient.php';
 
-    public function __construct(
-        $baseUrl = 'http://localhost/myflow/public/controllers/consumo.php', 
-        $token = 'TU_TOKEN_INTERMEDIARIO_SECRETO', 
-        $primaryKey = 'id_user'
-    ) {
-        $this->baseUrl = $baseUrl;
-        $this->token = $token;
-        $this->primaryKey = $primaryKey;
-    }
-
-    private function send($method, $data = null, $id = null) {
-        $url = $this->baseUrl;
-        if ($id !== null) {
-            $url .= '?' . $this->primaryKey . '=' . $id;
-        }
-
-        $ch = curl_init($url);
-        $headers = [
-            'Content-Type: application/json',
-            'Authorization: Bearer ' . $this->token
-        ];
-
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-
-        if ($data !== null && ($method === 'POST' || $method === 'PUT')) {
-            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-        }
-
-        $response = curl_exec($ch);
-        
-        if (curl_errno($ch)) {
-            $error = curl_error($ch);
-            curl_close($ch);
-            return ['success' => false, 'message' => 'Error cURL: ' . $error];
-        }
-
-        curl_close($ch);
-        return json_decode($response, true);
-    }
-
-    public function getAll() { return $this->send('GET'); }
-    public function getById($id) { return $this->send('GET', null, $id); }
-    public function create($data) { return $this->send('POST', $data); }
-    public function update($id, $data) { return $this->send('PUT', $data, $id); }
-    public function delete($id) { return $this->send('DELETE', null, $id); }
+// Manejo de la petición OPTIONS (pre-flight request)
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    http_response_code(200);
+    exit();
 }
+
+// Obtener y decodificar los datos JSON
+$input = file_get_contents('php://input');
+$data = json_decode($input, true);
+
+// Validar los datos recibidos
+if (
+    !isset($data['title'], $data['description'], $data['status'], $data['endpointUrl'])
+) {
+    http_response_code(400); // Bad Request
+    echo json_encode(['success' => false, 'message' => $input]);
+    exit();
+}
+
+$primaryKey            = $data['title'] ?? 'id_proveedor';
+$tableName             = $data['tableName'] ?? 'pedidos';
+$db                    = $data['db'] ?? 'test_insumos';
+$targetServiceEndpoint = $data['targetServiceEndpoint'] ?? 'http://localhost/myflow/public/api/insumos/proveedores/';
+$targetServiceTokenVal = $data['targetServiceTokenVal'] ?? 'token_e146b7073904f432bfc121ea3e396708';
+$tsClientFilePath      = $data['tsClientFilePath'];
 
 // Token con el que este cliente se autentica ante el API Intermediario
 $intermediaryToken = 'TU_TOKEN_INTERMEDIARIO_SECRETO';
 $endpointIntermediary = 'http://localhost/myflow/public/controllers/consumo.php';
-$primaryKey = 'id_proveedor';
 
 // Instanciamos el cliente apuntando al intermediario con su respectivo token de acceso
-$apiClient = new ApiClientPHP($endpointIntermediary, $intermediaryToken, $primaryKey);
+$apiClient = new ApiClient($endpointIntermediary, $intermediaryToken, $primaryKey);
 
 $methods = ['getAll', 'getById', 'create', 'update', 'delete'];
-$tableName = 'pedidos';
-$targetServiceEndpoint = 'http://localhost/myflow/public/api/insumos/proveedores/';
-$targetServiceTokenVal = 'token_e146b7073904f432bfc121ea3e396708'; // Token que usará el código generado
 
 foreach ($methods as $targetMethod) {
     $data = [];
     $data['host'] = 'localhost';
-    $data['db'] = 'test_insumos';
+    $data['db'] = $db;
     $data['action'] = 'generate_consumer';
     $data['endpointUrl'] = $targetServiceEndpoint;
     
@@ -85,7 +56,7 @@ foreach ($methods as $targetMethod) {
     $data['tableName'] = $tableName;    
     
     $defaultFileName = 'consume_' . $tableName . '_' . $targetMethod . '.php';
-    $data['outputPath'] = __DIR__ . '/../controllers/' . $defaultFileName;
+    $data['outputPath'] = __DIR__ . "/../../$tsClientFilePath/" . $defaultFileName;
 
     echo "Generando consumidor para método: [{$targetMethod}]...\n";
     $result = $apiClient->create($data);
