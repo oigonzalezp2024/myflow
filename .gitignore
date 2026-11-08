@@ -19,11 +19,6 @@ Desktop.ini
 config.php
 .env
 
-# Archivos de bases de datos locales exportados o volcados por error
-*.sql
-*.sqlite
-*.sqlite3
-
 # Archivos de logs de errores del servidor o PHP
 *.log
 error_log

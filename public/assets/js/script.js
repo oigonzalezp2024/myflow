@@ -69,6 +69,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const caseDescriptionInput = document.getElementById('caseDescription');
     const caseStatusSelect = document.getElementById('caseStatus');
     const caseUsesEndpointInput = document.getElementById('caseUsesEndpoint') || document.getElementById('caseUsesClientEndpointUrl');
+    const targetServiceEndpoint = document.getElementById('targetServiceEndpoint');
+    const targetServiceTokenVal = document.getElementById('targetServiceTokenVal');
+    const targetServiceDB = document.getElementById('targetServiceDB');
+    const tServiceDBTable = document.getElementById('tServiceDBTable');
+    const tsTablePrimaryKey = document.getElementById('tsTablePrimaryKey');
+    const tsClientFilePath = document.getElementById('tsClientFilePath');
 
     // --- Send Data Modal Elements ---
     const sendDataModal = document.getElementById('sendDataModal');
@@ -1106,7 +1112,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 title: caseTitleInput ? caseTitleInput.value.trim() : 'Case Uses',
                 description: caseDescriptionInput ? caseDescriptionInput.value.trim() : '',
                 status: caseStatusSelect ? caseStatusSelect.value : 'pending',
-                endpointUrl: caseUsesEndpointInput ? caseUsesEndpointInput.value.trim() : 'http://localhost/myflow/public/controllers/generate_case_uses.php'
+                endpointUrl: caseUsesEndpointInput ? caseUsesEndpointInput.value.trim() : 'http://localhost/myflow/public/controllers/generate_case_uses.php',
+                targetServiceEndpoint: targetServiceEndpoint.value.trim(),
+                targetServiceTokenVal: targetServiceTokenVal.value.trim(),
+                db:                    targetServiceDB.value.trim(),
+                tableName:             tServiceDBTable.value.trim(),
+                primaryKey:            tsTablePrimaryKey.value.trim(),
+                tsClientFilePath:      tsClientFilePath.value.trim()
             };
 
             if (caseConfig.endpointUrl) {
