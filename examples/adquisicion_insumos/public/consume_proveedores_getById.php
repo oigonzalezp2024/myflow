@@ -7,7 +7,7 @@ require_once __DIR__ . '/../clients/ApiClient.php';
 
 // 1. Configuración de conexión y credenciales
 $baseUrl = 'http://localhost/myflow/examples/adquisicion_insumos/public/api/ProveedoresApi.php';
-$token = 'token_d9eb87e29f6bc27cefc7fe8a2a403d0a';
+$token = 'token_fcef29077f44ad4584317ef1af4d1998';
 $primaryKey = 'id_proveedor';
 
 $api = new ApiClient($baseUrl, $token, $primaryKey);
