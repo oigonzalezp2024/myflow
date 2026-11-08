@@ -9,7 +9,7 @@ class ApiClient {
     private $token;
     private $primaryKey;
 
-    public function __construct($baseUrl = 'http://localhost/myflow/adquisicion_insumos/public/api/ProveedoresApi.php', $token = 'token_b8184a98c7143a5dacc45fda5c82e5d5', $primaryKey = 'id_proveedor') {
+    public function __construct($baseUrl = 'http://localhost/myflow/adquisicion_insumos/public/api/ProveedoresApi.php', $token = 'token_d9eb87e29f6bc27cefc7fe8a2a403d0a', $primaryKey = 'id_proveedor') {
         $this->baseUrl = $baseUrl;
         $this->token = $token;
         $this->primaryKey = $primaryKey;
