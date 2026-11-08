@@ -5,8 +5,8 @@
       "type": "database",
       "title": "proveedores",
       "subtitle": "Formulario Dinámico",
-      "x": 183.94790649414062,
-      "y": 22.94011688232422,
+      "x": 302.9479064941406,
+      "y": 138.94011688232422,
       "icon": "fas fa-database",
       "dbConfig": {
         "host": "localhost",
@@ -33,8 +33,8 @@
       "type": "crud-api",
       "title": "ProveedoresAPI",
       "subtitle": "Formulario Dinámico",
-      "x": 445.9791259765625,
-      "y": 22.966148376464844,
+      "x": 564.9791259765625,
+      "y": 138.96614837646484,
       "icon": "fas fa-laptop-code",
       "apiConfig": {
         "action": "generate",
@@ -53,8 +53,8 @@
       "type": "crud-client",
       "title": "APIClient",
       "subtitle": "Formulario Dinámico",
-      "x": 859.9869384765625,
-      "y": 417.97916412353516,
+      "x": 978.9869384765625,
+      "y": 533.9791641235352,
       "icon": "fas fa-plug",
       "clientConfig": {
         "action": "generate_client",
@@ -71,8 +71,8 @@
       "type": "case-uses",
       "title": "CreaCasosUso",
       "subtitle": "Formulario Dinámico",
-      "x": 1277.942626953125,
-      "y": 400.96094512939453,
+      "x": 1396.942626953125,
+      "y": 516.9609451293945,
       "icon": "fas fa-solid fa-rss",
       "caseUsesConfig": {
         "title": "Envío POST",
@@ -93,8 +93,8 @@
       "type": "send-data",
       "title": "CreaProveedor",
       "subtitle": "Tabla: proveedores",
-      "x": 714.6328125,
-      "y": 28.42967987060547,
+      "x": 833.6328125,
+      "y": 144.42967987060547,
       "icon": "fas fa-paper-plane",
       "sendDataConfig": {
         "endpointUrl": "http://localhost/myflow/examples/adquisicion_insumos/public/consume_proveedores_create.php",
@@ -114,8 +114,8 @@
       "type": "database",
       "title": "pedidos",
       "subtitle": "Formulario Dinámico",
-      "x": 184.9635009765625,
-      "y": 194.97136688232422,
+      "x": 303.9635009765625,
+      "y": 310.9713668823242,
       "icon": "fas fa-database",
       "dbConfig": {
         "host": "localhost",
@@ -141,19 +141,30 @@
       "id": "38067d9a-3d5b-44d5-bc9e-43fb99fa24ef",
       "type": "send-data",
       "title": "CreaPedido",
-      "subtitle": "Formulario Dinámico",
-      "x": 711.9791259765625,
-      "y": 211.97396087646484,
+      "subtitle": "Tabla: pedidos",
+      "x": 830.9791259765625,
+      "y": 327.97396087646484,
       "icon": "fas fa-paper-plane",
-      "sendDataConfig": {}
+      "sendDataConfig": {
+        "endpointUrl": "http://localhost/myflow/examples/adquisicion_insumos/public/consume_pedidos_create.php",
+        "dbName": "adquisicion_insumos",
+        "tableName": "pedidos",
+        "formFields": [
+          {
+            "Field": "proveedor_id",
+            "Type": "VARCHAR",
+            "value": "2222"
+          }
+        ]
+      }
     },
     {
       "id": "a73bde30-52f1-4b1e-ad77-6887ed26b9a7",
       "type": "crud-api",
       "title": "PedidosAPI",
       "subtitle": "Formulario Dinámico",
-      "x": 450.9609375,
-      "y": 198.96092987060547,
+      "x": 569.9609375,
+      "y": 314.96092987060547,
       "icon": "fas fa-laptop-code",
       "apiConfig": {
         "action": "generate",
@@ -172,8 +183,8 @@
       "type": "database",
       "title": "creaTabla",
       "subtitle": "Formulario Dinámico",
-      "x": 191.9739532470703,
-      "y": 581.9713363647461,
+      "x": 310.9739532470703,
+      "y": 697.9713363647461,
       "icon": "fas fa-database",
       "dbConfig": {},
       "sendDataConfig": {}
@@ -183,8 +194,8 @@
       "type": "crud-api",
       "title": "CreateAPI",
       "subtitle": "Formulario Dinámico",
-      "x": 435.9869384765625,
-      "y": 575.9895858764648,
+      "x": 554.9869384765625,
+      "y": 691.9895858764648,
       "icon": "fas fa-laptop-code",
       "apiConfig": {},
       "sendDataConfig": {}
@@ -194,8 +205,8 @@
       "type": "send-data",
       "title": "APIPrueba",
       "subtitle": "Formulario Dinámico",
-      "x": 1284.973876953125,
-      "y": 580.9687423706055,
+      "x": 1403.973876953125,
+      "y": 696.9687423706055,
       "icon": "fas fa-paper-plane",
       "sendDataConfig": {}
     }
