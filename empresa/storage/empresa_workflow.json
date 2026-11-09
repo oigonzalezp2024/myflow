@@ -1,0 +1,406 @@
+{
+  "nodes": [
+    {
+      "id": "d6a6abc6-ac5a-4997-9467-7543ee074e4a",
+      "type": "database",
+      "title": "proveedores",
+      "subtitle": "Formulario Dinámico",
+      "x": 392.9375,
+      "y": 344.9375,
+      "icon": "fas fa-database",
+      "dbConfig": {
+        "host": "localhost",
+        "port": "",
+        "username": "root",
+        "password": "",
+        "dbName": "empresa",
+        "tableName": "proveedores",
+        "fields": [
+          {
+            "key": "id_proveedor",
+            "value": "int(11)"
+          },
+          {
+            "key": "proveedor_nombre",
+            "value": "varchar(190)"
+          }
+        ]
+      },
+      "sendDataConfig": {}
+    },
+    {
+      "id": "becc6920-30a3-4ec1-828d-caf8890a826e",
+      "type": "crud-api",
+      "title": "CreateAPI",
+      "subtitle": "Formulario Dinámico",
+      "x": 385.9583740234375,
+      "y": 191.9375,
+      "icon": "fas fa-laptop-code",
+      "apiConfig": {
+        "action": "generate",
+        "host": "localhost",
+        "port": "3306",
+        "username": "root",
+        "password": "",
+        "dbName": "empresa",
+        "tableName": "pedidos",
+        "filePath": "../empresa/public/api/"
+      },
+      "sendDataConfig": {},
+      "generatedCode": "<?php\nnamespace Presentation\\Controllers;\n\nrequire_once __DIR__ . '/../../src/Application/DTO/PedidosRequestDTO.php';\nrequire_once __DIR__ . '/../../src/Application/UseCases/ManagePedidosUseCase.php';\nrequire_once __DIR__ . '/../../src/Domain/Entities/PedidosEntity.php';\nrequire_once __DIR__ . '/../../src/Domain/Repositories/PedidosRepositoryInterface.php';\nrequire_once __DIR__ . '/../../src/Infrastructure/Persistence/MySQLPedidosRepository.php';\n\nuse Domain\\Entities\\PedidosEntity;\nuse Domain\\Repositories\\PedidosRepositoryInterface;\nuse Infrastructure\\Persistence\\MySQLPedidosRepository;\nuse Application\\UseCases\\ManagePedidosUseCase;\nuse Application\\DTO\\PedidosRequestDTO;\nuse PDO;\n\nheader('Content-Type: application/json');\nheader('Access-Control-Allow-Origin: *');\nheader('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');\nheader('Access-Control-Allow-Headers: Content-Type, Authorization');\n\nif ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { exit(0); }\n\ndefine('API_TOKEN', 'token_ab160e329e94a7b684883eada24ec56f');\n$headers = apache_request_headers();\n$authHeader = $headers['Authorization'] ?? $headers['authorization'] ?? '';\nif (!preg_match('/Bearer\\s(\\S+)/', $authHeader, $matches) || $matches[1] !== API_TOKEN) {\n    http_response_code(401);\n    echo json_encode(['success' => false, 'error' => 'Acceso no autorizado.']);\n    exit();\n}\n\n$pdo = new PDO('mysql:host=localhost;port=3306;dbname=empresa;charset=utf8mb4', 'root', '', [\n    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,\n    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC\n]);\n\n$repository = new MySQLPedidosRepository($pdo);\n$useCase = new ManagePedidosUseCase($repository);\n\n$method = $_SERVER['REQUEST_METHOD'];\n$input = json_decode(file_get_contents('php://input'), true) ?? [];\n$id = $_GET['id_pedido'] ?? null;\n\nswitch ($method) {\n    case 'GET':\n        if ($id) {\n            $entity = $useCase->handleGet($id);\n            echo json_encode($entity ? $entity->toArray() : ['message' => 'Registro no encontrado']);\n        } else {\n            $entities = $useCase->handleList();\n            echo json_encode(array_map(fn($e) => $e->toArray(), $entities));\n        }\n        break;\n    case 'POST':\n        $dto = new PedidosRequestDTO($input);\n        $insertId = $useCase->handleCreate($dto);\n        echo json_encode(['success' => true, 'id_pedido' => $insertId]);\n        break;\n    case 'PUT':\n        if (!$id) { echo json_encode(['error' => 'Se requiere el campo id_pedido']); break; }\n        $dto = new PedidosRequestDTO($input);\n        $updated = $useCase->handleUpdate($id, $dto);\n        echo json_encode(['success' => true, 'updated' => $updated]);\n        break;\n    case 'DELETE':\n        if (!$id) { echo json_encode(['error' => 'Se requiere el campo id_pedido']); break; }\n        $deleted = $useCase->handleDelete($id);\n        echo json_encode(['success' => true, 'deleted' => $deleted]);\n        break;\n}\n"
+    },
+    {
+      "id": "3b236f61-542a-4e08-82b1-7dd258a99d0c",
+      "type": "send-data",
+      "title": "CreaProveedorUseCase",
+      "subtitle": "Tabla: proveedores",
+      "x": 1268.625,
+      "y": 346.3958435058594,
+      "icon": "fas fa-paper-plane",
+      "sendDataConfig": {
+        "endpointUrl": "http://localhost/myflow/empresa/public/consume_proveedores_create.php",
+        "dbName": "empresa",
+        "tableName": "proveedores",
+        "formFields": [
+          {
+            "Field": "proveedor_nombre",
+            "Type": "VARCHAR",
+            "value": "oscar gonzalez"
+          }
+        ]
+      }
+    },
+    {
+      "id": "5cf970d9-2d44-453f-8208-c9035009eda1",
+      "type": "database",
+      "title": "pedidos",
+      "subtitle": "Formulario Dinámico",
+      "x": 386.9375,
+      "y": 779.9375,
+      "icon": "fas fa-database",
+      "dbConfig": {
+        "host": "localhost",
+        "port": "",
+        "username": "root",
+        "password": "",
+        "dbName": "empresa",
+        "tableName": "pedidos",
+        "fields": [
+          {
+            "key": "id_pedido",
+            "value": "int(11)"
+          },
+          {
+            "key": "proveedor_id",
+            "value": "int(11)"
+          }
+        ]
+      },
+      "sendDataConfig": {}
+    },
+    {
+      "id": "38067d9a-3d5b-44d5-bc9e-43fb99fa24ef",
+      "type": "send-data",
+      "title": "CreaPedidoUseCase",
+      "subtitle": "Tabla: pedidos",
+      "x": 1270.9583740234375,
+      "y": 779.9375,
+      "icon": "fas fa-paper-plane",
+      "sendDataConfig": {
+        "endpointUrl": "http://localhost/myflow/empresa/public/consume_pedidos_create.php",
+        "dbName": "empresa",
+        "tableName": "pedidos",
+        "formFields": [
+          {
+            "Field": "proveedor_id",
+            "Type": "VARCHAR",
+            "value": "1111"
+          }
+        ]
+      }
+    },
+    {
+      "id": "30998a1e-97bb-4d4c-87b6-170144090731",
+      "type": "database",
+      "title": "cotizaciones",
+      "subtitle": "Formulario Dinámico",
+      "x": 394,
+      "y": 486,
+      "icon": "fas fa-database",
+      "dbConfig": {
+        "host": "localhost",
+        "port": "",
+        "username": "root",
+        "password": "",
+        "dbName": "empresa",
+        "tableName": "cotizaciones",
+        "fields": [
+          {
+            "key": "id_cotizacion",
+            "value": "int(11)"
+          },
+          {
+            "key": "producto",
+            "value": "varchar(190)"
+          }
+        ]
+      },
+      "sendDataConfig": {}
+    },
+    {
+      "id": "2835f692-d3eb-4d8c-8c84-b57e474e3162",
+      "type": "send-data",
+      "title": "CreaCotizacionUseCase",
+      "subtitle": "Tabla: cotizaciones",
+      "x": 1269,
+      "y": 493,
+      "icon": "fas fa-paper-plane",
+      "sendDataConfig": {
+        "endpointUrl": "http://localhost/myflow/empresa/public/consume_cotizaciones_create.php",
+        "dbName": "adquisicion_insumos",
+        "tableName": "cotizaciones",
+        "formFields": [
+          {
+            "Field": "producto",
+            "Type": "VARCHAR",
+            "value": "vitrina panadera"
+          }
+        ]
+      }
+    },
+    {
+      "id": "00a6ac33-5be0-424e-907c-6b7c05c1efc8",
+      "type": "database",
+      "title": "analisis_cotizaciones",
+      "subtitle": "Formulario Dinámico",
+      "x": 390,
+      "y": 632,
+      "icon": "fas fa-database",
+      "dbConfig": {
+        "host": "localhost",
+        "port": "",
+        "username": "root",
+        "password": "",
+        "dbName": "empresa",
+        "tableName": "analisis_cotizaciones",
+        "fields": [
+          {
+            "key": "id_analisis",
+            "value": "int(11)"
+          },
+          {
+            "key": "cotizacion_id",
+            "value": "int(11)"
+          }
+        ]
+      },
+      "sendDataConfig": {}
+    },
+    {
+      "id": "8aefc1ca-83b4-4ee6-84c9-5dc86957d1e7",
+      "type": "send-data",
+      "title": "CreaAnalisisCotizacionUseCase",
+      "subtitle": "Tabla: analisis_cotizaciones",
+      "x": 1271,
+      "y": 635,
+      "icon": "fas fa-paper-plane",
+      "sendDataConfig": {
+        "endpointUrl": "http://localhost/myflow/empresa/public/consume_analisis_cotizaciones_create.php",
+        "dbName": "empresa",
+        "tableName": "analisis_cotizaciones",
+        "formFields": [
+          {
+            "Field": "cotizacion_id",
+            "Type": "VARCHAR",
+            "value": "1"
+          }
+        ]
+      },
+      "caseUsesConfig": {
+        "title": "CreaAnalisisCotizacion",
+        "description": "",
+        "status": "pending",
+        "endpointUrl": "http://localhost/myflow/public/controllers/generate_case_uses.php",
+        "targetServiceEndpoint": "http://localhost/myflow/examples/adquisicion_insumos/public/api/AnalisisCotizacionesApi.php",
+        "targetServiceTokenVal": "token_6d091fd1843c8553804d61b62143c170",
+        "db": "adquisicion_insumos",
+        "tableName": "analisis_cotizaciones",
+        "primaryKey": "id_analisis",
+        "tsClientFilePath": "examples/adquisicion_insumos/public/"
+      }
+    },
+    {
+      "id": "a9aace91-94da-4531-a067-7eb724df104a",
+      "type": "case-uses",
+      "title": "CreateUseCases",
+      "subtitle": "Formulario Dinámico",
+      "x": 845,
+      "y": 39,
+      "icon": "fas fa-solid fa-rss",
+      "caseUsesConfig": {
+        "title": "CreateUseCases",
+        "description": "",
+        "status": "pending",
+        "endpointUrl": "http://localhost/myflow/public/controllers/generate_case_uses.php",
+        "targetServiceEndpoint": "http://localhost/myflow/empresa/public/api/PedidosAPI.php",
+        "targetServiceTokenVal": "token_ab160e329e94a7b684883eada24ec56f",
+        "db": "empresa",
+        "tableName": "pedidos",
+        "primaryKey": "id_pedido",
+        "tsClientFilePath": "empresa/public/"
+      },
+      "sendDataConfig": {}
+    },
+    {
+      "id": "8411b6e6-1bf2-45b8-8ff9-03ae4eb7934c",
+      "type": "crud-client",
+      "title": "CreateAPIClient",
+      "subtitle": "Formulario Dinámico",
+      "x": 380.0833740234375,
+      "y": 36.9375,
+      "icon": "fas fa-plug",
+      "clientConfig": {
+        "action": "generate_client",
+        "endpointUrl": "http://localhost/myflow/empresa/public/api/ProveedoresApi.php",
+        "token": "token_e52d1fea2ec743cd8cb96334609cd199",
+        "primaryKey": "id_proveedor",
+        "clientLanguage": "php"
+      },
+      "sendDataConfig": {},
+      "generatedClientCode": "<?php\n/**\n * Cliente PHP cURL autogenerado para consumir la API\n * Endpoint: http://localhost/myflow/empresa/public/api/ProveedoresApi.php\n */\n\nclass ApiClient {\n    private $baseUrl;\n    private $token;\n    private $primaryKey;\n\n    public function __construct($baseUrl = 'http://localhost/myflow/empresa/public/api/ProveedoresApi.php', $token = 'token_e52d1fea2ec743cd8cb96334609cd199', $primaryKey = 'id_proveedor') {\n        $this->baseUrl = $baseUrl;\n        $this->token = $token;\n        $this->primaryKey = $primaryKey;\n    }\n\n    private function send($method, $data = null, $id = null) {\n        $url = $this->baseUrl;\n        if ($id !== null) {\n            $url .= '?' . $this->primaryKey . '=' . $id;\n        }\n\n        $ch = curl_init($url);\n        $headers = [\n            'Content-Type: application/json',\n            'Authorization: Bearer ' . $this->token\n        ];\n\n        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);\n        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\n\n        if ($data !== null && ($method === 'POST' || $method === 'PUT')) {\n            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));\n        }\n\n        $response = curl_exec($ch);\n        curl_close($ch);\n        return json_decode($response, true);\n    }\n\n    public function getAll() { return $this->send('GET'); }\n    public function getById($id) { return $this->send('GET', null, $id); }\n    public function create($data) { return $this->send('POST', $data); }\n    public function update($id, $data) { return $this->send('PUT', $data, $id); }\n    public function delete($id) { return $this->send('DELETE', null, $id); }\n}\n"
+    },
+    {
+      "id": "8b516eb7-3f3e-455e-91b6-e7694851727a",
+      "type": "generic",
+      "title": "ProveedoresAPI",
+      "subtitle": "Formulario Dinámico",
+      "x": 833,
+      "y": 356,
+      "icon": "fas fa-shield-alt",
+      "apiConfig": {},
+      "sendDataConfig": {}
+    },
+    {
+      "id": "787575ee-e37d-43c5-84b1-111c07ad1629",
+      "type": "generic",
+      "title": "CotizacionesAPI",
+      "subtitle": "Formulario Dinámico",
+      "x": 836,
+      "y": 493.25,
+      "icon": "fas fa-shield-alt",
+      "sendDataConfig": {}
+    },
+    {
+      "id": "9f5696a3-b2de-4f17-8c61-6b2addb71bc5",
+      "type": "generic",
+      "title": "AnalisisAPI",
+      "subtitle": "Formulario Dinámico",
+      "x": 832,
+      "y": 630,
+      "icon": "fas fa-shield-alt",
+      "sendDataConfig": {}
+    },
+    {
+      "id": "2a57fe2e-7abc-45d2-b281-13e3b5e6ca4a",
+      "type": "generic",
+      "title": "PedidosAPI",
+      "subtitle": "Formulario Dinámico",
+      "x": 831,
+      "y": 761.7783584594727,
+      "icon": "fas fa-shield-alt",
+      "sendDataConfig": {}
+    }
+  ],
+  "connections": [
+    {
+      "lineId": "line-8411b6e6-1bf2-45b8-8ff9-03ae4eb7934c-a9aace91-94da-4531-a067-7eb724df104a-bb61",
+      "fromNodeId": "8411b6e6-1bf2-45b8-8ff9-03ae4eb7934c",
+      "toNodeId": "a9aace91-94da-4531-a067-7eb724df104a"
+    },
+    {
+      "lineId": "line-becc6920-30a3-4ec1-828d-caf8890a826e-a9aace91-94da-4531-a067-7eb724df104a-1b73",
+      "fromNodeId": "becc6920-30a3-4ec1-828d-caf8890a826e",
+      "toNodeId": "a9aace91-94da-4531-a067-7eb724df104a"
+    },
+    {
+      "lineId": "line-a9aace91-94da-4531-a067-7eb724df104a-3b236f61-542a-4e08-82b1-7dd258a99d0c-3883",
+      "fromNodeId": "a9aace91-94da-4531-a067-7eb724df104a",
+      "toNodeId": "3b236f61-542a-4e08-82b1-7dd258a99d0c"
+    },
+    {
+      "lineId": "line-a9aace91-94da-4531-a067-7eb724df104a-2835f692-d3eb-4d8c-8c84-b57e474e3162-457f",
+      "fromNodeId": "a9aace91-94da-4531-a067-7eb724df104a",
+      "toNodeId": "2835f692-d3eb-4d8c-8c84-b57e474e3162"
+    },
+    {
+      "lineId": "line-a9aace91-94da-4531-a067-7eb724df104a-8aefc1ca-83b4-4ee6-84c9-5dc86957d1e7-69af",
+      "fromNodeId": "a9aace91-94da-4531-a067-7eb724df104a",
+      "toNodeId": "8aefc1ca-83b4-4ee6-84c9-5dc86957d1e7"
+    },
+    {
+      "lineId": "line-a9aace91-94da-4531-a067-7eb724df104a-38067d9a-3d5b-44d5-bc9e-43fb99fa24ef-7388",
+      "fromNodeId": "a9aace91-94da-4531-a067-7eb724df104a",
+      "toNodeId": "38067d9a-3d5b-44d5-bc9e-43fb99fa24ef"
+    },
+    {
+      "lineId": "line-8b516eb7-3f3e-455e-91b6-e7694851727a-3b236f61-542a-4e08-82b1-7dd258a99d0c-a25b",
+      "fromNodeId": "8b516eb7-3f3e-455e-91b6-e7694851727a",
+      "toNodeId": "3b236f61-542a-4e08-82b1-7dd258a99d0c"
+    },
+    {
+      "lineId": "line-9f5696a3-b2de-4f17-8c61-6b2addb71bc5-8aefc1ca-83b4-4ee6-84c9-5dc86957d1e7-ef0e",
+      "fromNodeId": "9f5696a3-b2de-4f17-8c61-6b2addb71bc5",
+      "toNodeId": "8aefc1ca-83b4-4ee6-84c9-5dc86957d1e7"
+    },
+    {
+      "lineId": "line-2a57fe2e-7abc-45d2-b281-13e3b5e6ca4a-38067d9a-3d5b-44d5-bc9e-43fb99fa24ef-837e",
+      "fromNodeId": "2a57fe2e-7abc-45d2-b281-13e3b5e6ca4a",
+      "toNodeId": "38067d9a-3d5b-44d5-bc9e-43fb99fa24ef"
+    },
+    {
+      "lineId": "line-d6a6abc6-ac5a-4997-9467-7543ee074e4a-8b516eb7-3f3e-455e-91b6-e7694851727a-8b10",
+      "fromNodeId": "d6a6abc6-ac5a-4997-9467-7543ee074e4a",
+      "toNodeId": "8b516eb7-3f3e-455e-91b6-e7694851727a"
+    },
+    {
+      "lineId": "line-30998a1e-97bb-4d4c-87b6-170144090731-787575ee-e37d-43c5-84b1-111c07ad1629-8f8d",
+      "fromNodeId": "30998a1e-97bb-4d4c-87b6-170144090731",
+      "toNodeId": "787575ee-e37d-43c5-84b1-111c07ad1629"
+    },
+    {
+      "lineId": "line-00a6ac33-5be0-424e-907c-6b7c05c1efc8-9f5696a3-b2de-4f17-8c61-6b2addb71bc5-adcc",
+      "fromNodeId": "00a6ac33-5be0-424e-907c-6b7c05c1efc8",
+      "toNodeId": "9f5696a3-b2de-4f17-8c61-6b2addb71bc5"
+    },
+    {
+      "lineId": "line-5cf970d9-2d44-453f-8208-c9035009eda1-2a57fe2e-7abc-45d2-b281-13e3b5e6ca4a-df2a",
+      "fromNodeId": "5cf970d9-2d44-453f-8208-c9035009eda1",
+      "toNodeId": "2a57fe2e-7abc-45d2-b281-13e3b5e6ca4a"
+    },
+    {
+      "lineId": "line-becc6920-30a3-4ec1-828d-caf8890a826e-8b516eb7-3f3e-455e-91b6-e7694851727a-3003",
+      "fromNodeId": "becc6920-30a3-4ec1-828d-caf8890a826e",
+      "toNodeId": "8b516eb7-3f3e-455e-91b6-e7694851727a"
+    },
+    {
+      "lineId": "line-becc6920-30a3-4ec1-828d-caf8890a826e-787575ee-e37d-43c5-84b1-111c07ad1629-95b9",
+      "fromNodeId": "becc6920-30a3-4ec1-828d-caf8890a826e",
+      "toNodeId": "787575ee-e37d-43c5-84b1-111c07ad1629"
+    },
+    {
+      "lineId": "line-becc6920-30a3-4ec1-828d-caf8890a826e-9f5696a3-b2de-4f17-8c61-6b2addb71bc5-bfa5",
+      "fromNodeId": "becc6920-30a3-4ec1-828d-caf8890a826e",
+      "toNodeId": "9f5696a3-b2de-4f17-8c61-6b2addb71bc5"
+    },
+    {
+      "lineId": "line-becc6920-30a3-4ec1-828d-caf8890a826e-2a57fe2e-7abc-45d2-b281-13e3b5e6ca4a-0bba",
+      "fromNodeId": "becc6920-30a3-4ec1-828d-caf8890a826e",
+      "toNodeId": "2a57fe2e-7abc-45d2-b281-13e3b5e6ca4a"
+    },
+    {
+      "lineId": "line-787575ee-e37d-43c5-84b1-111c07ad1629-2835f692-d3eb-4d8c-8c84-b57e474e3162-9f64",
+      "fromNodeId": "787575ee-e37d-43c5-84b1-111c07ad1629",
+      "toNodeId": "2835f692-d3eb-4d8c-8c84-b57e474e3162"
+    }
+  ]
+}
