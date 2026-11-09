@@ -874,7 +874,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 username: apiUsernameInput.value.trim(),
                 password: apiPasswordInput.value,
                 dbName: apiDbNameInput.value.trim(),
-                tableName: apiTableNameInput.value.trim()
+                tableName: apiTableNameInput.value.trim(),
+                filePath: apiFilePathInput.value.trim()
             };
 
             try {
