@@ -1,5 +1,19 @@
 <?php
-// API REST Autogenerada con Token para la tabla 'analisis_cotizaciones'
+namespace Presentation\Controllers;
+
+require_once __DIR__ . '/../../src/Application/DTO/Analisis_cotizacionesRequestDTO.php';
+require_once __DIR__ . '/../../src/Application/UseCases/ManageAnalisis_cotizacionesUseCase.php';
+require_once __DIR__ . '/../../src/Domain/Entities/Analisis_cotizacionesEntity.php';
+require_once __DIR__ . '/../../src/Domain/Repositories/Analisis_cotizacionesRepositoryInterface.php';
+require_once __DIR__ . '/../../src/Infrastructure/Persistence/MySQLAnalisis_cotizacionesRepository.php';
+
+use Domain\Entities\Analisis_cotizacionesEntity;
+use Domain\Repositories\Analisis_cotizacionesRepositoryInterface;
+use Infrastructure\Persistence\MySQLAnalisis_cotizacionesRepository;
+use Application\UseCases\ManageAnalisis_cotizacionesUseCase;
+use Application\DTO\Analisis_cotizacionesRequestDTO;
+use PDO;
+
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
@@ -7,22 +21,12 @@ header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { exit(0); }
 
-// Token de acceso requerido en la cabecera Authorization: Bearer <token>
 define('API_TOKEN', 'token_6d091fd1843c8553804d61b62143c170');
-
 $headers = apache_request_headers();
 $authHeader = $headers['Authorization'] ?? $headers['authorization'] ?? '';
-$tokenValido = false;
-
-if (preg_match('/Bearer\s(\S+)/', $authHeader, $matches)) {
-    if ($matches[1] === API_TOKEN) {
-        $tokenValido = true;
-    }
-}
-
-if (!$tokenValido) {
+if (!preg_match('/Bearer\s(\S+)/', $authHeader, $matches) || $matches[1] !== API_TOKEN) {
     http_response_code(401);
-    echo json_encode(['success' => false, 'error' => 'Acceso no autorizado. Token inválido o ausente.']);
+    echo json_encode(['success' => false, 'error' => 'Acceso no autorizado.']);
     exit();
 }
 
@@ -31,42 +35,37 @@ $pdo = new PDO('mysql:host=localhost;port=3306;dbname=adquisicion_insumos;charse
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
 ]);
 
+$repository = new MySQLAnalisis_cotizacionesRepository($pdo);
+$useCase = new ManageAnalisis_cotizacionesUseCase($repository);
+
 $method = $_SERVER['REQUEST_METHOD'];
-$input = json_decode(file_get_contents('php://input'), true);
+$input = json_decode(file_get_contents('php://input'), true) ?? [];
 $id = $_GET['id_analisis'] ?? null;
 
 switch ($method) {
     case 'GET':
         if ($id) {
-            $stmt = $pdo->prepare('SELECT * FROM `analisis_cotizaciones` WHERE `id_analisis` = ?');
-            $stmt->execute([$id]);
-            echo json_encode($stmt->fetch() ?: ['message' => 'Registro no encontrado']);
+            $entity = $useCase->handleGet($id);
+            echo json_encode($entity ? $entity->toArray() : ['message' => 'Registro no encontrado']);
         } else {
-            $stmt = $pdo->query('SELECT * FROM `analisis_cotizaciones`');
-            echo json_encode($stmt->fetchAll());
+            $entities = $useCase->handleList();
+            echo json_encode(array_map(fn($e) => $e->toArray(), $entities));
         }
         break;
-
     case 'POST':
-        $sql = 'INSERT INTO `analisis_cotizaciones` (`cotizacion_id`) VALUES (:cotizacion_id)';
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute($input);
-        echo json_encode(['success' => true, 'id_analisis' => $pdo->lastInsertId()]);
+        $dto = new Analisis_cotizacionesRequestDTO($input);
+        $insertId = $useCase->handleCreate($dto);
+        echo json_encode(['success' => true, 'id_analisis' => $insertId]);
         break;
-
     case 'PUT':
         if (!$id) { echo json_encode(['error' => 'Se requiere el campo id_analisis']); break; }
-        $sql = 'UPDATE `analisis_cotizaciones` SET `cotizacion_id` = :cotizacion_id WHERE `id_analisis` = :id_analisis';
-        $input['id_analisis'] = $id;
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute($input);
-        echo json_encode(['success' => true, 'updated' => $stmt->rowCount()]);
+        $dto = new Analisis_cotizacionesRequestDTO($input);
+        $updated = $useCase->handleUpdate($id, $dto);
+        echo json_encode(['success' => true, 'updated' => $updated]);
         break;
-
     case 'DELETE':
         if (!$id) { echo json_encode(['error' => 'Se requiere el campo id_analisis']); break; }
-        $stmt = $pdo->prepare('DELETE FROM `analisis_cotizaciones` WHERE `id_analisis` = ?');
-        $stmt->execute([$id]);
-        echo json_encode(['success' => true, 'deleted' => $stmt->rowCount()]);
+        $deleted = $useCase->handleDelete($id);
+        echo json_encode(['success' => true, 'deleted' => $deleted]);
         break;
 }
