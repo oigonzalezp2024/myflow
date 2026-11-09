@@ -5,8 +5,8 @@
       "type": "database",
       "title": "proveedores",
       "subtitle": "Formulario Dinámico",
-      "x": 513.9375,
-      "y": 385.9375,
+      "x": 317.9375,
+      "y": 334.9375,
       "icon": "fas fa-database",
       "dbConfig": {
         "host": "localhost",
@@ -33,8 +33,8 @@
       "type": "crud-api",
       "title": "CreateAPI",
       "subtitle": "Formulario Dinámico",
-      "x": 506.9583740234375,
-      "y": 232.9375,
+      "x": 310.9583740234375,
+      "y": 181.9375,
       "icon": "fas fa-laptop-code",
       "apiConfig": {
         "action": "generate",
@@ -43,18 +43,19 @@
         "username": "root",
         "password": "",
         "dbName": "adquisicion_insumos",
-        "tableName": "proveedores"
+        "tableName": "proveedores",
+        "filePath": "../examples/adquisicion_insumos/public/api/"
       },
       "sendDataConfig": {},
-      "generatedCode": "<?php\n// API REST Autogenerada con Token para la tabla 'proveedores'\nheader('Content-Type: application/json');\nheader('Access-Control-Allow-Origin: *');\nheader('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');\nheader('Access-Control-Allow-Headers: Content-Type, Authorization');\n\nif ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { exit(0); }\n\n// Token de acceso requerido en la cabecera Authorization: Bearer <token>\ndefine('API_TOKEN', 'token_e52d1fea2ec743cd8cb96334609cd199');\n\n$headers = apache_request_headers();\n$authHeader = $headers['Authorization'] ?? $headers['authorization'] ?? '';\n$tokenValido = false;\n\nif (preg_match('/Bearer\\s(\\S+)/', $authHeader, $matches)) {\n    if ($matches[1] === API_TOKEN) {\n        $tokenValido = true;\n    }\n}\n\nif (!$tokenValido) {\n    http_response_code(401);\n    echo json_encode(['success' => false, 'error' => 'Acceso no autorizado. Token inválido o ausente.']);\n    exit();\n}\n\n$pdo = new PDO('mysql:host=localhost;port=3306;dbname=adquisicion_insumos;charset=utf8mb4', 'root', '', [\n    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,\n    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC\n]);\n\n$method = $_SERVER['REQUEST_METHOD'];\n$input = json_decode(file_get_contents('php://input'), true);\n$id = $_GET['id_proveedor'] ?? null;\n\nswitch ($method) {\n    case 'GET':\n        if ($id) {\n            $stmt = $pdo->prepare('SELECT * FROM `proveedores` WHERE `id_proveedor` = ?');\n            $stmt->execute([$id]);\n            echo json_encode($stmt->fetch() ?: ['message' => 'Registro no encontrado']);\n        } else {\n            $stmt = $pdo->query('SELECT * FROM `proveedores`');\n            echo json_encode($stmt->fetchAll());\n        }\n        break;\n\n    case 'POST':\n        $sql = 'INSERT INTO `proveedores` (`proveedor_nombre`) VALUES (:proveedor_nombre)';\n        $stmt = $pdo->prepare($sql);\n        $stmt->execute($input);\n        echo json_encode(['success' => true, 'id_proveedor' => $pdo->lastInsertId()]);\n        break;\n\n    case 'PUT':\n        if (!$id) { echo json_encode(['error' => 'Se requiere el campo id_proveedor']); break; }\n        $sql = 'UPDATE `proveedores` SET `proveedor_nombre` = :proveedor_nombre WHERE `id_proveedor` = :id_proveedor';\n        $input['id_proveedor'] = $id;\n        $stmt = $pdo->prepare($sql);\n        $stmt->execute($input);\n        echo json_encode(['success' => true, 'updated' => $stmt->rowCount()]);\n        break;\n\n    case 'DELETE':\n        if (!$id) { echo json_encode(['error' => 'Se requiere el campo id_proveedor']); break; }\n        $stmt = $pdo->prepare('DELETE FROM `proveedores` WHERE `id_proveedor` = ?');\n        $stmt->execute([$id]);\n        echo json_encode(['success' => true, 'deleted' => $stmt->rowCount()]);\n        break;\n}\n"
+      "generatedCode": "<?php\nnamespace Presentation\\Controllers;\n\nrequire_once __DIR__ . '/../../src/Application/DTO/ProveedoresRequestDTO.php';\nrequire_once __DIR__ . '/../../src/Application/UseCases/ManageProveedoresUseCase.php';\nrequire_once __DIR__ . '/../../src/Domain/Entities/ProveedoresEntity.php';\nrequire_once __DIR__ . '/../../src/Domain/Repositories/ProveedoresRepositoryInterface.php';\nrequire_once __DIR__ . '/../../src/Infrastructure/Persistence/MySQLProveedoresRepository.php';\n\nuse Domain\\Entities\\ProveedoresEntity;\nuse Domain\\Repositories\\ProveedoresRepositoryInterface;\nuse Infrastructure\\Persistence\\MySQLProveedoresRepository;\nuse Application\\UseCases\\ManageProveedoresUseCase;\nuse Application\\DTO\\ProveedoresRequestDTO;\nuse PDO;\n\nheader('Content-Type: application/json');\nheader('Access-Control-Allow-Origin: *');\nheader('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');\nheader('Access-Control-Allow-Headers: Content-Type, Authorization');\n\nif ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { exit(0); }\n\ndefine('API_TOKEN', 'token_22295d286fa72f5cf41d5905b32bb2ea');\n$headers = apache_request_headers();\n$authHeader = $headers['Authorization'] ?? $headers['authorization'] ?? '';\nif (!preg_match('/Bearer\\s(\\S+)/', $authHeader, $matches) || $matches[1] !== API_TOKEN) {\n    http_response_code(401);\n    echo json_encode(['success' => false, 'error' => 'Acceso no autorizado.']);\n    exit();\n}\n\n$pdo = new PDO('mysql:host=localhost;port=3306;dbname=adquisicion_insumos;charset=utf8mb4', 'root', '', [\n    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,\n    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC\n]);\n\n$repository = new MySQLProveedoresRepository($pdo);\n$useCase = new ManageProveedoresUseCase($repository);\n\n$method = $_SERVER['REQUEST_METHOD'];\n$input = json_decode(file_get_contents('php://input'), true) ?? [];\n$id = $_GET['id_proveedor'] ?? null;\n\nswitch ($method) {\n    case 'GET':\n        if ($id) {\n            $entity = $useCase->handleGet($id);\n            echo json_encode($entity ? $entity->toArray() : ['message' => 'Registro no encontrado']);\n        } else {\n            $entities = $useCase->handleList();\n            echo json_encode(array_map(fn($e) => $e->toArray(), $entities));\n        }\n        break;\n    case 'POST':\n        $dto = new ProveedoresRequestDTO($input);\n        $insertId = $useCase->handleCreate($dto);\n        echo json_encode(['success' => true, 'id_proveedor' => $insertId]);\n        break;\n    case 'PUT':\n        if (!$id) { echo json_encode(['error' => 'Se requiere el campo id_proveedor']); break; }\n        $dto = new ProveedoresRequestDTO($input);\n        $updated = $useCase->handleUpdate($id, $dto);\n        echo json_encode(['success' => true, 'updated' => $updated]);\n        break;\n    case 'DELETE':\n        if (!$id) { echo json_encode(['error' => 'Se requiere el campo id_proveedor']); break; }\n        $deleted = $useCase->handleDelete($id);\n        echo json_encode(['success' => true, 'deleted' => $deleted]);\n        break;\n}\n"
     },
     {
       "id": "3b236f61-542a-4e08-82b1-7dd258a99d0c",
       "type": "send-data",
       "title": "CreaProveedorUseCase",
       "subtitle": "Tabla: proveedores",
-      "x": 1389.625,
-      "y": 387.3958435058594,
+      "x": 1193.625,
+      "y": 336.3958435058594,
       "icon": "fas fa-paper-plane",
       "sendDataConfig": {
         "endpointUrl": "http://localhost/myflow/examples/adquisicion_insumos/public/consume_proveedores_create.php",
@@ -74,8 +75,8 @@
       "type": "database",
       "title": "pedidos",
       "subtitle": "Formulario Dinámico",
-      "x": 507.9375,
-      "y": 820.9375,
+      "x": 311.9375,
+      "y": 769.9375,
       "icon": "fas fa-database",
       "dbConfig": {
         "host": "localhost",
@@ -102,8 +103,8 @@
       "type": "send-data",
       "title": "CreaPedidoUseCase",
       "subtitle": "Tabla: pedidos",
-      "x": 1391.9583740234375,
-      "y": 820.9375,
+      "x": 1195.9583740234375,
+      "y": 769.9375,
       "icon": "fas fa-paper-plane",
       "sendDataConfig": {
         "endpointUrl": "http://localhost/myflow/examples/adquisicion_insumos/public/consume_pedidos_create.php",
@@ -123,8 +124,8 @@
       "type": "database",
       "title": "cotizaciones",
       "subtitle": "Formulario Dinámico",
-      "x": 515,
-      "y": 527,
+      "x": 319,
+      "y": 476,
       "icon": "fas fa-database",
       "dbConfig": {
         "host": "localhost",
@@ -151,8 +152,8 @@
       "type": "send-data",
       "title": "CreaCotizacionUseCase",
       "subtitle": "Tabla: cotizaciones",
-      "x": 1390,
-      "y": 534,
+      "x": 1194,
+      "y": 483,
       "icon": "fas fa-paper-plane",
       "sendDataConfig": {
         "endpointUrl": "http://localhost/myflow/examples/adquisicion_insumos/public/consume_cotizaciones_create.php",
@@ -172,8 +173,8 @@
       "type": "database",
       "title": "analisis_cotizaciones",
       "subtitle": "Formulario Dinámico",
-      "x": 511,
-      "y": 673,
+      "x": 315,
+      "y": 622,
       "icon": "fas fa-database",
       "dbConfig": {
         "host": "localhost",
@@ -200,8 +201,8 @@
       "type": "send-data",
       "title": "CreaAnalisisCotizacionUseCase",
       "subtitle": "Tabla: analisis_cotizaciones",
-      "x": 1392,
-      "y": 676,
+      "x": 1196,
+      "y": 625,
       "icon": "fas fa-paper-plane",
       "sendDataConfig": {
         "endpointUrl": "http://localhost/myflow/examples/adquisicion_insumos/public/consume_analisis_cotizaciones_create.php",
@@ -233,8 +234,8 @@
       "type": "case-uses",
       "title": "CreateUseCases",
       "subtitle": "Formulario Dinámico",
-      "x": 966,
-      "y": 80,
+      "x": 770,
+      "y": 29,
       "icon": "fas fa-solid fa-rss",
       "caseUsesConfig": {},
       "sendDataConfig": {}
@@ -244,19 +245,26 @@
       "type": "crud-client",
       "title": "CreateAPIClient",
       "subtitle": "Formulario Dinámico",
-      "x": 501.0833740234375,
-      "y": 77.9375,
+      "x": 305.0833740234375,
+      "y": 26.9375,
       "icon": "fas fa-plug",
-      "clientConfig": {},
-      "sendDataConfig": {}
+      "clientConfig": {
+        "action": "generate_client",
+        "endpointUrl": "http://localhost/myflow/examples/adquisicion_insumos/public/api/ProveedoresApi.php",
+        "token": "token_e52d1fea2ec743cd8cb96334609cd199",
+        "primaryKey": "id",
+        "clientLanguage": "php"
+      },
+      "sendDataConfig": {},
+      "generatedClientCode": "<?php\n/**\n * Cliente PHP cURL autogenerado para consumir la API\n * Endpoint: http://localhost/myflow/examples/adquisicion_insumos/public/api/ProveedoresApi.php\n */\n\nclass ApiClient {\n    private $baseUrl;\n    private $token;\n    private $primaryKey;\n\n    public function __construct($baseUrl = 'http://localhost/myflow/examples/adquisicion_insumos/public/api/ProveedoresApi.php', $token = 'token_e52d1fea2ec743cd8cb96334609cd199', $primaryKey = 'id') {\n        $this->baseUrl = $baseUrl;\n        $this->token = $token;\n        $this->primaryKey = $primaryKey;\n    }\n\n    private function send($method, $data = null, $id = null) {\n        $url = $this->baseUrl;\n        if ($id !== null) {\n            $url .= '?' . $this->primaryKey . '=' . $id;\n        }\n\n        $ch = curl_init($url);\n        $headers = [\n            'Content-Type: application/json',\n            'Authorization: Bearer ' . $this->token\n        ];\n\n        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);\n        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\n\n        if ($data !== null && ($method === 'POST' || $method === 'PUT')) {\n            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));\n        }\n\n        $response = curl_exec($ch);\n        curl_close($ch);\n        return json_decode($response, true);\n    }\n\n    public function getAll() { return $this->send('GET'); }\n    public function getById($id) { return $this->send('GET', null, $id); }\n    public function create($data) { return $this->send('POST', $data); }\n    public function update($id, $data) { return $this->send('PUT', $data, $id); }\n    public function delete($id) { return $this->send('DELETE', null, $id); }\n}\n"
     },
     {
       "id": "8b516eb7-3f3e-455e-91b6-e7694851727a",
       "type": "generic",
       "title": "ProveedoresAPI",
       "subtitle": "Formulario Dinámico",
-      "x": 954,
-      "y": 397,
+      "x": 758,
+      "y": 346,
       "icon": "fas fa-shield-alt",
       "apiConfig": {},
       "sendDataConfig": {}
@@ -266,8 +274,8 @@
       "type": "generic",
       "title": "CotizacionesAPI",
       "subtitle": "Formulario Dinámico",
-      "x": 957,
-      "y": 534.25,
+      "x": 761,
+      "y": 483.25,
       "icon": "fas fa-shield-alt",
       "sendDataConfig": {}
     },
@@ -276,8 +284,8 @@
       "type": "generic",
       "title": "AnalisisAPI",
       "subtitle": "Formulario Dinámico",
-      "x": 953,
-      "y": 671,
+      "x": 757,
+      "y": 620,
       "icon": "fas fa-shield-alt",
       "sendDataConfig": {}
     },
@@ -286,8 +294,8 @@
       "type": "generic",
       "title": "PedidosAPI",
       "subtitle": "Formulario Dinámico",
-      "x": 952,
-      "y": 802.7783584594727,
+      "x": 756,
+      "y": 751.7783584594727,
       "icon": "fas fa-shield-alt",
       "sendDataConfig": {}
     }
