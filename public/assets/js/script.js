@@ -1181,20 +1181,81 @@ document.addEventListener('DOMContentLoaded', () => {
         closeSendDataModalBtn.addEventListener('click', hideSendDataModal);
     }
 
-    function renderDynamicFormFields(fields) {
+    async function renderDynamicFormFields(fields) {
         if (!dynamicFormFieldsList) return;
         dynamicFormFieldsList.innerHTML = '';
-        fields.forEach(field => {
-            if (field.Extra && field.Extra.includes('auto_increment')) return;
+
+        const dbName = sendDataDbNameInput ? sendDataDbNameInput.value.trim() : '';
+
+        for (const field of fields) {
+            if (field.Extra && field.Extra.includes('auto_increment')) continue;
+
             const row = document.createElement('div');
             row.classList.add('dynamic-field-row');
             row.style.cssText = "display: flex; gap: 10px; margin-bottom: 8px; align-items: center;";
-            row.innerHTML = `
-                <label style="color: #fff; flex: 1; font-size: 13px;">${field.Field} <small style="color: #aaa;">(${field.Type})</small></label>
-                <input type="text" class="field-value" placeholder="Valor para ${field.Field}" data-field-name="${field.Field}" value="${field.value || ''}" style="flex: 2; padding: 6px; background: #3a3a3a; border: 1px solid #555; color: #fff; border-radius: 4px;">
-            `;
-            dynamicFormFieldsList.appendChild(row);
-        });
+
+            const isForeignKey = field.Field.includes("id_") || field.Field.includes("_id");
+
+            if (isForeignKey) {
+                row.innerHTML = `
+                    <label style="color: #fff; flex: 1; font-size: 13px;">${field.Field} <small style="color: #aaa;">(Buscando relación...)</small></label>
+                    <select class="field-value" data-field-name="${field.Field}" style="flex: 2; padding: 6px; background: #3a3a3a; border: 1px solid #555; color: #fff; border-radius: 4px;">
+                        <option value="">Cargando opciones...</option>
+                    </select>
+                `;
+                dynamicFormFieldsList.appendChild(row);
+
+                const selectElement = row.querySelector('select');
+
+                // Petición limpia al backend pasando únicamente base de datos y campo de llave foránea
+                try {
+                    const response = await fetch('./controllers/get_foreign_options.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            dbName: dbName,
+                            field: field.Field
+                        })
+                    });
+                    const result = await response.json();
+
+                    if (result.success && Array.isArray(result.data)) {
+                        selectElement.innerHTML = '<option value="">-- Seleccione una opción --</option>';
+                        
+                        result.data.forEach(item => {
+                            // Detectar la llave primaria (la columna id del registro o la primera columna disponible)
+                            const keys = Object.keys(item);
+                            const idVal = item[field.Field] || item[keys[0]] || Object.values(item)[0];
+                            
+                            // Tomar las primeras 3 columnas de la fila de forma dinámica
+                            const firstThreeCols = keys.slice(0, 3).map(col => item[col]);
+                            const labelVal = firstThreeCols.join(' - ');
+                            
+                            const option = document.createElement('option');
+                            option.value = idVal;
+                            option.textContent = labelVal;
+                            
+                            if (String(field.value) === String(idVal)) {
+                                option.selected = true;
+                            }
+                            selectElement.appendChild(option);
+                        });
+                    } else {
+                        selectElement.innerHTML = `<option value="">Sin registros encontrados</option>`;
+                    }
+                } catch (err) {
+                    console.error(`Error resolviendo FK para ${field.Field}:`, err);
+                    selectElement.innerHTML = `<option value="">Error de conexión con el servidor</option>`;
+                }
+
+            } else {
+                row.innerHTML = `
+                    <label style="color: #fff; flex: 1; font-size: 13px;">${field.Field} <small style="color: #aaa;">(${field.Type})</small></label>
+                    <input type="text" class="field-value" placeholder="Valor para ${field.Field}" data-field-name="${field.Field}" value="${field.value || ''}" style="flex: 2; padding: 6px; background: #3a3a3a; border: 1px solid #555; color: #fff; border-radius: 4px;">
+                `;
+                dynamicFormFieldsList.appendChild(row);
+            }
+        }
     }
 
     if (fetchTableStructureBtn) {
