@@ -106,6 +106,14 @@ class GenerateCrudHandler {
             // 6. ORQUESTADOR DE PRESENTACIÓN (Único código retornado)
             // ==========================================
             $defaultToken = "token_" . md5($tableName . time());
+
+            // === GUARDAR TOKEN EN SESIÓN DE PHP AL GENERAR EL ARCHIVO ===
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
+            // Guardamos el token de esta tabla en la sesión
+            $_SESSION['api_tokens'][$tableName] = $defaultToken;
+
             $controllerCode = "<?php\n";
             $controllerCode .= "namespace Presentation\Controllers;\n\n";
             
