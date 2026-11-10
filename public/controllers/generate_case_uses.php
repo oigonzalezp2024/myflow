@@ -5,6 +5,11 @@ header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 header("Content-Type: application/json");
 
+// Iniciar sesión para acceder a las credenciales guardadas por el servidor
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 require __DIR__ . '/../clients/ApiClient.php';
 
 // Manejo de la petición OPTIONS (pre-flight request)
@@ -30,7 +35,18 @@ $primaryKey            = $data['title'] ?? 'id_proveedor';
 $tableName             = $data['tableName'] ?? 'pedidos';
 $db                    = $data['db'] ?? 'test_insumos';
 $targetServiceEndpoint = $data['targetServiceEndpoint'] ?? 'http://localhost/myflow/public/api/insumos/proveedores/';
-$targetServiceTokenVal = $data['targetServiceTokenVal'] ?? 'token_e146b7073904f432bfc121ea3e396708';
+$targetServiceTokenVal = $_SESSION['api_tokens'][$tableName] ?? null;
+
+if (!$targetServiceTokenVal) {
+    // Si no está en sesión (por ejemplo, peticiones desacopladas), puedes usar un fallback persistente en disco/BD
+    http_response_code(500);
+    echo json_encode([
+        'success' => false, 
+        'message' => "No se encontró el token de sesión registrado para la tabla '{$tableName}'."
+    ]);
+    exit();
+}
+
 $tsClientFilePath      = $data['tsClientFilePath'];
 
 // Token con el que este cliente se autentica ante el API Intermediario
