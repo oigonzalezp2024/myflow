@@ -26,14 +26,14 @@ class MySQLProveedoresRepository implements ProveedoresRepositoryInterface {
     }
 
     public function create(array $data): int {
-        $sql = 'INSERT INTO `proveedores` (`proveedor_nombre`) VALUES (:proveedor_nombre)';
+        $sql = 'INSERT INTO `proveedores` (`proveedor_nombre`, `proveedor_direccion`) VALUES (:proveedor_nombre, :proveedor_direccion)';
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($data);
         return (int)$this->pdo->lastInsertId();
     }
 
     public function update($id, array $data): int {
-        $sql = 'UPDATE `proveedores` SET `proveedor_nombre` = :proveedor_nombre WHERE `id_proveedor` = :id_proveedor';
+        $sql = 'UPDATE `proveedores` SET `proveedor_nombre` = :proveedor_nombre, `proveedor_direccion` = :proveedor_direccion WHERE `id_proveedor` = :id_proveedor';
         $data['id_proveedor'] = $id;
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($data);
