@@ -6,8 +6,8 @@ header('Content-Type: application/json; charset=utf-8');
 require_once __DIR__ . '/../clients/ApiClient.php';
 
 // 1. Configuración de conexión y credenciales
-$baseUrl = 'http://localhost/myflow/empresa/public/api/ProveedoresAPI.php';
-$token = 'token_891c160061bf493dca0c61437cd4861c';
+$baseUrl = 'http://localhost:8080/proveedores/';
+$token = 'token_1a8e975cd70ffbeeba8876fbb0e050de';
 $primaryKey = 'id_proveedor';
 
 $api = new ApiClient($baseUrl, $token, $primaryKey);
@@ -26,6 +26,7 @@ if (empty($requestData)) {
 $allowedColumns = array (
   0 => 'id_proveedor',
   1 => 'proveedor_nombre',
+  2 => 'proveedor_direccion',
 );
 $payload = [];
 
