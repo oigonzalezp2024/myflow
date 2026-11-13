@@ -5,10 +5,12 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/joho/godotenv"
 )
 
 // ==========================================
@@ -214,7 +216,7 @@ func HandleDeleteProveedor(w http.ResponseWriter, r *http.Request, repo *Proveed
 // ==========================================
 // 4. PRESENTATION: Controladores y Middlewares
 // ==========================================
-const APIToken = "token_891c160061bf493dca0c61437cd4861c"
+var apiToken string
 
 func EnableCORS(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -235,7 +237,7 @@ func Authenticate(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		authHeader := r.Header.Get("Authorization")
 		parts := strings.SplitN(authHeader, " ", 2)
-		if len(parts) != 2 || parts[0] != "Bearer" || parts[1] != APIToken {
+		if len(parts) != 2 || parts[0] != "Bearer" || parts[1] != apiToken {
 			w.WriteHeader(http.StatusUnauthorized)
 			json.NewEncoder(w).Encode(map[string]interface{}{
 				"success": false,
@@ -270,6 +272,15 @@ func ProveedorHandler(repo *ProveedorRepository) http.HandlerFunc {
 // 5. MAIN: Inicialización del Servidor
 // ==========================================
 func main() {
+	// Carga el archivo .env local si está presente de forma aislada
+	_ = godotenv.Load()
+
+	// Validación estricta: detiene la ejecución si el token no está configurado
+	apiToken = os.Getenv("API_TOKEN_PROVEEDORES")
+	if apiToken == "" {
+		log.Fatal("Error: La variable de entorno API_TOKEN_PROVEEDORES no está configurada.")
+	}
+
 	dsn := "root:@tcp(localhost:3306)/empresa?parseTime=true&charset=utf8mb4"
 	db, err := sql.Open("mysql", dsn)
 	if err != nil {
