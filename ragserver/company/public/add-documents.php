@@ -9,7 +9,7 @@ require_once __DIR__ . '/../Clients/RagApiClient.php';
 
 // Configuración de conexión a la base de datos (puedes moverlo a tu .env o contenedor de dependencias)
 $dbHost = 'localhost';
-$dbName = 'u000000000_indusam';
+$dbName = 'u000000000_company';
 $dbUser = 'root'; // Cambia por tu usuario
 $dbPass = '';     // Cambia por tu contraseña
 
@@ -28,7 +28,7 @@ try {
     // 2. Consultar los registros de la tabla ind_materiales (hasta 100 en total)
     $stmt = $pdo->query("
         SELECT codigo_material, descripcion_material, unidad_medida, precio_unitario_defecto, stock_actual 
-        FROM ind_materiales ORDER BY id_material DESC LIMIT 10
+        FROM ind_materiales ORDER BY id_material DESC LIMIT 100
     ");
     
     $batchSize = 10; // Cambiado a 10 registros por lote
