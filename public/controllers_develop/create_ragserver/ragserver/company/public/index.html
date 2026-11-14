@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAG Agent - Interfaz de Voz</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <main class="container" id="mainContainer">
+        <!-- Logo / Avatar con efecto 3D -->
+        <header class="brand-header">
+            <div class="logo-wrapper" id="logoWrapper">
+                <svg class="agent-logo" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg" aria-label="Logo Agente RAG Minimalista">
+                    <circle cx="80" cy="80" r="54" fill="none" stroke="#FF6B00" stroke-width="12"/>
+                    <g class="eyes-group">
+                        <circle class="eye" cx="60" cy="80" r="13.5" fill="none" stroke="#FF6B00" stroke-width="7.5"/>
+                        <circle class="eye" cx="100" cy="80" r="13.5" fill="none" stroke="#FF6B00" stroke-width="7.5"/>
+                    </g>
+                </svg>
+            </div>
+        </header>
+
+        <div class="input-group">
+            <input 
+                type="text" 
+                id="mensajeInput" 
+                placeholder="Presiona el micrófono y habla..." 
+                autocomplete="off"
+            >
+            <button type="button" id="btnVoz" title="Dictar por voz">🎤</button>
+        </div>
+
+        <div class="actions-group">
+            <button type="button" id="btnEnviar" class="btn-submit">Enviar JSON</button>
+            <button type="button" id="btnToggleVoz" class="btn-icon-config" title="Configurar voz">⚙️</button>
+        </div>
+
+        <!-- Selector de Voces oculto inicialmente por diseño limpio -->
+        <div id="voiceSelectorContainer" class="voice-selector hidden">
+            <label for="vozSelect">Selecciona la voz del asistente:</label>
+            <select id="vozSelect">
+                <option value="">Cargando voces...</option>
+            </select>
+        </div>
+
+        <p id="estado" class="estado"></p>
+
+        <!-- Contenedor para mostrar la respuesta del RAG/Servidor -->
+        <div id="resultadoContainer" class="resultado-box hidden">
+            <h3>Respuesta del Servidor:</h3>
+            <div id="resultadoContenido"></div>
+        </div>
+    </main>
+
+    <script src="app.js"></script>
+    <script>
+        // Movimiento 3D sutil y armónico del avatar
+        const container = document.getElementById('mainContainer');
+        const logoWrapper = document.getElementById('logoWrapper');
+
+        document.addEventListener('mousemove', (e) => {
+            const rect = container.getBoundingClientRect();
+            const x = e.clientX - (rect.left + rect.width / 2);
+            const y = e.clientY - (rect.top + rect.height / 2);
+            
+            const rotateX = (-y / rect.height) * 5;
+            const rotateY = (x / rect.width) * 5;
+
+            container.style.transform = `perspective(1200px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            logoWrapper.style.transform = `translateX(${rotateY * 0.3}px) translateY(${rotateX * 0.3}px)`;
+        });
+
+        document.addEventListener('mouseleave', () => {
+            container.style.transform = 'perspective(1200px) rotateX(0deg) rotateY(0deg)';
+            logoWrapper.style.transform = 'translateX(0px) translateY(0px)';
+        });
+    </script>
+</body>
+</html>
