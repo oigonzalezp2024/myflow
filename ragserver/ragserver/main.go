@@ -191,7 +191,22 @@ func (rs *ragServer) queryHandler(w http.ResponseWriter, req *http.Request) {
 	renderJSON(w, strings.Join(respTexts, "\n"))
 }
 
+
+
+
+
+
+
+
+
+
+
+
 const ragTemplateStr = `
+STRICT INSTRUCTIONS:
+- Never use special characters (such as emojis, asterisks, complex markdown, or strange symbols). Always write using only plain text.
+- If you mention or speak of money or economic amounts, you must always express them in Colombian Pesos.
+
 I will ask you a question and will provide some additional context information.
 Assume this context information is factual and correct, as part of internal
 documentation.
