@@ -191,17 +191,6 @@ func (rs *ragServer) queryHandler(w http.ResponseWriter, req *http.Request) {
 	renderJSON(w, strings.Join(respTexts, "\n"))
 }
 
-
-
-
-
-
-
-
-
-
-
-
 const ragTemplateStr = `
 STRICT INSTRUCTIONS:
 - Never use special characters (such as emojis, asterisks, complex markdown, or strange symbols). Always write using only plain text.
