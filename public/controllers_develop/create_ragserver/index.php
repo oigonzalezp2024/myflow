@@ -21,6 +21,7 @@ use App\Infrastructure\FileHandling\DocumentLoaderGenerator;
 use App\Infrastructure\FileHandling\FileHandlingCopyDirectory;
 use App\Infrastructure\FileHandling\WeaviateConfigGenerator; // Clase encargada de generar la configuración/código de Go con el puerto dinámico
 use App\Infrastructure\FileHandling\WeaviateEnvironmentGenerator; // Clase encargada del entorno/Docker
+use App\Infrastructure\FileHandling\RagServerMainGenerator; // Generador para main.go del RAG Server
 
 /**
  * Obtiene todos los puertos actualmente asignados en Docker (activos o detenidos)
@@ -170,7 +171,6 @@ try {
     $generatedComposeFile = $generatedEnvDir . '/docker-compose.yml';
     if (file_exists($generatedComposeFile)) {
         $yamlContent = file_get_contents($generatedComposeFile);
-        // Reemplaza tanto mapeos "9036:8080" como "9036:9036" o variables de entorno con 9036/50052
         $yamlContent = preg_replace('/\b9036\b/', (string)$httpPort, $yamlContent);
         $yamlContent = preg_replace('/\b50052\b/', (string)$grpcPort, $yamlContent);
         file_put_contents($generatedComposeFile, $yamlContent);
@@ -190,6 +190,23 @@ try {
     } catch (Throwable $e) {
         error_log("Aviso WeaviateConfigGenerator (Go): " . $e->getMessage());
         throw new RuntimeException("Fallo al generar la configuración Go de Weaviate: " . $e->getMessage());
+    }
+
+    // Generación del archivo main.go con la variable de entorno única <NODO>_SERVERPORT y el puerto $ragPort único
+    $mainTemplatePath = __DIR__ . '/ragserver/ragserver/main.go';
+    $mainOutputPath = $destination . '/main.go';
+
+    try {
+        $mainGenerator = new RagServerMainGenerator();
+        $mainGenerator->generate(
+            templatePath: $mainTemplatePath,
+            outputPath: $mainOutputPath,
+            nodeName: $safeFolderName,
+            serverPort: $ragPort
+        );
+    } catch (Throwable $e) {
+        error_log("Aviso RagServerMainGenerator (Go): " . $e->getMessage());
+        throw new RuntimeException("Fallo al generar el main.go del RAG Server: " . $e->getMessage());
     }
 
     // Ejecución inmediata del contenedor usando el YAML específico generado para el proyecto
