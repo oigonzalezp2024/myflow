@@ -53,9 +53,16 @@ try {
         permissions: 0755
     );
 
+    
+    // Asegurar que exista la carpeta test antes de copiar el docker-compose
+    $testDir = $destination . '/test';
+    if (!is_dir($testDir)) {
+        mkdir($testDir, 0755, true);
+    }
+
     $useCase = new FileHandlingCopyDirectory();
     $useCase($request);
-
+    $useCase->copyFile("./ragserver/tests/docker-compose.yml", $destination . "/test/docker-compose.yml");
     ///////////////////////////////////////
     $source = __DIR__ . '/ragserver/company/clients/';
     $baseDestinationDir = __DIR__ . '/../../../empresa/clients/ragserver/';
@@ -75,6 +82,12 @@ try {
         destinationDirectory: $destination,
         permissions: 0755
     );
+
+    // Asegurar que exista la carpeta test antes de copiar el docker-compose
+    $testDir = $destination . '/test';
+    if (!is_dir($testDir)) {
+        mkdir($testDir, 0755, true);
+    }
 
     $useCase = new FileHandlingCopyDirectory();
     $useCase($request);
