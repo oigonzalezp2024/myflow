@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
-use App\Infrastructure\FileHandling;
+namespace App\Infrastructure\FileHandling;
+
+use Exception;
 
 class DocumentLoaderGenerator
 {

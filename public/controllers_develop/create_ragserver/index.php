@@ -17,6 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'PUT') {
 require_once __DIR__ . '/../../../vendor/autoload.php';
 
 use App\Infrastructure\FileHandling\CopyDirectoryRequest;
+use App\Infrastructure\FileHandling\DocumentLoaderGenerator;
 use App\Infrastructure\FileHandling\FileHandlingCopyDirectory;
 use App\Infrastructure\FileHandling\WeaviateConfigGenerator; // Clase encargada de generar la configuración/código de Go con el puerto dinámico
 use App\Infrastructure\FileHandling\WeaviateEnvironmentGenerator; // Clase encargada del entorno/Docker
@@ -35,6 +36,9 @@ function getUnavailablePorts(array $registryData): array
         }
         if (isset($entry['grpc_port'])) {
             $usedPorts[] = (int)$entry['grpc_port'];
+        }
+        if (isset($entry['rag_port'])) {
+            $usedPorts[] = (int)$entry['rag_port'];
         }
     }
 
@@ -84,7 +88,7 @@ try {
         destinationDirectory: $destination,
         permissions: 0755
     );
-    
+
     // Carpeta de prueba específica y aislada para este proyecto
     $projectTestDir = $destination . '/test_' . $safeFolderName;
     if (!is_dir($projectTestDir)) {
@@ -93,7 +97,7 @@ try {
 
     $useCase = new FileHandlingCopyDirectory();
     $useCase($request);
-    
+
     // Copiar el docker-compose.yml base a la carpeta de prueba exclusiva del proyecto
     $dockerComposeSource = __DIR__ . '/ragserver/tests/docker-compose.yml';
     $targetDockerCompose = $projectTestDir . "/docker-compose.yml";
@@ -116,6 +120,16 @@ try {
     if (isset($registryData[$safeFolderName])) {
         $httpPort = (int)$registryData[$safeFolderName]['http_port'];
         $grpcPort = (int)$registryData[$safeFolderName]['grpc_port'];
+
+        if (isset($registryData[$safeFolderName]['rag_port'])) {
+            $ragPort = (int)$registryData[$safeFolderName]['rag_port'];
+        } else {
+            $ragPort = 9020;
+            while (in_array($ragPort, $unavailablePorts, true)) {
+                $ragPort++;
+            }
+            $unavailablePorts[] = $ragPort;
+        }
     } else {
         $httpPort = 9036;
         while (in_array($httpPort, $unavailablePorts, true)) {
@@ -128,10 +142,17 @@ try {
             $grpcPort++;
         }
         $unavailablePorts[] = $grpcPort;
+
+        $ragPort = 9020;
+        while (in_array($ragPort, $unavailablePorts, true)) {
+            $ragPort++;
+        }
+        $unavailablePorts[] = $ragPort;
     }
 
     //// Generación del entorno Weaviate único con el nombre del proyecto (Docker)
     $generatedEnvDir = $destination . '/ragservers/' . $safeFolderName;
+
     try {
         $generator = new WeaviateEnvironmentGenerator($targetDockerCompose);
         $generator->generate(
@@ -185,11 +206,11 @@ try {
             escapeshellarg($projectSlug),
             escapeshellarg(basename($composeToRun))
         );
-        
+
         $output = [];
         $exitCode = 0;
         exec($command, $output, $exitCode);
-        
+
         if ($exitCode !== 0) {
             @exec(sprintf(
                 '%s %s && docker compose -p %s -f %s down 2>&1',
@@ -210,6 +231,7 @@ try {
         'folder'     => $safeFolderName,
         'http_port'  => $httpPort,
         'grpc_port'  => $grpcPort,
+        'rag_port'   => $ragPort,
         'created_at' => $registryData[$safeFolderName]['created_at'] ?? date('Y-m-d H:i:s'),
         'updated_at' => date('Y-m-d H:i:s')
     ];
@@ -218,12 +240,11 @@ try {
     ///////////////////////////////////////
     $sourceClients = __DIR__ . '/ragserver/company/clients/';
     $baseClientsDir = __DIR__ . '/../../../empresa/clients/ragserver/';
-
     if (!is_dir($baseClientsDir)) {
         mkdir($baseClientsDir, 0755, true);
     }
-
     $destinationClients = $baseClientsDir . $safeFolderName;
+
     $requestClients = new CopyDirectoryRequest(
         sourceDirectory: $sourceClients,
         destinationDirectory: $destinationClients,
@@ -235,18 +256,34 @@ try {
     ///////////////////////////////////////
     $sourcePublic = __DIR__ . '/ragserver/company/public/';
     $basePublicDir = __DIR__ . '/../../../empresa/public/';
-
     if (!is_dir($basePublicDir)) {
         mkdir($basePublicDir, 0755, true);
     }
-
     $destinationPublic = $basePublicDir . $safeFolderName;
+
     $requestPublic = new CopyDirectoryRequest(
         sourceDirectory: $sourcePublic,
         destinationDirectory: $destinationPublic,
         permissions: 0755
     );
     $useCase($requestPublic);
+
+    // Generar add-documents.php personalizado usando DocumentLoaderGenerator
+    $addDocsTemplatePath = __DIR__ . '/ragserver/company/public/add-documents.php';
+    $addDocsDestinationPath = $destinationPublic . '/add-documents.php';
+    $newRequirePath = "../../clients/ragserver/{$safeFolderName}/RagApiClient.php";
+
+    try {
+        DocumentLoaderGenerator::generate(
+            templatePath: $addDocsTemplatePath,
+            destinationPath: $addDocsDestinationPath,
+            newRequirePath: $newRequirePath,
+            newPort: $ragPort
+        );
+    } catch (Throwable $e) {
+        error_log("Aviso DocumentLoaderGenerator: " . $e->getMessage());
+        throw new RuntimeException("Fallo al generar add-documents.php: " . $e->getMessage());
+    }
     //////////////////
 
     $copiedFolderIndexUrl = __DIR__ . "/../../controllers_project/" . rawurlencode($safeFolderName) . "/index.php";
@@ -258,10 +295,13 @@ try {
         'data' => [
             'folder_name' => $safeFolderName,
             'index_url'   => $copiedFolderIndexUrl,
-            'ports'       => ['http' => $httpPort, 'grpc' => $grpcPort]
+            'ports'       => [
+                'http' => $httpPort,
+                'grpc' => $grpcPort,
+                'rag'  => $ragPort
+            ]
         ]
     ], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
-
 } catch (InvalidArgumentException | RuntimeException $e) {
     http_response_code(400);
     echo json_encode([
