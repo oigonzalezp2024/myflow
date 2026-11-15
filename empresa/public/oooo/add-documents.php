@@ -5,7 +5,7 @@ declare(strict_types=1);
 // Evitar que el script se detenga por tiempo de ejecución debido a las pausas
 set_time_limit(0);
 
-require_once __DIR__ . '/../Clients/RagApiClient.php';
+require_once __DIR__ . '/../../clients/ragserver/oooo/RagApiClient.php';
 
 // Configuración de conexión a la base de datos (puedes moverlo a tu .env o contenedor de dependencias)
 $dbHost = 'localhost';

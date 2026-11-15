@@ -19,7 +19,7 @@ import (
 // initWeaviate initializes a weaviate client for our application.
 func initWeaviate(ctx context.Context) (*weaviate.Client, error) {
 	client, err := weaviate.NewClient(weaviate.Config{
-		Host:   "localhost:" + cmp.Or(os.Getenv("WVPORT"), "9020"),
+		Host:   "localhost:" + cmp.Or(os.Getenv("WVPORT"), "9036"),
 		Scheme: "http",
 	})
 	if err != nil {
