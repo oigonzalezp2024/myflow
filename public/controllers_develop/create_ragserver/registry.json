@@ -1,0 +1,9 @@
+{
+    "oooo": {
+        "folder": "oooo",
+        "http_port": 9036,
+        "grpc_port": 50052,
+        "created_at": "2026-11-15 14:11:49",
+        "updated_at": "2026-11-15 14:11:49"
+    }
+}
