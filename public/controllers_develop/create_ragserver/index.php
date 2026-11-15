@@ -18,7 +18,8 @@ require_once __DIR__ . '/../../../vendor/autoload.php';
 
 use App\Infrastructure\FileHandling\CopyDirectoryRequest;
 use App\Infrastructure\FileHandling\FileHandlingCopyDirectory;
-use App\Infrastructure\FileHandling\WeaviateEnvironmentGenerator;
+use App\Infrastructure\FileHandling\WeaviateConfigGenerator; // Clase encargada de generar la configuración/código de Go con el puerto dinámico
+use App\Infrastructure\FileHandling\WeaviateEnvironmentGenerator; // Clase encargada del entorno/Docker
 
 /**
  * Obtiene todos los puertos actualmente asignados en Docker (activos o detenidos)
@@ -129,7 +130,7 @@ try {
         $unavailablePorts[] = $grpcPort;
     }
 
-    //// Generación del entorno Weaviate único con el nombre del proyecto
+    //// Generación del entorno Weaviate único con el nombre del proyecto (Docker)
     $generatedEnvDir = $destination . '/ragservers/' . $safeFolderName;
     try {
         $generator = new WeaviateEnvironmentGenerator($targetDockerCompose);
@@ -140,11 +141,11 @@ try {
             grpcPort: $grpcPort
         );
     } catch (Throwable $e) {
-        error_log("Aviso WeaviateGenerator: " . $e->getMessage());
+        error_log("Aviso WeaviateEnvironmentGenerator: " . $e->getMessage());
         throw new RuntimeException("Fallo al generar el archivo YAML del entorno Weaviate: " . $e->getMessage());
     }
 
-    // Reemplazar explícitamente los puertos base (9036 y 50052) en el docker-compose.yml generado
+    // Reemplazar explícitamente los puertos base en el docker-compose.yml generado
     $generatedComposeFile = $generatedEnvDir . '/docker-compose.yml';
     if (file_exists($generatedComposeFile)) {
         $yamlContent = file_get_contents($generatedComposeFile);
@@ -152,6 +153,22 @@ try {
         $yamlContent = preg_replace('/\b9036\b/', (string)$httpPort, $yamlContent);
         $yamlContent = preg_replace('/\b50052\b/', (string)$grpcPort, $yamlContent);
         file_put_contents($generatedComposeFile, $yamlContent);
+    }
+
+    // Generación del archivo weaviate.go con el puerto HTTP dinámico
+    $goTemplatePath = __DIR__ . '/ragserver/ragserver/weaviate.go';
+    $goOutputPath = $destination . '/weaviate.go';
+
+    try {
+        $goConfigGenerator = new WeaviateConfigGenerator();
+        $goConfigGenerator->generate(
+            templatePath: $goTemplatePath,
+            outputPath: $goOutputPath,
+            httpPort: $httpPort
+        );
+    } catch (Throwable $e) {
+        error_log("Aviso WeaviateConfigGenerator (Go): " . $e->getMessage());
+        throw new RuntimeException("Fallo al generar la configuración Go de Weaviate: " . $e->getMessage());
     }
 
     // Ejecución inmediata del contenedor usando el YAML específico generado para el proyecto
@@ -174,7 +191,6 @@ try {
         exec($command, $output, $exitCode);
         
         if ($exitCode !== 0) {
-            // Limpiar el contenedor/red fallida si Docker llegó a crearlos antes del error de puerto
             @exec(sprintf(
                 '%s %s && docker compose -p %s -f %s down 2>&1',
                 $cdPrefix,
@@ -189,7 +205,7 @@ try {
         }
     }
 
-    // Registrar en __DIR__ . '/registry.json' solo después de que Docker levantó exitosamente
+    // Registrar en el archivo de registro JSON
     $registryData[$safeFolderName] = [
         'folder'     => $safeFolderName,
         'http_port'  => $httpPort,
