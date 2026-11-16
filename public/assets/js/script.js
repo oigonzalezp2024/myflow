@@ -1,8 +1,9 @@
+import { initRagNodeModule } from './rag_node.js';
+
 document.addEventListener('DOMContentLoaded', () => {
     const workflowCanvas = document.getElementById('workflowCanvas');
     const linesSvg = document.getElementById('linesSvg');
     const addNodeBtn = document.getElementById('addNodeBtn');
-
     const downloadWorkflowBtn = document.getElementById('downloadWorkflowBtn');
     const uploadWorkflowInput = document.getElementById('uploadWorkflowInput');
     const uploadWorkflowBtn = document.getElementById('uploadWorkflowBtn');
@@ -14,7 +15,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const saveDbConfigBtn = document.getElementById('saveDbConfigBtn');
     const addFieldBtn = document.getElementById('addFieldBtn');
     const dbFieldsContainer = document.getElementById('dbFieldsContainer');
-
     const dbHostInput = document.getElementById('dbHost');
     const dbPortInput = document.getElementById('dbPort');
     const dbUsernameInput = document.getElementById('dbUsername');
@@ -29,14 +29,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const generateCrudBtn = document.getElementById('generateCrudBtn');
     const copyPhpCodeBtn = document.getElementById('copyPhpCodeBtn');
     const saveFileToDiskBtn = document.getElementById('saveFileToDiskBtn');
-
     const apiHostInput = document.getElementById('apiHost');
     const apiPortInput = document.getElementById('apiPort');
     const apiUsernameInput = document.getElementById('apiUsername');
     const apiPasswordInput = document.getElementById('apiPassword');
     const apiDbNameInput = document.getElementById('apiDbName');
     const apiTableNameInput = document.getElementById('apiTableName');
-
     const apiFilePathInput = document.getElementById('apiFilePath');
     const apiFileNameInput = document.getElementById('apiFileName');
     const generatedPhpCodeArea = document.getElementById('generatedPhpCode');
@@ -49,12 +47,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const generateClientBtn = document.getElementById('generateClientBtn');
     const copyClientCodeBtn = document.getElementById('copyClientCodeBtn');
     const saveClientFileBtn = document.getElementById('saveClientFileBtn');
-
     const clientEndpointUrlInput = document.getElementById('clientEndpointUrl');
     const clientTokenInput = document.getElementById('clientToken');
     const clientPrimaryKeyInput = document.getElementById('clientPrimaryKey');
     const clientLanguageSelect = document.getElementById('clientLanguage');
-
     const clientFilePathInput = document.getElementById('clientFilePath');
     const clientFileNameInput = document.getElementById('clientFileName');
     const generatedClientCodeArea = document.getElementById('generatedClientCode');
@@ -93,13 +89,11 @@ document.addEventListener('DOMContentLoaded', () => {
     let offsetX, offsetY;
     let nodesData = [];
     let connectionsData = [];
-
     let isDrawingConnection = false;
     let startNodeId = null;
     let startPortType = null;
     let tempLine = null;
     let targetPortElement = null;
-
     let isCanvasPanning = false;
     let canvasPanStartX = 0;
     let canvasPanStartY = 0;
@@ -113,14 +107,22 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.appendChild(iconSelectionMenu);
 
     const availableIcons = [
-        'fas fa-cogs', 'fas fa-comment-dots', 'fas fa-code', 'fas fa-globe',
-        'fas fa-pencil-alt', 'fas fa-file-invoice', 'fas fa-database', 'fas fa-cloud',
-        'fas fa-robot', 'fas fa-envelope', 'fas fa-bell', 'fas fa-terminal',
-        'fas fa-hdd', 'fas fa-sitemap', 'fas fa-chart-bar', 'fas fa-server',
-        'fas fa-users', 'fas fa-credit-card', 'fas fa-laptop-code', 'fas fa-plug',
-        'fas fa-wifi', 'fas fa-shield-alt', 'fas fa-truck', 'fas fa-shopping-cart',
-        'fas fa-solid fa-rss', 'fas fa-project-diagram', 'fas fa-paper-plane'
+        'fas fa-cogs', 'fas fa-comment-dots', 'fas fa-code', 'fas fa-globe', 
+        'fas fa-pencil-alt', 'fas fa-file-invoice', 'fas fa-database', 'fas fa-cloud', 
+        'fas fa-robot', 'fas fa-envelope', 'fas fa-bell', 'fas fa-terminal', 
+        'fas fa-hdd', 'fas fa-sitemap', 'fas fa-chart-bar', 'fas fa-server', 
+        'fas fa-users', 'fas fa-credit-card', 'fas fa-laptop-code', 'fas fa-plug', 
+        'fas fa-wifi', 'fas fa-shield-alt', 'fas fa-truck', 'fas fa-shopping-cart', 
+        'fas fa-solid fa-rss', 'fas fa-project-diagram', 'fas fa-paper-plane', 'fas fa-brain'
     ];
+
+    // Inicializar el módulo RAG separado
+    const ragModule = initRagNodeModule({
+        getNodesData: () => nodesData,
+        saveWorkflowToLocalStorage,
+        renderWorkflow,
+        hideAllContextMenus
+    });
 
     function generateUniqueId() {
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
@@ -142,48 +144,22 @@ document.addEventListener('DOMContentLoaded', () => {
         let subtitleContent = nodeConfig.subtitle ? `<div class="node-subtitle">${nodeConfig.subtitle}</div>` : '';
 
         switch (nodeConfig.type) {
-            case 'start':
-                nodeTypeClass = 'node-start';
-                headerContent = 'de chat';
-                break;
-            case 'code':
-            case 'api':
-            case 'edit-fields':
-                nodeTypeClass = 'node-process';
-                break;
-            case 'disk':
-                nodeTypeClass = 'node-end';
-                break;
-            case 'database':
-                nodeTypeClass = 'node-process';
-                headerContent = 'Database';
-                break;
-            case 'crud-api':
-                nodeTypeClass = 'node-process';
-                headerContent = 'API Generator';
-                break;
-            case 'crud-client':
-                nodeTypeClass = 'node-process';
-                headerContent = 'API Client';
-                break;
-            case 'case-uses':
-                nodeTypeClass = 'node-process';
-                headerContent = 'case Uses';
-                break;
-            case 'send-data':
-                nodeTypeClass = 'node-process';
-                headerContent = 'Envío POST';
-                break;
-            default:
-                nodeTypeClass = 'node-process';
-                headerContent = '';
-                break;
+            case 'start': nodeTypeClass = 'node-start'; headerContent = 'de chat'; break;
+            case 'code': case 'api': case 'edit-fields': nodeTypeClass = 'node-process'; break;
+            case 'disk': nodeTypeClass = 'node-end'; break;
+            case 'database': nodeTypeClass = 'node-process'; headerContent = 'Database'; break;
+            case 'crud-api': nodeTypeClass = 'node-process'; headerContent = 'API Generator'; break;
+            case 'crud-client': nodeTypeClass = 'node-process'; headerContent = 'API Client'; break;
+            case 'case-uses': nodeTypeClass = 'node-process'; headerContent = 'case Uses'; break;
+            case 'send-data': nodeTypeClass = 'node-process'; headerContent = 'Envío POST'; break;
+            case 'rag-server': nodeTypeClass = 'node-process'; headerContent = 'RAG Server'; break;
+            default: nodeTypeClass = 'node-process'; headerContent = ''; break;
         }
 
         let iconColorClass = '';
         if (nodeConfig.type === 'start') iconColorClass = 'type-chat-message';
         else if (nodeConfig.type === 'code') iconColorClass = 'type-code';
-        else if (nodeConfig.type === 'api' || nodeConfig.type === 'crud-api' || nodeConfig.type === 'crud-client' || nodeConfig.type === 'send-data') iconColorClass = 'type-api';
+        else if (['api', 'crud-api', 'crud-client', 'send-data', 'rag-server'].includes(nodeConfig.type)) iconColorClass = 'type-api';
         else if (nodeConfig.type === 'edit-fields') iconColorClass = 'type-edit-fields';
         else if (nodeConfig.type === 'disk') iconColorClass = 'type-disk';
         else if (nodeConfig.type === 'database') iconColorClass = 'type-database';
@@ -199,8 +175,8 @@ document.addEventListener('DOMContentLoaded', () => {
             ${nodeConfig.type !== 'disk' ? '<div class="node-port output-port" data-port-type="output" data-node-id="' + nodeConfig.id + '"></div>' : ''}
             ${nodeConfig.type !== 'start' ? '<div class="node-port input-port" data-port-type="input" data-node-id="' + nodeConfig.id + '"></div>' : ''}
         `;
-        nodeDiv.classList.add(nodeTypeClass);
 
+        nodeDiv.classList.add(nodeTypeClass);
         addDragListeners(nodeDiv);
 
         nodeDiv.addEventListener('dblclick', (e) => {
@@ -215,6 +191,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     showCaseUsesModal(nodeConfig.id);
                 } else if (nodeConfig.type === 'send-data' || (nodeConfig.icon && nodeConfig.icon.includes('fa-paper-plane'))) {
                     showSendDataModal(nodeConfig.id);
+                } else if (nodeConfig.type === 'rag-server' || (nodeConfig.icon && nodeConfig.icon.includes('fa-brain'))) {
+                    ragModule.showRagServerModal(nodeConfig.id);
                 }
             }
         });
@@ -252,12 +230,10 @@ document.addEventListener('DOMContentLoaded', () => {
         line.classList.add('connection-line');
         line.setAttribute('data-from-node', connectionConfig.fromNodeId);
         line.setAttribute('data-to-node', connectionConfig.toNodeId);
-
         line.addEventListener('contextmenu', (e) => {
             e.preventDefault();
             showConnectionContextMenu(e, connectionConfig.lineId);
         });
-
         linesSvg.appendChild(line);
         return line;
     }
@@ -265,10 +241,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderWorkflow() {
         workflowCanvas.querySelectorAll('.node').forEach(node => node.remove());
         linesSvg.querySelectorAll('line').forEach(line => line.remove());
-
         nodesData.forEach(nodeConfig => createNodeElement(nodeConfig));
         connectionsData.forEach(conn => createLineElement(conn));
-
         nodesData.forEach(nodeConfig => {
             const nodeElement = document.getElementById(nodeConfig.id);
             if (nodeElement) updateConnectedLines(nodeElement);
@@ -288,7 +262,8 @@ document.addEventListener('DOMContentLoaded', () => {
             apiConfig: type === 'crud-api' ? {} : undefined,
             clientConfig: type === 'crud-client' ? {} : undefined,
             caseUsesConfig: type === 'case-uses' ? {} : undefined,
-            sendDataConfig: type === 'send-data' ? {} : undefined
+            sendDataConfig: type === 'send-data' ? {} : undefined,
+            ragConfig: type === 'rag-server' ? {} : undefined
         };
         nodesData.push(newNode);
         createNodeElement(newNode);
@@ -307,7 +282,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const nodeIndex = nodesData.findIndex(node => node.id === nodeId);
         if (nodeIndex !== -1) {
             nodesData[nodeIndex].icon = newIconClass;
-
             if (newIconClass.includes('fas fa-database')) {
                 nodesData[nodeIndex].type = 'database';
                 if (!nodesData[nodeIndex].dbConfig) nodesData[nodeIndex].dbConfig = {};
@@ -323,7 +297,10 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (newIconClass.includes('fa-paper-plane')) {
                 nodesData[nodeIndex].type = 'send-data';
                 if (!nodesData[nodeIndex].sendDataConfig) nodesData[nodeIndex].sendDataConfig = {};
-            } else if (['database', 'crud-api', 'crud-client', 'case-uses', 'send-data'].includes(nodesData[nodeIndex].type)) {
+            } else if (newIconClass.includes('fa-brain')) {
+                nodesData[nodeIndex].type = 'rag-server';
+                if (!nodesData[nodeIndex].ragConfig) nodesData[nodeIndex].ragConfig = {};
+            } else if (['database', 'crud-api', 'crud-client', 'case-uses', 'send-data', 'rag-server'].includes(nodesData[nodeIndex].type)) {
                 nodesData[nodeIndex].type = 'generic';
             }
 
@@ -333,19 +310,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (iconElement) {
                     iconElement.className = '';
                     iconElement.classList.add(...newIconClass.split(' '));
-
                     const nodeIconContainer = nodeElement.querySelector('.node-icon');
                     nodeIconContainer.classList.remove('type-chat-message', 'type-code', 'type-api', 'type-edit-fields', 'type-disk', 'type-database', 'type-generic');
-
+                    
                     let newIconColorClass = '';
                     if (nodesData[nodeIndex].type === 'start') newIconColorClass = 'type-chat-message';
                     else if (nodesData[nodeIndex].type === 'code') newIconColorClass = 'type-code';
-                    else if (['api', 'crud-api', 'crud-client', 'case-uses', 'send-data'].includes(nodesData[nodeIndex].type)) newIconColorClass = 'type-api';
+                    else if (['api', 'crud-api', 'crud-client', 'case-uses', 'send-data', 'rag-server'].includes(nodesData[nodeIndex].type)) newIconColorClass = 'type-api';
                     else if (nodesData[nodeIndex].type === 'edit-fields') newIconColorClass = 'type-edit-fields';
                     else if (nodesData[nodeIndex].type === 'disk') newIconColorClass = 'type-disk';
                     else if (nodesData[nodeIndex].type === 'database') newIconColorClass = 'type-database';
                     else newIconColorClass = 'type-generic';
-
+                    
                     nodeIconContainer.classList.add(newIconColorClass);
                 }
             }
@@ -363,10 +339,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             return true;
         });
-
         const nodeElement = document.getElementById(nodeId);
         if (nodeElement) nodeElement.remove();
-
         saveWorkflowToLocalStorage();
     }
 
@@ -380,18 +354,15 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Esta conexión ya existe.');
             return;
         }
-
         const newConnection = {
             lineId: `line-${fromNodeId}-${toNodeId}-${generateUniqueId().substring(0, 4)}`,
             fromNodeId: fromNodeId,
             toNodeId: toNodeId
         };
         connectionsData.push(newConnection);
-
         createLineElement(newConnection);
         updateConnectedLines(document.getElementById(fromNodeId));
         updateConnectedLines(document.getElementById(toNodeId));
-
         saveWorkflowToLocalStorage();
     }
 
@@ -434,7 +405,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const jsonString = JSON.stringify(dataToDownload, null, 2);
         const blob = new Blob([jsonString], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
-
         const a = document.createElement('a');
         a.href = url;
         a.download = 'workflow.json';
@@ -447,13 +417,11 @@ document.addEventListener('DOMContentLoaded', () => {
     function uploadWorkflowFromJsonFile(event) {
         const file = event.target.files[0];
         if (!file) return;
-
         const reader = new FileReader();
         reader.onload = (e) => {
             try {
                 const loadedData = JSON.parse(e.target.result);
-                if (loadedData.nodes && Array.isArray(loadedData.nodes) &&
-                    loadedData.connections && Array.isArray(loadedData.connections)) {
+                if (loadedData.nodes && Array.isArray(loadedData.nodes) && loadedData.connections && Array.isArray(loadedData.connections)) {
                     nodesData = loadedData.nodes;
                     connectionsData = loadedData.connections;
                     renderWorkflow();
@@ -473,10 +441,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function addDragListeners(nodeElement) {
         nodeElement.addEventListener('mousedown', (e) => {
-            if (e.target.classList.contains('node-port') ||
-                e.target.classList.contains('delete-node-btn') ||
-                e.target.closest('.delete-node-btn') ||
-                e.target.closest('.node-icon') ||
+            if (e.target.classList.contains('node-port') || 
+                e.target.classList.contains('delete-node-btn') || 
+                e.target.closest('.delete-node-btn') || 
+                e.target.closest('.node-icon') || 
                 (e.target.classList.contains('node-title') && e.target.getAttribute('contenteditable') === 'true')) {
                 return;
             }
@@ -504,7 +472,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const canvasRect = workflowCanvas.getBoundingClientRect();
             let newX = e.clientX - offsetX - canvasRect.left;
             let newY = e.clientY - offsetY - canvasRect.top;
-
             const nodeRect = activeNode.getBoundingClientRect();
 
             if (newX < 0) newX = 0;
@@ -514,7 +481,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             activeNode.style.left = `${newX}px`;
             activeNode.style.top = `${newY}px`;
-
             updateNodePosition(activeNode.id, newX, newY);
             updateConnectedLines(activeNode);
         }
@@ -522,14 +488,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isCanvasPanning) {
             const deltaX = e.clientX - canvasPanStartX;
             const deltaY = e.clientY - canvasPanStartY;
-
             canvasPanStartX = e.clientX;
             canvasPanStartY = e.clientY;
 
             nodesData.forEach(node => {
                 node.x += deltaX;
                 node.y += deltaY;
-
                 const nodeElem = document.getElementById(node.id);
                 if (nodeElem) {
                     nodeElem.style.left = `${node.x}px`;
@@ -547,24 +511,21 @@ document.addEventListener('DOMContentLoaded', () => {
             const canvasRect = workflowCanvas.getBoundingClientRect();
             const currentX = e.clientX - canvasRect.left;
             const currentY = e.clientY - canvasRect.top;
-
             const startNode = document.getElementById(startNodeId);
             if (!startNode) {
                 resetConnectionDrawing();
                 return;
             }
             const startCoords = getPortCoordinates(startNode, startPortType);
-
             tempLine.setAttribute('x1', startCoords.x);
             tempLine.setAttribute('y1', startCoords.y);
             tempLine.setAttribute('x2', currentX);
             tempLine.setAttribute('y2', currentY);
 
             const target = e.target;
-            if (target.classList.contains('node-port') &&
-                target.dataset.nodeId !== startNodeId &&
+            if (target.classList.contains('node-port') && target.dataset.nodeId !== startNodeId &&
                 ((startPortType === 'output' && target.dataset.portType === 'input') ||
-                    (startPortType === 'input' && target.dataset.portType === 'output'))
+                 (startPortType === 'input' && target.dataset.portType === 'output'))
             ) {
                 if (targetPortElement && targetPortElement !== target) {
                     targetPortElement.classList.remove('highlight');
@@ -584,25 +545,22 @@ document.addEventListener('DOMContentLoaded', () => {
             activeNode = null;
             saveWorkflowToLocalStorage();
         }
-
         if (isCanvasPanning) {
             isCanvasPanning = false;
             workflowCanvas.style.cursor = 'default';
             saveWorkflowToLocalStorage();
         }
-
         if (isDrawingConnection) {
             if (tempLine) {
                 tempLine.remove();
                 tempLine = null;
             }
-
             if (targetPortElement) {
                 targetPortElement.classList.remove('highlight');
                 const endNodeId = targetPortElement.dataset.nodeId;
                 const endPortType = targetPortElement.dataset.portType;
-
                 let finalFromNodeId, finalToNodeId;
+
                 if (startPortType === 'output' && endPortType === 'input') {
                     finalFromNodeId = startNodeId;
                     finalToNodeId = endNodeId;
@@ -613,7 +571,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     resetConnectionDrawing();
                     return;
                 }
-
                 addConnection(finalFromNodeId, finalToNodeId);
             }
             resetConnectionDrawing();
@@ -622,10 +579,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function startConnectionDrawing(e) {
         if (e.button !== 0 || isDrawingConnection) return;
-
         const portElement = e.target.closest('.node-port');
         if (!portElement) return;
-
         e.stopPropagation();
 
         isDrawingConnection = true;
@@ -663,27 +618,22 @@ document.addEventListener('DOMContentLoaded', () => {
     function getPortCoordinates(node, type) {
         const nodeRect = node.getBoundingClientRect();
         const canvasRect = workflowCanvas.getBoundingClientRect();
-
         let x = (type === 'output') ? (nodeRect.right - canvasRect.left) : (nodeRect.left - canvasRect.left);
         let y = nodeRect.top - canvasRect.top + nodeRect.height / 2;
-
         return { x: x, y: y };
     }
 
     function updateConnectedLines(movedNode) {
         const nodeId = movedNode.id;
-
         connectionsData.forEach(conn => {
             const line = document.getElementById(conn.lineId);
             if (!line) return;
-
             const fromNode = document.getElementById(conn.fromNodeId);
             const toNode = document.getElementById(conn.toNodeId);
 
             if (fromNode && toNode && (fromNode.id === nodeId || toNode.id === nodeId)) {
                 const fromCoords = getPortCoordinates(fromNode, 'output');
                 const toCoords = getPortCoordinates(toNode, 'input');
-
                 line.setAttribute('x1', fromCoords.x);
                 line.setAttribute('y1', fromCoords.y);
                 line.setAttribute('x2', toCoords.x);
@@ -702,7 +652,6 @@ document.addEventListener('DOMContentLoaded', () => {
             hideConnectionContextMenu();
         });
         connectionContextMenu.appendChild(deleteItem);
-
         connectionContextMenu.style.left = `${e.clientX}px`;
         connectionContextMenu.style.top = `${e.clientY}px`;
         connectionContextMenu.classList.add('show');
@@ -715,20 +664,17 @@ document.addEventListener('DOMContentLoaded', () => {
     function showIconSelectionMenu(e, nodeId) {
         hideAllContextMenus();
         iconSelectionMenu.innerHTML = '';
-
         availableIcons.forEach(iconClass => {
             const iconItem = document.createElement('div');
             iconItem.classList.add('icon-item');
             iconItem.innerHTML = `<i class="${iconClass}"></i>`;
             iconItem.title = iconClass.replace('fas fa-', '');
-
             iconItem.addEventListener('click', () => {
                 updateNodeIcon(nodeId, iconClass);
                 hideIconSelectionMenu();
             });
             iconSelectionMenu.appendChild(iconItem);
         });
-
         iconSelectionMenu.style.left = `${e.clientX + 10}px`;
         iconSelectionMenu.style.top = `${e.clientY + 10}px`;
         iconSelectionMenu.classList.add('show');
@@ -746,23 +692,21 @@ document.addEventListener('DOMContentLoaded', () => {
         hideClientGeneratorModal();
         hideCaseUsesModal();
         hideSendDataModal();
+        ragModule.hideRagServerModal();
     }
 
     function showDatabaseConfigModal(nodeId) {
         hideAllContextMenus();
         const node = nodesData.find(n => n.id === nodeId);
         if (!node || !databaseConfigModal) return;
-
         modalNodeIdInput.value = nodeId;
         const dbConfig = node.dbConfig || {};
-
         dbHostInput.value = dbConfig.host || '';
         dbPortInput.value = dbConfig.port || '';
         dbUsernameInput.value = dbConfig.username || '';
         dbPasswordInput.value = dbConfig.password || '';
         dbNameInput.value = dbConfig.dbName || '';
         dbTableNameInput.value = dbConfig.tableName || '';
-
         dbFieldsContainer.innerHTML = '';
         (dbConfig.fields || []).forEach(field => {
             addDynamicField(field.key, field.value);
@@ -770,7 +714,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if ((dbConfig.fields || []).length === 0) {
             addDynamicField('', '');
         }
-
         databaseConfigModal.classList.add('show');
     }
 
@@ -819,9 +762,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(dbConfigToSave)
             });
-
             const result = await response.json();
-
             if (response.ok) {
                 alert(`Configuración guardada: ${result.message}`);
                 nodesData[nodeIndex].dbConfig = dbConfigToSave;
@@ -841,20 +782,16 @@ document.addEventListener('DOMContentLoaded', () => {
         hideAllContextMenus();
         const node = nodesData.find(n => n.id === nodeId);
         if (!node || !apiGeneratorModal) return;
-
         apiModalNodeIdInput.value = nodeId;
         const config = node.apiConfig || {};
-
         if (apiHostInput) apiHostInput.value = config.host || 'localhost';
         if (apiPortInput) apiPortInput.value = config.port || '3306';
         if (apiUsernameInput) apiUsernameInput.value = config.username || 'root';
         if (apiPasswordInput) apiPasswordInput.value = config.password || '';
         if (apiDbNameInput) apiDbNameInput.value = config.dbName || '';
         if (apiTableNameInput) apiTableNameInput.value = config.tableName || '';
-
         if (apiResultContainer) apiResultContainer.style.display = node.generatedCode ? 'block' : 'none';
         if (generatedPhpCodeArea) generatedPhpCodeArea.value = node.generatedCode || '';
-
         apiGeneratorModal.classList.add('show');
     }
 
@@ -884,13 +821,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-
                 const result = await response.json();
-
                 if (response.ok && result.success) {
                     if (generatedPhpCodeArea) generatedPhpCodeArea.value = result.generatedCode;
                     if (apiResultContainer) apiResultContainer.style.display = 'block';
-
                     if (apiFilePathInput && !apiFilePathInput.value) apiFilePathInput.value = 'api';
                     if (apiFileNameInput && result.defaultFileName) apiFileNameInput.value = result.defaultFileName;
 
@@ -930,28 +864,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert('Primero debes generar el código antes de guardarlo.');
                 return;
             }
-
             if (!fileName) {
                 alert('Por favor especifica un nombre para el archivo PHP.');
                 return;
             }
 
-            const payload = {
-                action: 'save',
-                code: code,
-                filePath: filePath,
-                fileName: fileName
-            };
-
+            const payload = { action: 'save', code: code, filePath: filePath, fileName: fileName };
             try {
                 const response = await fetch('./controllers/generate_crud_api.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-
                 const result = await response.json();
-
                 if (response.ok && result.success) {
                     alert(`¡Éxito! ${result.message}`);
                 } else {
@@ -968,18 +893,14 @@ document.addEventListener('DOMContentLoaded', () => {
         hideAllContextMenus();
         const node = nodesData.find(n => n.id === nodeId);
         if (!node || !clientGeneratorModal) return;
-
         clientModalNodeIdInput.value = nodeId;
         const config = node.clientConfig || {};
-
         if (clientEndpointUrlInput) clientEndpointUrlInput.value = config.endpointUrl || 'http://localhost/api/UsuariosApi.php';
         if (clientTokenInput) clientTokenInput.value = config.token || '';
         if (clientPrimaryKeyInput) clientPrimaryKeyInput.value = config.primaryKey || 'id';
         if (clientLanguageSelect) clientLanguageSelect.value = config.language || 'js';
-
         if (clientResultContainer) clientResultContainer.style.display = node.generatedClientCode ? 'block' : 'none';
         if (generatedClientCodeArea) generatedClientCodeArea.value = node.generatedClientCode || '';
-
         clientGeneratorModal.classList.add('show');
     }
 
@@ -1006,13 +927,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-
                 const result = await response.json();
-
                 if (response.ok && result.success) {
                     if (generatedClientCodeArea) generatedClientCodeArea.value = result.generatedCode;
                     if (clientResultContainer) clientResultContainer.style.display = 'block';
-
                     if (clientFilePathInput && !clientFilePathInput.value) clientFilePathInput.value = 'clients';
                     if (clientFileNameInput && result.defaultFileName) clientFileNameInput.value = result.defaultFileName;
 
@@ -1053,20 +971,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            const payload = {
-                action: 'save',
-                code: code,
-                filePath: filePath,
-                fileName: fileName
-            };
-
+            const payload = { action: 'save', code: code, filePath: filePath, fileName: fileName };
             try {
                 const response = await fetch('./controllers/generate_crud_api.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-
                 const result = await response.json();
                 if (response.ok && result.success) {
                     alert(`¡Éxito! ${result.message}`);
@@ -1084,15 +995,12 @@ document.addEventListener('DOMContentLoaded', () => {
         hideAllContextMenus();
         const node = nodesData.find(n => n.id === nodeId);
         if (!node || !caseUsesModal) return;
-
         if (caseUsesModalNodeIdInput) caseUsesModalNodeIdInput.value = nodeId;
         const config = node.caseUsesConfig || {};
-
         if (caseTitleInput) caseTitleInput.value = config.title || node.title || '';
         if (caseDescriptionInput) caseDescriptionInput.value = config.description || '';
         if (caseStatusSelect) caseStatusSelect.value = config.status || 'pending';
         if (caseUsesEndpointInput) caseUsesEndpointInput.value = config.endpointUrl || '';
-
         caseUsesModal.classList.add('show');
     }
 
@@ -1108,7 +1016,6 @@ document.addEventListener('DOMContentLoaded', () => {
         saveCaseUsesBtn.addEventListener('click', async () => {
             const nodeId = caseUsesModalNodeIdInput ? caseUsesModalNodeIdInput.value : null;
             const nodeIndex = nodesData.findIndex(n => n.id === nodeId);
-            
             const caseConfig = {
                 title: caseTitleInput ? caseTitleInput.value.trim() : 'Case Uses',
                 description: caseDescriptionInput ? caseDescriptionInput.value.trim() : '',
@@ -1116,24 +1023,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 endpointUrl: caseUsesEndpointInput ? caseUsesEndpointInput.value.trim() : 'http://localhost/myflow/public/controllers/generate_case_uses.php',
                 targetServiceEndpoint: targetServiceEndpoint.value.trim(),
                 targetServiceTokenVal: targetServiceTokenVal.value.trim(),
-                db:                    targetServiceDB.value.trim(),
-                tableName:             tServiceDBTable.value.trim(),
-                primaryKey:            tsTablePrimaryKey.value.trim(),
-                tsClientFilePath:      tsClientFilePath.value.trim()
+                db: targetServiceDB.value.trim(),
+                tableName: tServiceDBTable.value.trim(),
+                primaryKey: tsTablePrimaryKey.value.trim(),
+                tsClientFilePath: tsClientFilePath.value.trim()
             };
 
             if (caseConfig.endpointUrl) {
                 try {
-                    const response = await fetch(caseConfig.endpointUrl, {
+                    await fetch(caseConfig.endpointUrl, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(caseConfig)
                     });
-                    if (!response.ok) {
-                        console.warn('El backend respondió con un estado no exitoso, pero se guardarán los datos localmente.');
-                    }
                 } catch (err) {
-                    console.info('Endpoint de backend no disponible aún. Guardando configuración local en el nodo.');
+                    console.info('Endpoint de backend no disponible aún.');
                 }
             }
 
@@ -1148,20 +1052,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- Modal Envío de Datos y Formulario Dinámico ---
-
     function showSendDataModal(nodeId) {
         hideAllContextMenus();
         const node = nodesData.find(n => n.id === nodeId);
         if (!node || !sendDataModal) return;
-
         if (sendDataModalNodeIdInput) sendDataModalNodeIdInput.value = nodeId;
         const config = node.sendDataConfig || {};
-
         if (sendDataEndpointUrlInput) sendDataEndpointUrlInput.value = config.endpointUrl || '';
         if (sendDataDbNameInput) sendDataDbNameInput.value = config.dbName || '';
         if (sendDataTableNameInput) sendDataTableNameInput.value = config.tableName || '';
-
         if (config.formFields && config.formFields.length > 0) {
             renderDynamicFormFields(config.formFields);
             if (formStructureContainer) formStructureContainer.style.display = 'block';
@@ -1169,7 +1068,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (formStructureContainer) formStructureContainer.style.display = 'none';
             if (dynamicFormFieldsList) dynamicFormFieldsList.innerHTML = '';
         }
-
         sendDataModal.classList.add('show');
     }
 
@@ -1184,18 +1082,15 @@ document.addEventListener('DOMContentLoaded', () => {
     async function renderDynamicFormFields(fields) {
         if (!dynamicFormFieldsList) return;
         dynamicFormFieldsList.innerHTML = '';
-
         const dbName = sendDataDbNameInput ? sendDataDbNameInput.value.trim() : '';
 
         for (const field of fields) {
             if (field.Extra && field.Extra.includes('auto_increment')) continue;
-
             const row = document.createElement('div');
             row.classList.add('dynamic-field-row');
             row.style.cssText = "display: flex; gap: 10px; margin-bottom: 8px; align-items: center;";
 
             const isForeignKey = field.Field.includes("id_") || field.Field.includes("_id");
-
             if (isForeignKey) {
                 row.innerHTML = `
                     <label style="color: #fff; flex: 1; font-size: 13px;">${field.Field} <small style="color: #aaa;">(Buscando relación...)</small></label>
@@ -1204,37 +1099,25 @@ document.addEventListener('DOMContentLoaded', () => {
                     </select>
                 `;
                 dynamicFormFieldsList.appendChild(row);
-
                 const selectElement = row.querySelector('select');
 
-                // Petición limpia al backend pasando únicamente base de datos y campo de llave foránea
                 try {
                     const response = await fetch('./controllers/get_foreign_options.php', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            dbName: dbName,
-                            field: field.Field
-                        })
+                        body: JSON.stringify({ dbName: dbName, field: field.Field })
                     });
                     const result = await response.json();
-
                     if (result.success && Array.isArray(result.data)) {
                         selectElement.innerHTML = '<option value="">-- Seleccione una opción --</option>';
-                        
                         result.data.forEach(item => {
-                            // Detectar la llave primaria (la columna id del registro o la primera columna disponible)
                             const keys = Object.keys(item);
                             const idVal = item[field.Field] || item[keys[0]] || Object.values(item)[0];
-                            
-                            // Tomar las primeras 3 columnas de la fila de forma dinámica
                             const firstThreeCols = keys.slice(0, 3).map(col => item[col]);
                             const labelVal = firstThreeCols.join(' - ');
-                            
                             const option = document.createElement('option');
                             option.value = idVal;
                             option.textContent = labelVal;
-                            
                             if (String(field.value) === String(idVal)) {
                                 option.selected = true;
                             }
@@ -1247,7 +1130,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.error(`Error resolviendo FK para ${field.Field}:`, err);
                     selectElement.innerHTML = `<option value="">Error de conexión con el servidor</option>`;
                 }
-
             } else {
                 row.innerHTML = `
                     <label style="color: #fff; flex: 1; font-size: 13px;">${field.Field} <small style="color: #aaa;">(${field.Type})</small></label>
@@ -1262,7 +1144,6 @@ document.addEventListener('DOMContentLoaded', () => {
         fetchTableStructureBtn.addEventListener('click', async () => {
             const dbName = sendDataDbNameInput ? sendDataDbNameInput.value.trim() : '';
             const tableName = sendDataTableNameInput ? sendDataTableNameInput.value.trim() : '';
-
             if (!dbName || !tableName) {
                 alert('Por favor especifica el nombre de la base de datos y la tabla.');
                 return;
@@ -1274,7 +1155,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ dbName, tableName, host: 'localhost', port: '3306', username: 'root', password: '' })
                 });
-
                 const result = await response.json();
                 if (response.ok && result.success) {
                     renderDynamicFormFields(result.fields);
@@ -1290,7 +1170,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Funcionalidad interactiva del botón "Enviar POST Ahora"
     if (executePostBtn) {
         executePostBtn.addEventListener('click', async () => {
             const endpointUrl = sendDataEndpointUrlInput ? sendDataEndpointUrlInput.value.trim() : '';
@@ -1298,7 +1177,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert('Por favor especifica la URL del Endpoint de destino.');
                 return;
             }
-
             const payload = {};
             if (dynamicFormFieldsList) {
                 dynamicFormFieldsList.querySelectorAll('.field-value').forEach(input => {
@@ -1312,7 +1190,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                
                 const result = await response.json().catch(() => ({}));
                 if (response.ok) {
                     alert('¡Petición POST ejecutada con éxito! Respuesta: ' + JSON.stringify(result));
@@ -1330,15 +1207,10 @@ document.addEventListener('DOMContentLoaded', () => {
         saveSendDataBtn.addEventListener('click', () => {
             const nodeId = sendDataModalNodeIdInput ? sendDataModalNodeIdInput.value : null;
             const nodeIndex = nodesData.findIndex(n => n.id === nodeId);
-
             const formFields = [];
             if (dynamicFormFieldsList) {
                 dynamicFormFieldsList.querySelectorAll('.field-value').forEach(input => {
-                    formFields.push({
-                        Field: input.dataset.fieldName,
-                        Type: 'VARCHAR',
-                        value: input.value.trim()
-                    });
+                    formFields.push({ Field: input.dataset.fieldName, Type: 'VARCHAR', value: input.value.trim() });
                 });
             }
 
@@ -1361,7 +1233,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     document.addEventListener('click', (e) => {
-        if (!e.target.closest('.context-menu') && !e.target.closest('.icon-selection-menu') && !e.target.closest('.modal-content') && !e.target.closest('.floating-show-chat-btn')) {
+        if (!e.target.closest('.context-menu') && 
+            !e.target.closest('.icon-selection-menu') && 
+            !e.target.closest('.modal-content') && 
+            !e.target.closest('.floating-show-chat-btn')) {
             hideAllContextMenus();
         }
     });
@@ -1399,10 +1274,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 'node-aiexecute', type: 'api', title: 'AIExecute', subtitle: 'POST https://localho.st:5678/...', x: 850, y: 150, icon: 'fas fa-globe' },
         { id: 'node-code', type: 'code', title: 'Code', x: 1100, y: 150, icon: 'fas fa-code' },
         { id: 'node-editfields', type: 'edit-fields', title: 'Edit fields', subtitle: 'manual', x: 1350, y: 150, icon: 'fas fa-pencil-alt' },
-        { id: 'node-db-example', type: 'database', title: 'Database Op', subtitle: 'MySQL users', x: 450, y: 400, icon: 'fas fa-database', dbConfig: { host: 'localhost', port: '3306', username: 'root', password: '', dbName: 'myapp', tableName: 'users', fields: [{ key: 'id_usuario', value: 'INT AUTO_INCREMENT PRIMARY KEY' }, { key: 'nombre', value: 'VARCHAR(100)' }] } },
-        { id: 'node-crud-api', type: 'crud-api', title: 'Generar API CRUD PHP', subtitle: 'PHP REST Controller', x: 750, y: 400, icon: 'fas fa-laptop-code', apiConfig: { host: 'localhost', port: '3306', username: 'root', password: '', dbName: 'myapp', tableName: 'users' } },
-        { id: 'node-end', type: 'disk', title: 'Read/Write Files From Disk', subtitle: 'Write File to Disk', x: 1600, y: 150, icon: 'fas fa-file-invoice' },
-        { id: 'eac5b9f8-2c8f-4621-91d9-828f37c22fd4', type: 'case-uses', title: 'case Uses', subtitle: 'Backend pendiente', x: 1100, y: 400, icon: 'fas fa-rss', caseUsesConfig: { title: 'case Uses', description: '', status: 'pending', endpointUrl: '' } }
+        { id: 'node-end', type: 'disk', title: 'Read/Write Files From Disk', subtitle: 'Write File to Disk', x: 1600, y: 150, icon: 'fas fa-file-invoice' }
     ];
 
     const initialConnections = [
@@ -1411,14 +1283,13 @@ document.addEventListener('DOMContentLoaded', () => {
         { lineId: 'line-node-aiquery1-node-aiexecute-0003', fromNodeId: 'node-aiquery1', toNodeId: 'node-aiexecute' },
         { lineId: 'line-node-aiexecute-node-code-0004', fromNodeId: 'node-aiexecute', toNodeId: 'node-code' },
         { lineId: 'line-node-code-node-editfields-0005', fromNodeId: 'node-code', toNodeId: 'node-editfields' },
-        { lineId: 'line-node-editfields-node-end-0006', fromNodeId: 'node-editfields', toNodeId: 'node-end' },
-        { lineId: 'line-node-db-example-node-crud-api-0007', fromNodeId: 'node-db-example', toNodeId: 'node-crud-api' }
+        { lineId: 'line-node-editfields-node-end-0006', fromNodeId: 'node-editfields', toNodeId: 'node-end' }
     ];
 
     addNodeBtn.addEventListener('click', () => {
         const randomX = Math.floor(Math.random() * (workflowCanvas.offsetWidth - 200));
         const randomY = Math.floor(Math.random() * (workflowCanvas.offsetHeight - 300));
-        addNode('send-data', 'Envío POST', 'Formulario Dinámico', randomX, randomY, 'fas fa-paper-plane');
+        addNode('rag-server', 'RAG Server', 'Weaviate Docker', randomX, randomY, 'fas fa-brain');
     });
 
     downloadWorkflowBtn.addEventListener('click', downloadWorkflowAsJson);
@@ -1438,7 +1309,7 @@ document.addEventListener('DOMContentLoaded', () => {
         renderWorkflow();
         saveWorkflowToLocalStorage();
     }
-    
+
     const bottomPanel = document.querySelector('.bottom-panel');
     const hideChatBtn = document.querySelector('.hide-chat-btn');
     const floatingShowChatBtn = document.getElementById('floatingShowChatBtn');
@@ -1446,7 +1317,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function toggleChat() {
         bottomPanel.classList.toggle('collapsed');
         const isCollapsed = bottomPanel.classList.contains('collapsed');
-
         if (isCollapsed) {
             hideChatBtn.innerHTML = '<i class="fas fa-eye"></i> Show chat';
             if (floatingShowChatBtn) floatingShowChatBtn.classList.add('show');
