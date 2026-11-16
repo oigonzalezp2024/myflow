@@ -20,7 +20,7 @@ class FileHandlingCopyDirectory
 
         // Prevenir copiar un directorio dentro de sí mismo
         if (str_starts_with($destination, $source . DIRECTORY_SEPARATOR)) {
-            throw new InvalidArgumentException("No se puede copiar un directorio dentro de su propia ruta descendiente.");
+            throw new InvalidArgumentException("No se puede copiar un directorio dentro de sus propias rutas descendientes.");
         }
 
         $this->ensureDestinationExists($destination, $request->permissions);
@@ -36,6 +36,32 @@ class FileHandlingCopyDirectory
             } else {
                 $this->copyFileSafely($item, $destPath);
             }
+        }
+
+        return true;
+    }
+
+    /**
+     * Copia un archivo individual de forma aislada manteniendo los mismos estándares de seguridad.
+     */
+    public function copyFile(string $sourceFile, string $destinationFile, int $permissions = 0644): true
+    {
+        $source = $this->sanitizeAndValidateFilePath($sourceFile, true);
+        $destination = $this->sanitizeAndValidateFilePath($destinationFile, false);
+
+        $targetDir = dirname($destination);
+        $this->ensureDestinationExists($targetDir, 0755);
+
+        if (!@copy($source, $destination)) {
+            error_log("Fallo al copiar archivo individual de [{$source}] a [{$destination}]");
+            throw new RuntimeException("No se pudo completar la transferencia del archivo.");
+        }
+
+        $oldUmask = umask(0);
+        try {
+            @chmod($destination, $permissions);
+        } finally {
+            umask($oldUmask);
         }
 
         return true;
@@ -76,6 +102,31 @@ class FileHandlingCopyDirectory
          */
 
         return $sanitized;
+    }
+
+    /**
+     * Validación específica para archivos individuales.
+     */
+    private function sanitizeAndValidateFilePath(string $path, bool $mustExist): string
+    {
+        if ($mustExist) {
+            $realPath = realpath($path);
+            if ($realPath === false || !is_file($realPath)) {
+                throw new InvalidArgumentException("El archivo de origen no es válido o no existe.");
+            }
+            if (!is_readable($realPath)) {
+                throw new RuntimeException("El archivo de origen no cuenta con permisos de lectura.");
+            }
+            return $realPath;
+        }
+
+        $dirName = dirname($path);
+        $realParent = realpath($dirName);
+        if ($realParent === false || !is_writable($realParent)) {
+            throw new RuntimeException("El directorio padre del archivo destino no es válido o no tiene permisos de escritura.");
+        }
+
+        return rtrim($realParent, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . basename($path);
     }
 
     private function ensureDestinationExists(string $path, int $permissions): void

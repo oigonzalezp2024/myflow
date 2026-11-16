@@ -1,0 +1,18 @@
+{
+    "oooo": {
+        "folder": "oooo",
+        "http_port": 9036,
+        "grpc_port": 50052,
+        "rag_port": 9020,
+        "created_at": "2026-11-15 14:11:49",
+        "updated_at": "2026-11-15 18:42:29"
+    },
+    "uuuu": {
+        "folder": "uuuu",
+        "http_port": 9037,
+        "grpc_port": 50053,
+        "rag_port": 9021,
+        "created_at": "2026-11-15 18:42:45",
+        "updated_at": "2026-11-15 18:42:45"
+    }
+}
