@@ -19,9 +19,12 @@ require_once __DIR__ . '/../../../vendor/autoload.php';
 use App\Infrastructure\FileHandling\CopyDirectoryRequest;
 use App\Infrastructure\FileHandling\DocumentLoaderGenerator;
 use App\Infrastructure\FileHandling\FileHandlingCopyDirectory;
-use App\Infrastructure\FileHandling\WeaviateConfigGenerator; // Clase encargada de generar la configuración/código de Go con el puerto dinámico
-use App\Infrastructure\FileHandling\WeaviateEnvironmentGenerator; // Clase encargada del entorno/Docker
-use App\Infrastructure\FileHandling\RagServerMainGenerator; // Generador para main.go del RAG Server
+use App\Infrastructure\FileHandling\WeaviateConfigGenerator;
+use App\Infrastructure\FileHandling\WeaviateEnvironmentGenerator;
+use App\Infrastructure\FileHandling\RagServerMainGenerator;
+use App\Infrastructure\Process\GoServiceProcessManager;
+use App\Application\UseCases\StartGoServiceUseCase;
+use App\Application\UseCases\GetGoServiceStatusUseCase;
 
 /**
  * Obtiene todos los puertos actualmente asignados en Docker (activos o detenidos)
@@ -151,7 +154,7 @@ try {
         $unavailablePorts[] = $ragPort;
     }
 
-    //// Generación del entorno Weaviate único con el nombre del proyecto (Docker)
+    // Generación del entorno Weaviate único con el nombre del proyecto (Docker)
     $generatedEnvDir = $destination . '/ragservers/' . $safeFolderName;
 
     try {
@@ -209,7 +212,7 @@ try {
         throw new RuntimeException("Fallo al generar el main.go del RAG Server: " . $e->getMessage());
     }
 
-    // Ejecución inmediata del contenedor usando el YAML específico generado para el proyecto
+    // Ejecución inmediata del contenedor Weaviate usando el YAML específico generado para el proyecto
     $composeToRun = file_exists($generatedComposeFile) ? $generatedComposeFile : $targetDockerCompose;
     $workingDir = dirname($composeToRun);
     $projectSlug = strtolower($safeFolderName);
@@ -243,6 +246,25 @@ try {
         }
     }
 
+    // Arrancar el servicio de Go automáticamente mediante su caso de uso
+    $serviceStorageDir = $destination . '/storage/logs';
+    if (!is_dir($serviceStorageDir)) {
+        mkdir($serviceStorageDir, 0755, true);
+    }
+
+    $processManager = new GoServiceProcessManager(
+        serviceName: 'ragserver-' . $safeFolderName,
+        workingDirectory: $destination,
+        storageDirectory: $serviceStorageDir,
+        command: 'go run .'
+    );
+
+    $startUseCase = new StartGoServiceUseCase($processManager);
+    $pid = $startUseCase->execute();
+
+    $statusUseCase = new GetGoServiceStatusUseCase($processManager);
+    $serviceStatus = $statusUseCase->execute();
+
     // Registrar en el archivo de registro JSON
     $registryData[$safeFolderName] = [
         'folder'     => $safeFolderName,
@@ -254,7 +276,7 @@ try {
     ];
     file_put_contents($registryFile, json_encode($registryData, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
 
-    ///////////////////////////////////////
+    // Copiar clientes PHP del RAG
     $sourceClients = __DIR__ . '/ragserver/company/clients/';
     $baseClientsDir = __DIR__ . '/../../../empresa/clients/ragserver/';
     if (!is_dir($baseClientsDir)) {
@@ -268,9 +290,8 @@ try {
         permissions: 0755
     );
     $useCase($requestClients);
-    //////////////////
 
-    ///////////////////////////////////////
+    // Copiar archivos públicos y generar add-documents.php personalizado
     $sourcePublic = __DIR__ . '/ragserver/company/public/';
     $basePublicDir = __DIR__ . '/../../../empresa/public/';
     if (!is_dir($basePublicDir)) {
@@ -285,7 +306,6 @@ try {
     );
     $useCase($requestPublic);
 
-    // Generar add-documents.php personalizado usando DocumentLoaderGenerator
     $addDocsTemplatePath = __DIR__ . '/ragserver/company/public/add-documents.php';
     $addDocsDestinationPath = $destinationPublic . '/add-documents.php';
     $newRequirePath = "../../clients/ragserver/{$safeFolderName}/RagApiClient.php";
@@ -301,22 +321,22 @@ try {
         error_log("Aviso DocumentLoaderGenerator: " . $e->getMessage());
         throw new RuntimeException("Fallo al generar add-documents.php: " . $e->getMessage());
     }
-    //////////////////
 
     $copiedFolderIndexUrl = __DIR__ . "/../../controllers_project/" . rawurlencode($safeFolderName) . "/index.php";
 
     http_response_code(200);
     echo json_encode([
         'success' => true,
-        'message' => $isUpdate ? 'Directorio actualizado con éxito.' : 'Directorio creado con éxito.',
+        'message' => $isUpdate ? 'Directorio actualizado y servicio iniciado con éxito.' : 'Directorio creado y servicio iniciado con éxito.',
         'data' => [
-            'folder_name' => $safeFolderName,
-            'index_url'   => $copiedFolderIndexUrl,
-            'ports'       => [
+            'folder_name'    => $safeFolderName,
+            'index_url'      => $copiedFolderIndexUrl,
+            'ports'          => [
                 'http' => $httpPort,
                 'grpc' => $grpcPort,
                 'rag'  => $ragPort
-            ]
+            ],
+            'service_status' => $serviceStatus
         ]
     ], JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
 } catch (InvalidArgumentException | RuntimeException $e) {
