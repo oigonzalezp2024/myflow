@@ -1,0 +1,83 @@
+{
+  "matriz_marco_logico": {
+    "titulo": "Consolidación Arquitectónica e Infraestructura Distribuida: Integración Autónoma de Soluciones Externas en [myflow](https://github.com/oigonzalezp2024/myflow)",
+    "periodo_ejecucion": "Q4 2026",
+    "niveles": [
+      {
+        "nivel": "FIN",
+        "resumen_narrativo": "Consolidar myflow como una plataforma de automatización de workflows altamente desacoplada y robusta, capaz de integrar motores externos de infraestructura, bases de datos distribuidas y servidores RAG autónomos sin comprometer la estabilidad del núcleo de orquestación (`src`), garantizando mantenibilidad a largo plazo y cero dependencia de frameworks monolíticos.",
+        "indicadores_verificables": [
+          "100% de los servicios externos y contenedores (`master-replica-mysql`, `ragserver`, `empresa`, `growth-engine-manager`) operando de forma autónoma en la raíz del repositorio al cierre de Q4 2026",
+          "0 dependencias directas o importaciones cruzadas desde el núcleo `src` hacia el código interno de los servicios satélites"
+        ],
+        "medios_de_verificacion": [
+          "Estructura física del repositorio https://github.com/oigonzalezp2024/myflow",
+          "Historial de commits y Pull Requests con trazabilidad bajo Conventional Commits"
+        ],
+        "supuestos": [
+          "Estabilidad continua de Docker y contenedores para el aislamiento de entornos",
+          "Mantenimiento de los contratos e interfaces puras entre el núcleo y los servicios satélites"
+        ]
+      },
+      {
+        "nivel": "PROPOSITO",
+        "resumen_narrativo": "Ejecutar la integración controlada de soluciones y componentes externos (como [growth-engine-manager](https://github.com/oigonzalezp2024/growth-engine-manager)) tratándolos como células independientes en la raíz del proyecto, de modo que la aplicación los consuma como servicios ajenos mediante contratos definidos y sin modificar prematuramente la arquitectura interna.",
+        "indicadores_verificables": [
+          "4 componentes externos integrados mediante ramas `feature/integrate-*` y fusionados a `main` con 0 conflictos de arquitectura antes de finalizar Q4 2026",
+          "100% de las vistas y APIs externas operando como servicios independientes con 0 colisiones de estilos CSS y 0 dependencias circulares"
+        ],
+        "medios_de_verificacion": [
+          "Guías de integración documentadas y versionadas en el repositorio",
+          "Reportes de pruebas de contrato (JSON Schema / OpenAPI) y estado de contenedores Docker"
+        ],
+        "supuestos": [
+          "Disponibilidad de los repositorios externos y compatibilidad con el ecosistema PHP 8.X / Go / Docker",
+          "Respeto estricto a las pautas de arquitectura limpia y principios SOLID en la adaptación de cada célula"
+        ]
+      },
+      {
+        "nivel": "COMPONENTES",
+        "resumen_narrativo": [
+          "C1. Núcleo de orquestación en `src` completamente agnóstico a los detalles de infraestructura externa mediante adaptadores y contratos limpios.",
+          "C2. Células de infraestructura y motores externos aislados en directorios raíz ([master-replica-mysql](https://github.com/oigonzalezp2024/myflow/tree/main/master-replica-mysql), [ragserver](https://github.com/oigonzalezp2024/myflow/tree/main/ragserver), [empresa](https://github.com/oigonzalezp2024/myflow/tree/main/empresa), [growth-engine-manager](https://github.com/oigonzalezp2024/growth-engine-manager)) con despliegue y configuración independientes.",
+          "C3. Protocolo de integración por Git Subtree, ramas de características y documentación técnica para la adopción controlada de nuevas herramientas."
+        ],
+        "indicadores_verificables": [
+          "4 carpetas de servicios autónomos desplegadas en el nivel raíz sin anidar subproyectos dentro de directorios genéricos como `modules/`",
+          "100% de los servicios configurados con archivos `.env` independientes y orquestación validada en Docker Compose",
+          "100% de las integraciones documentadas con guías técnicas y trazabilidad completa en `git log`"
+        ],
+        "medios_de_verificacion": [
+          "Árbol de directorios y archivos de configuración en [myflow](https://github.com/oigonzalezp2024/myflow)",
+          "Logs de comandos `git log`, estado de ramas (`main` / `develop`) y PRs aprobados"
+        ],
+        "supuestos": [
+          "Los servicios externos mantienen interfaces claras para su consumo a través de peticiones HTTP o comandos de red"
+        ]
+      },
+      {
+        "nivel": "ACTIVIDADES",
+        "resumen_narrativo": [
+          "A1.1. Crear ramas de integración aisladas (`feature/integrate-...`) desde `develop` para la incorporación de proyectos externos.",
+          "A1.2. Extraer y posicionar el código externo directamente en la raíz del repositorio mediante `git subtree` con la estrategia `--squash`.",
+          "A2.1. Configurar archivos `.env` locales por cada célula (inyectados vía `env_file` en Docker Compose) reservando el `.env` raíz exclusivamente para puertos y redes globales.",
+          "A2.2. Aislar y refactorizar componentes de backend en endpoints JSON puros bajo Clean Architecture y frontend en módulos encapsulados (CSS Modules / Shadow DOM / especificidad estricta).",
+          "A3.1. Ejecutar pruebas de contrato y validar el funcionamiento autónomo de cada célula antes de consolidar su consumo desde `src`."
+        ],
+        "indicadores_verificables": [
+          "100% de los comandos `git subtree` ejecutados sin pérdida de historial en sus respectivas ramas `feature/integrate-*`",
+          "100% de los contenedores levantados localmente sin colisiones de variables de entorno, puertos o estilos visuales",
+          "100% de los endpoints externos validados mediante esquemas JSON antes del merge a `develop`"
+        ],
+        "medios_de_verificacion": [
+          "Historial de commits en [GitHub](https://github.com/oigonzalezp2024)",
+          "Resultados de ejecución de `docker compose up` y suites de pruebas de endpoints"
+        ],
+        "supuestos": [
+          "Correcta resolución de puertos y redes en Docker para la comunicación entre contenedores y servicios",
+          "Disponibilidad de recursos de hardware locales para la ejecución concurrente de contenedores Docker"
+        ]
+      }
+    ]
+  }
+}
