@@ -1,4 +1,5 @@
 import { initRagNodeModule } from './rag_node.js';
+import { initMasterReplicaModule } from './master_replica_node.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     const workflowCanvas = document.getElementById('workflowCanvas');
@@ -124,6 +125,15 @@ document.addEventListener('DOMContentLoaded', () => {
         hideAllContextMenus
     });
 
+    // Inicializar el módulo Master / Réplica separado
+    const masterReplicaModule = initMasterReplicaModule({
+        getNodesData: () => nodesData,
+        saveWorkflowToLocalStorage,
+        renderWorkflow,
+        hideAllContextMenus,
+        addConnection
+    });
+
     function generateUniqueId() {
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
             var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
@@ -153,13 +163,14 @@ document.addEventListener('DOMContentLoaded', () => {
             case 'case-uses': nodeTypeClass = 'node-process'; headerContent = 'case Uses'; break;
             case 'send-data': nodeTypeClass = 'node-process'; headerContent = 'Envío POST'; break;
             case 'rag-server': nodeTypeClass = 'node-process'; headerContent = 'RAG Server'; break;
+            case 'mysql-master': case 'mysql-replica': nodeTypeClass = 'node-process'; headerContent = 'MySQL Docker'; break;
             default: nodeTypeClass = 'node-process'; headerContent = ''; break;
         }
 
         let iconColorClass = '';
         if (nodeConfig.type === 'start') iconColorClass = 'type-chat-message';
         else if (nodeConfig.type === 'code') iconColorClass = 'type-code';
-        else if (['api', 'crud-api', 'crud-client', 'send-data', 'rag-server'].includes(nodeConfig.type)) iconColorClass = 'type-api';
+        else if (['api', 'crud-api', 'crud-client', 'send-data', 'rag-server', 'mysql-master', 'mysql-replica'].includes(nodeConfig.type)) iconColorClass = 'type-api';
         else if (nodeConfig.type === 'edit-fields') iconColorClass = 'type-edit-fields';
         else if (nodeConfig.type === 'disk') iconColorClass = 'type-disk';
         else if (nodeConfig.type === 'database') iconColorClass = 'type-database';
@@ -193,6 +204,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     showSendDataModal(nodeConfig.id);
                 } else if (nodeConfig.type === 'rag-server' || (nodeConfig.icon && nodeConfig.icon.includes('fa-brain'))) {
                     ragModule.showRagServerModal(nodeConfig.id);
+                } else if (nodeConfig.type === 'mysql-master' || nodeConfig.type === 'mysql-replica' || nodeConfig.icon && (nodeConfig.icon.includes('fa-hdd') || nodeConfig.icon.includes('fa-server'))) {
+                    masterReplicaModule.showModal(nodeConfig.id);
                 }
             }
         });
@@ -263,7 +276,8 @@ document.addEventListener('DOMContentLoaded', () => {
             clientConfig: type === 'crud-client' ? {} : undefined,
             caseUsesConfig: type === 'case-uses' ? {} : undefined,
             sendDataConfig: type === 'send-data' ? {} : undefined,
-            ragConfig: type === 'rag-server' ? {} : undefined
+            ragConfig: type === 'rag-server' ? {} : undefined,
+            mrConfig: type === 'mysql-master' || type === 'mysql-replica' ? {} : undefined
         };
         nodesData.push(newNode);
         createNodeElement(newNode);
@@ -300,7 +314,11 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (newIconClass.includes('fa-brain')) {
                 nodesData[nodeIndex].type = 'rag-server';
                 if (!nodesData[nodeIndex].ragConfig) nodesData[nodeIndex].ragConfig = {};
-            } else if (['database', 'crud-api', 'crud-client', 'case-uses', 'send-data', 'rag-server'].includes(nodesData[nodeIndex].type)) {
+            } else if (newIconClass.includes('fa-hdd')) {
+                nodesData[nodeIndex].type = 'mysql-master';
+            } else if (newIconClass.includes('fa-server')) {
+                nodesData[nodeIndex].type = 'mysql-replica';
+            } else if (['database', 'crud-api', 'crud-client', 'case-uses', 'send-data', 'rag-server', 'mysql-master', 'mysql-replica'].includes(nodesData[nodeIndex].type)) {
                 nodesData[nodeIndex].type = 'generic';
             }
 
@@ -316,7 +334,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     let newIconColorClass = '';
                     if (nodesData[nodeIndex].type === 'start') newIconColorClass = 'type-chat-message';
                     else if (nodesData[nodeIndex].type === 'code') newIconColorClass = 'type-code';
-                    else if (['api', 'crud-api', 'crud-client', 'case-uses', 'send-data', 'rag-server'].includes(nodesData[nodeIndex].type)) newIconColorClass = 'type-api';
+                    else if (['api', 'crud-api', 'crud-client', 'case-uses', 'send-data', 'rag-server', 'mysql-master', 'mysql-replica'].includes(nodesData[nodeIndex].type)) newIconColorClass = 'type-api';
                     else if (nodesData[nodeIndex].type === 'edit-fields') newIconColorClass = 'type-edit-fields';
                     else if (nodesData[nodeIndex].type === 'disk') newIconColorClass = 'type-disk';
                     else if (nodesData[nodeIndex].type === 'database') newIconColorClass = 'type-database';
@@ -693,6 +711,7 @@ document.addEventListener('DOMContentLoaded', () => {
         hideCaseUsesModal();
         hideSendDataModal();
         ragModule.hideRagServerModal();
+        masterReplicaModule.hideModal();
     }
 
     function showDatabaseConfigModal(nodeId) {
