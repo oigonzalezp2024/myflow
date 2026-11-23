@@ -1305,9 +1305,10 @@ document.addEventListener('DOMContentLoaded', () => {
         { lineId: 'line-node-editfields-node-end-0006', fromNodeId: 'node-editfields', toNodeId: 'node-end' }
     ];
 
+    // Organiza el desarrollo de nodos, antes se generaban al azar.
     addNodeBtn.addEventListener('click', () => {
-        const randomX = Math.floor(Math.random() * (workflowCanvas.offsetWidth - 200));
-        const randomY = Math.floor(Math.random() * (workflowCanvas.offsetHeight - 300));
+        const randomX = workflowCanvas.offsetWidth -300; // Math.floor(Math.random() * (workflowCanvas.offsetWidth - 200));
+        const randomY = 100; // Math.floor(Math.random() * (workflowCanvas.offsetHeight - 300));
         addNode('rag-server', 'RAG Server', 'Weaviate Docker', randomX, randomY, 'fas fa-brain');
     });
 
