@@ -1,0 +1,303 @@
+{
+  "nodes": [
+    {
+      "id": "1c958501-b152-4f70-be24-310db8355aba",
+      "type": "mysql-master",
+      "title": "Servidor Maestro",
+      "subtitle": "Port: 3307 (Master)",
+      "x": 1582.125,
+      "y": 381.60418701171875,
+      "icon": "fas fa-hdd",
+      "ragConfig": {},
+      "mrConfig": {
+        "type": "master",
+        "masterId": null,
+        "containerName": "mysql-master",
+        "port": "3307",
+        "dbName": "testdb",
+        "serverId": 1,
+        "rootPassword": "12345678",
+        "replUser": "replica",
+        "replPassword": "12345678",
+        "credentials": {
+          "port": "3307",
+          "username": "root",
+          "password": "12345678",
+          "dbName": "testdb"
+        },
+        "lastResult": {
+          "success": true,
+          "message": "Contenedor Master mysql-master desplegado y usuario de replicación configurado con éxito.",
+          "port": "3307",
+          "username": "root",
+          "db_name": "testdb",
+          "details": "Master activo y listo"
+        }
+      }
+    },
+    {
+      "id": "798a8bdc-4fa7-452c-96b2-d844238ba80f",
+      "type": "crud-api",
+      "title": "Generador de API",
+      "subtitle": "Weaviate Docker",
+      "x": 1061.541748046875,
+      "y": 384.6458435058594,
+      "icon": "fas fa-laptop-code",
+      "dbConfig": {},
+      "apiConfig": {
+        "action": "generate",
+        "host": "localhost",
+        "port": "3306",
+        "username": "root",
+        "password": "",
+        "dbName": "testdb",
+        "tableName": "usuarios",
+        "filePath": "../empresa/public/api"
+      },
+      "ragConfig": {},
+      "generatedCode": "<?php\nnamespace Presentation\\Controllers;\n\nrequire_once __DIR__ . '/../../src/Application/DTO/UsuariosRequestDTO.php';\nrequire_once __DIR__ . '/../../src/Application/UseCases/ManageUsuariosUseCase.php';\nrequire_once __DIR__ . '/../../src/Domain/Entities/UsuariosEntity.php';\nrequire_once __DIR__ . '/../../src/Domain/Repositories/UsuariosRepositoryInterface.php';\nrequire_once __DIR__ . '/../../src/Infrastructure/Persistence/MySQLUsuariosRepository.php';\n\nuse Domain\\Entities\\UsuariosEntity;\nuse Domain\\Repositories\\UsuariosRepositoryInterface;\nuse Infrastructure\\Persistence\\MySQLUsuariosRepository;\nuse Application\\UseCases\\ManageUsuariosUseCase;\nuse Application\\DTO\\UsuariosRequestDTO;\nuse PDO;\n\nheader('Content-Type: application/json');\nheader('Access-Control-Allow-Origin: *');\nheader('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');\nheader('Access-Control-Allow-Headers: Content-Type, Authorization');\n\nif ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { exit(0); }\n\ndefine('API_TOKEN', 'token_5ba27960397cd3ecc0292a3e88b13653');\n$headers = apache_request_headers();\n$authHeader = $headers['Authorization'] ?? $headers['authorization'] ?? '';\nif (!preg_match('/Bearer\\s(\\S+)/', $authHeader, $matches) || $matches[1] !== API_TOKEN) {\n    http_response_code(401);\n    echo json_encode(['success' => false, 'error' => 'Acceso no autorizado.']);\n    exit();\n}\n\n$pdo = new PDO('mysql:host=localhost;port=3306;dbname=testdb;charset=utf8mb4', 'root', '', [\n    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,\n    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC\n]);\n\n$repository = new MySQLUsuariosRepository($pdo);\n$useCase = new ManageUsuariosUseCase($repository);\n\n$method = $_SERVER['REQUEST_METHOD'];\n$input = json_decode(file_get_contents('php://input'), true) ?? [];\n$id = $_GET['id_usuario'] ?? null;\n\nswitch ($method) {\n    case 'GET':\n        if ($id) {\n            $entity = $useCase->handleGet($id);\n            echo json_encode($entity ? $entity->toArray() : ['message' => 'Registro no encontrado']);\n        } else {\n            $entities = $useCase->handleList();\n            echo json_encode(array_map(fn($e) => $e->toArray(), $entities));\n        }\n        break;\n    case 'POST':\n        $dto = new UsuariosRequestDTO($input);\n        $insertId = $useCase->handleCreate($dto);\n        echo json_encode(['success' => true, 'id_usuario' => $insertId]);\n        break;\n    case 'PUT':\n        if (!$id) { echo json_encode(['error' => 'Se requiere el campo id_usuario']); break; }\n        $dto = new UsuariosRequestDTO($input);\n        $updated = $useCase->handleUpdate($id, $dto);\n        echo json_encode(['success' => true, 'updated' => $updated]);\n        break;\n    case 'DELETE':\n        if (!$id) { echo json_encode(['error' => 'Se requiere el campo id_usuario']); break; }\n        $deleted = $useCase->handleDelete($id);\n        echo json_encode(['success' => true, 'deleted' => $deleted]);\n        break;\n}\n"
+    },
+    {
+      "id": "388a87a8-5a8a-4e42-8fbe-8eeb86a25018",
+      "type": "database",
+      "title": "Usuario",
+      "subtitle": "Weaviate Docker",
+      "x": 1323,
+      "y": 385,
+      "icon": "fas fa-database",
+      "dbConfig": {
+        "host": "localhost",
+        "port": "3307",
+        "username": "root",
+        "password": "12345678",
+        "dbName": "testdb",
+        "tableName": "usuarios",
+        "fields": [
+          {
+            "key": "id_usuario",
+            "value": "int(11)"
+          },
+          {
+            "key": "nombre",
+            "value": "varchar(190)"
+          }
+        ]
+      },
+      "ragConfig": {}
+    },
+    {
+      "id": "cc1b9a48-0b73-4bfb-9fa1-7ba7565fa621",
+      "type": "crud-client",
+      "title": "Cliente API",
+      "subtitle": "Weaviate Docker",
+      "x": 817,
+      "y": 386,
+      "icon": "fas fa-plug",
+      "clientConfig": {
+        "action": "generate_client",
+        "endpointUrl": "http://localhost/api/UsuariosApi.php",
+        "token": "token",
+        "primaryKey": "id_usuario",
+        "clientLanguage": "php"
+      },
+      "caseUsesConfig": {},
+      "ragConfig": {},
+      "generatedClientCode": "<?php\n/**\n * Cliente PHP cURL autogenerado para consumir la API\n * Endpoint: http://localhost/api/UsuariosApi.php\n */\n\nclass ApiClient {\n    private $baseUrl;\n    private $token;\n    private $primaryKey;\n\n    public function __construct($baseUrl = 'http://localhost/api/UsuariosApi.php', $token = 'token', $primaryKey = 'id_usuario') {\n        $this->baseUrl = $baseUrl;\n        $this->token = $token;\n        $this->primaryKey = $primaryKey;\n    }\n\n    private function send($method, $data = null, $id = null) {\n        $url = $this->baseUrl;\n        if ($id !== null) {\n            $url .= '?' . $this->primaryKey . '=' . $id;\n        }\n\n        $ch = curl_init($url);\n        $headers = [\n            'Content-Type: application/json',\n            'Authorization: Bearer ' . $this->token\n        ];\n\n        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);\n        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\n\n        if ($data !== null && ($method === 'POST' || $method === 'PUT')) {\n            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));\n        }\n\n        $response = curl_exec($ch);\n        curl_close($ch);\n        return json_decode($response, true);\n    }\n\n    public function getAll() { return $this->send('GET'); }\n    public function getById($id) { return $this->send('GET', null, $id); }\n    public function create($data) { return $this->send('POST', $data); }\n    public function update($id, $data) { return $this->send('PUT', $data, $id); }\n    public function delete($id) { return $this->send('DELETE', null, $id); }\n}\n"
+    },
+    {
+      "id": "240b511f-eec9-4d03-b622-4122b02252d8",
+      "type": "case-uses",
+      "title": "Casos de Uso Usuarios",
+      "subtitle": "Weaviate Docker",
+      "x": 576,
+      "y": 382,
+      "icon": "fas fa-solid fa-rss",
+      "caseUsesConfig": {
+        "title": "insert usuarios",
+        "description": "",
+        "status": "pending",
+        "endpointUrl": "http://localhost/myflow/public/controllers/generate_case_uses.php",
+        "targetServiceEndpoint": "http://localhost/myflow/empresa/public/api/UsuariosApi.php",
+        "targetServiceTokenVal": "",
+        "db": "testdb",
+        "tableName": "usuarios",
+        "primaryKey": "id_usuario",
+        "tsClientFilePath": "empresa/public/"
+      },
+      "ragConfig": {}
+    },
+    {
+      "id": "7f255b86-fd1d-4325-9523-8d86d0b68e6c",
+      "type": "send-data",
+      "title": "Agregar Usuario",
+      "subtitle": "Tabla: usuarios",
+      "x": 317,
+      "y": 379,
+      "icon": "fas fa-paper-plane",
+      "sendDataConfig": {
+        "endpointUrl": "http://localhost/myflow/empresa/public/consume_usuarios_create.php",
+        "dbName": "testdb",
+        "tableName": "usuarios",
+        "formFields": [
+          {
+            "Field": "nombre",
+            "Type": "VARCHAR",
+            "value": "oscar"
+          }
+        ]
+      },
+      "ragConfig": {}
+    },
+    {
+      "id": "1652e7c7-3c0b-4b6e-a906-57f1c0c2cd61",
+      "type": "send-data",
+      "title": "Listar Usuarios Réplica",
+      "subtitle": "Weaviate Docker",
+      "x": 315,
+      "y": 561,
+      "icon": "fas fa-paper-plane",
+      "sendDataConfig": {},
+      "ragConfig": {}
+    },
+    {
+      "id": "cd943bcb-85d1-48c3-9514-b9f9ff8e84bf",
+      "type": "mysql-replica",
+      "title": "Servidor Réplica",
+      "subtitle": "Port: 3308 (Réplica)",
+      "x": 1858.791748046875,
+      "y": 563.0625,
+      "icon": "fas fa-server",
+      "ragConfig": {},
+      "mrConfig": {
+        "type": "replica",
+        "masterId": "1c958501-b152-4f70-be24-310db8355aba",
+        "masterContainerName": "mysql-master",
+        "containerName": "mysql-replica-612",
+        "port": "3308",
+        "dbName": "testdb",
+        "serverId": 97,
+        "rootPassword": "12345678",
+        "replUser": "replica",
+        "replPassword": "12345678",
+        "credentials": {
+          "port": "3308",
+          "username": "root",
+          "password": "12345678",
+          "dbName": "testdb"
+        },
+        "lastResult": {
+          "success": true,
+          "message": "Réplica mysql-replica-1795410661 sincronizada y vinculada correctamente al Master (IO=Yes, SQL=Yes).",
+          "port": "3308",
+          "username": "root",
+          "db_name": "testdb",
+          "details": {
+            "binlogFile": "mysql-bin.000003",
+            "binlogPos": "1094"
+          }
+        }
+      }
+    },
+    {
+      "id": "da06f1f1-5c47-48f3-8226-b7acdb482598",
+      "type": "crud-client",
+      "title": "Cliente API Réplica",
+      "subtitle": "Weaviate Docker",
+      "x": 821,
+      "y": 564,
+      "icon": "fas fa-plug",
+      "clientConfig": {},
+      "ragConfig": {}
+    },
+    {
+      "id": "96f99417-f95a-48ac-b2ab-654b0ba03c35",
+      "type": "case-uses",
+      "title": "Casos de Uso Réplica",
+      "subtitle": "Weaviate Docker",
+      "x": 577,
+      "y": 563,
+      "icon": "fas fa-solid fa-rss",
+      "caseUsesConfig": {},
+      "ragConfig": {}
+    },
+    {
+      "id": "0bda1cda-c607-41a8-a89a-880b30dc82d9",
+      "type": "crud-api",
+      "title": "Generador de API Réplica",
+      "subtitle": "Weaviate Docker",
+      "x": 1061,
+      "y": 564,
+      "icon": "fas fa-laptop-code",
+      "apiConfig": {},
+      "ragConfig": {}
+    },
+    {
+      "id": "e0fe3a62-c38f-4a53-8568-ea55e01138ce",
+      "type": "database",
+      "title": "Usuarios Réplica",
+      "subtitle": "Weaviate Docker",
+      "x": 1321,
+      "y": 563,
+      "icon": "fas fa-database",
+      "dbConfig": {},
+      "ragConfig": {}
+    }
+  ],
+  "connections": [
+    {
+      "lineId": "line-388a87a8-5a8a-4e42-8fbe-8eeb86a25018-1c958501-b152-4f70-be24-310db8355aba-f11b",
+      "fromNodeId": "388a87a8-5a8a-4e42-8fbe-8eeb86a25018",
+      "toNodeId": "1c958501-b152-4f70-be24-310db8355aba"
+    },
+    {
+      "lineId": "line-798a8bdc-4fa7-452c-96b2-d844238ba80f-388a87a8-5a8a-4e42-8fbe-8eeb86a25018-37f9",
+      "fromNodeId": "798a8bdc-4fa7-452c-96b2-d844238ba80f",
+      "toNodeId": "388a87a8-5a8a-4e42-8fbe-8eeb86a25018"
+    },
+    {
+      "lineId": "line-7f255b86-fd1d-4325-9523-8d86d0b68e6c-240b511f-eec9-4d03-b622-4122b02252d8-4f15",
+      "fromNodeId": "7f255b86-fd1d-4325-9523-8d86d0b68e6c",
+      "toNodeId": "240b511f-eec9-4d03-b622-4122b02252d8"
+    },
+    {
+      "lineId": "line-1c958501-b152-4f70-be24-310db8355aba-cd943bcb-85d1-48c3-9514-b9f9ff8e84bf-e915",
+      "fromNodeId": "1c958501-b152-4f70-be24-310db8355aba",
+      "toNodeId": "cd943bcb-85d1-48c3-9514-b9f9ff8e84bf"
+    },
+    {
+      "lineId": "line-cc1b9a48-0b73-4bfb-9fa1-7ba7565fa621-798a8bdc-4fa7-452c-96b2-d844238ba80f-489e",
+      "fromNodeId": "cc1b9a48-0b73-4bfb-9fa1-7ba7565fa621",
+      "toNodeId": "798a8bdc-4fa7-452c-96b2-d844238ba80f"
+    },
+    {
+      "lineId": "line-240b511f-eec9-4d03-b622-4122b02252d8-cc1b9a48-0b73-4bfb-9fa1-7ba7565fa621-9759",
+      "fromNodeId": "240b511f-eec9-4d03-b622-4122b02252d8",
+      "toNodeId": "cc1b9a48-0b73-4bfb-9fa1-7ba7565fa621"
+    },
+    {
+      "lineId": "line-1652e7c7-3c0b-4b6e-a906-57f1c0c2cd61-96f99417-f95a-48ac-b2ab-654b0ba03c35-02d8",
+      "fromNodeId": "1652e7c7-3c0b-4b6e-a906-57f1c0c2cd61",
+      "toNodeId": "96f99417-f95a-48ac-b2ab-654b0ba03c35"
+    },
+    {
+      "lineId": "line-96f99417-f95a-48ac-b2ab-654b0ba03c35-da06f1f1-5c47-48f3-8226-b7acdb482598-ce7b",
+      "fromNodeId": "96f99417-f95a-48ac-b2ab-654b0ba03c35",
+      "toNodeId": "da06f1f1-5c47-48f3-8226-b7acdb482598"
+    },
+    {
+      "lineId": "line-da06f1f1-5c47-48f3-8226-b7acdb482598-0bda1cda-c607-41a8-a89a-880b30dc82d9-848d",
+      "fromNodeId": "da06f1f1-5c47-48f3-8226-b7acdb482598",
+      "toNodeId": "0bda1cda-c607-41a8-a89a-880b30dc82d9"
+    },
+    {
+      "lineId": "line-e0fe3a62-c38f-4a53-8568-ea55e01138ce-cd943bcb-85d1-48c3-9514-b9f9ff8e84bf-ecd0",
+      "fromNodeId": "e0fe3a62-c38f-4a53-8568-ea55e01138ce",
+      "toNodeId": "cd943bcb-85d1-48c3-9514-b9f9ff8e84bf"
+    },
+    {
+      "lineId": "line-0bda1cda-c607-41a8-a89a-880b30dc82d9-e0fe3a62-c38f-4a53-8568-ea55e01138ce-a56b",
+      "fromNodeId": "0bda1cda-c607-41a8-a89a-880b30dc82d9",
+      "toNodeId": "e0fe3a62-c38f-4a53-8568-ea55e01138ce"
+    }
+  ]
+}

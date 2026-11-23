@@ -11,9 +11,11 @@ import (
 )
 
 type Response struct {
-	Success bool   `json:"success"`
-	Message string `json:"message"`
-	Details string `json:"details,omitempty"`
+	Success    bool   `json:"success"`
+	Message    string `json:"message"`
+	Details    string `json:"details,omitempty"`
+	BinlogFile string `json:"binlog_file,omitempty"`
+	BinlogPos  string `json:"binlog_pos,omitempty"`
 }
 
 type BaseRequest struct {
@@ -54,11 +56,80 @@ func runCommandOutput(name string, args ...string) (string, error) {
 	return string(output), nil
 }
 
+func extractCleanLines(raw string) []string {
+	var cleanLines []string
+	for _, line := range strings.Split(raw, "\n") {
+		trimmed := strings.TrimSpace(line)
+		if trimmed != "" && !strings.HasPrefix(trimmed, "mysql:") {
+			cleanLines = append(cleanLines, trimmed)
+		}
+	}
+	return cleanLines
+}
+
+func getMasterBinlogStatus(masterName, rootPassword string) (string, string, error) {
+	showMasterStatus, err := runCommandOutput(
+		"docker", "exec", "-i", masterName,
+		"mysql", "-uroot", fmt.Sprintf("-p%s", rootPassword),
+		"-N", "-e", "SHOW MASTER STATUS;",
+	)
+	if err != nil {
+		return "", "", fmt.Errorf("fallo al consultar estado del Master %s: %w", masterName, err)
+	}
+
+	cleanLines := extractCleanLines(showMasterStatus)
+	if len(cleanLines) == 0 {
+		return "", "", fmt.Errorf("el Master %s no devolvió filas en SHOW MASTER STATUS (verifique que log-bin esté activo)", masterName)
+	}
+
+	fields := strings.Fields(cleanLines[0])
+	if len(fields) < 2 {
+		return "", "", fmt.Errorf("salida inesperada de SHOW MASTER STATUS en %s: %q", masterName, cleanLines[0])
+	}
+
+	return fields[0], fields[1], nil
+}
+
+func waitForMySQLReady(containerName, rootPassword string) error {
+	const maxAttempts = 40
+	var lastErr error
+
+	for attempt := 1; attempt <= maxAttempts; attempt++ {
+		runningOut, inspectErr := runCommandOutput("docker", "inspect", "-f", "{{.State.Running}}", containerName)
+		if inspectErr != nil || strings.TrimSpace(runningOut) != "true" {
+			return fmt.Errorf("el contenedor %s no está en ejecución (estado: %q, error: %v)", containerName, strings.TrimSpace(runningOut), inspectErr)
+		}
+
+		lastErr = runCommand(
+			"docker", "exec", containerName,
+			"mysql",
+			"-h", "127.0.0.1",
+			"-P", "3306",
+			"-uroot",
+			fmt.Sprintf("-p%s", rootPassword),
+			"-e", "SELECT 1",
+		)
+
+		if lastErr == nil {
+			return nil
+		}
+
+		time.Sleep(3 * time.Second)
+	}
+
+	return fmt.Errorf("MySQL en %s no estuvo disponible por TCP tras %d intentos: %w", containerName, maxAttempts, lastErr)
+}
+
 // Función unificada y robusta para desplegar cualquier nodo MySQL (Maestro o Réplica)
 func deployMySQLContainer(req BaseRequest, extraArgs ...string) error {
 	// 1. Asegurar la red compartida
-	_ = runCommand("docker", "network", "create", "mysql-net")
-	
+	if err := runCommand("docker", "network", "create", "mysql-net"); err != nil {
+		// Si ya existe, docker network create devuelve error; verificamos que exista
+		if inspectErr := runCommand("docker", "network", "inspect", "mysql-net"); inspectErr != nil {
+			return fmt.Errorf("no se pudo asegurar la red mysql-net: %w", err)
+		}
+	}
+
 	// 2. Limpieza controlada específica del contenedor actual para permitir múltiples instancias
 	_ = runCommand("docker", "rm", "-f", "-v", req.ContainerName)
 
@@ -69,7 +140,6 @@ func deployMySQLContainer(req BaseRequest, extraArgs ...string) error {
 		"-e", fmt.Sprintf("MYSQL_ROOT_PASSWORD=%s", req.RootPassword),
 		"-e", fmt.Sprintf("MYSQL_DATABASE=%s", req.DbName),
 		"-d", "mysql:8.0",
-		// Se elimina el --server-id duplicado de aquí. Se pasa exclusivamente por extraArgs.
 	}
 	args = append(args, extraArgs...)
 
@@ -77,30 +147,9 @@ func deployMySQLContainer(req BaseRequest, extraArgs ...string) error {
 		return fmt.Errorf("fallo al iniciar el contenedor: %w", err)
 	}
 
-	// 3. Esperar a que MySQL esté disponible por TCP (evita el falso positivo del socket local)
-	const maxAttempts = 40
-	var lastErr error
-
-	for attempt := 1; attempt <= maxAttempts; attempt++ {
-		lastErr = runCommand(
-			"docker", "exec", req.ContainerName,
-			"mysql",
-			"-h", "127.0.0.1",
-			"-P", "3306",
-			"-uroot",
-			fmt.Sprintf("-p%s", req.RootPassword),
-			"-e", "SELECT 1",
-		)
-
-		if lastErr == nil {
-			break
-		}
-
-		time.Sleep(3 * time.Second)
-	}
-
-	if lastErr != nil {
-		return fmt.Errorf("MySQL no estuvo disponible por TCP tras %d intentos: %w", maxAttempts, lastErr)
+	// 3. Esperar a que MySQL esté disponible por TCP
+	if err := waitForMySQLReady(req.ContainerName, req.RootPassword); err != nil {
+		return err
 	}
 
 	// 4. Garantizar la existencia y configuración de la base de datos
@@ -110,6 +159,45 @@ func deployMySQLContainer(req BaseRequest, extraArgs ...string) error {
 	}
 
 	return nil
+}
+
+func checkReplicaStatus(replicaName, rootPassword string) (string, error) {
+	time.Sleep(2 * time.Second)
+
+	out, err := runCommandOutput(
+		"docker", "exec", "-i", replicaName,
+		"mysql", "-uroot", fmt.Sprintf("-p%s", rootPassword),
+		"-e", "SHOW REPLICA STATUS\\G",
+	)
+	if err != nil {
+		return "", fmt.Errorf("no se pudo consultar SHOW REPLICA STATUS en %s: %w", replicaName, err)
+	}
+
+	ioRunning := ""
+	sqlRunning := ""
+	lastIOError := ""
+	lastSQLError := ""
+
+	for _, line := range strings.Split(out, "\n") {
+		trimmed := strings.TrimSpace(line)
+		switch {
+		case strings.HasPrefix(trimmed, "Replica_IO_Running:"):
+			ioRunning = strings.TrimSpace(strings.TrimPrefix(trimmed, "Replica_IO_Running:"))
+		case strings.HasPrefix(trimmed, "Replica_SQL_Running:"):
+			sqlRunning = strings.TrimSpace(strings.TrimPrefix(trimmed, "Replica_SQL_Running:"))
+		case strings.HasPrefix(trimmed, "Last_IO_Error:"):
+			lastIOError = strings.TrimSpace(strings.TrimPrefix(trimmed, "Last_IO_Error:"))
+		case strings.HasPrefix(trimmed, "Last_SQL_Error:"):
+			lastSQLError = strings.TrimSpace(strings.TrimPrefix(trimmed, "Last_SQL_Error:"))
+		}
+	}
+
+	summary := fmt.Sprintf("IO=%s, SQL=%s", ioRunning, sqlRunning)
+	if ioRunning != "Yes" || sqlRunning != "Yes" {
+		return summary, fmt.Errorf("la replicación no quedó activa (%s). Last_IO_Error=%q | Last_SQL_Error=%q", summary, lastIOError, lastSQLError)
+	}
+
+	return summary, nil
 }
 
 // Middleware común para validar métodos HTTP y cabeceras CORS básicas
@@ -134,10 +222,18 @@ func handleRequest(w http.ResponseWriter, r *http.Request, handlerFunc func(http
 }
 
 func applyDefaultsBase(req *BaseRequest) {
-	if req.RootPassword == "" { req.RootPassword = "rootpassword" }
-	if req.DbName == "" { req.DbName = "testdb" }
-	if req.ReplUser == "" { req.ReplUser = "repl" }
-	if req.ReplPassword == "" { req.ReplPassword = "replpassword" }
+	if req.RootPassword == "" {
+		req.RootPassword = "rootpassword"
+	}
+	if req.DbName == "" {
+		req.DbName = "testdb"
+	}
+	if req.ReplUser == "" {
+		req.ReplUser = "repl"
+	}
+	if req.ReplPassword == "" {
+		req.ReplPassword = "replpassword"
+	}
 }
 
 func setupMasterHandler(w http.ResponseWriter, r *http.Request) {
@@ -170,8 +266,7 @@ func setupMasterHandler(w http.ResponseWriter, r *http.Request) {
 		"--binlog-format=ROW",
 	}
 
-	err := deployMySQLContainer(req.BaseRequest, extraArgs...)
-	if err != nil {
+	if err := deployMySQLContainer(req.BaseRequest, extraArgs...); err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(Response{Success: false, Message: "Fallo al desplegar el contenedor Master", Details: err.Error()})
@@ -185,29 +280,32 @@ func setupMasterHandler(w http.ResponseWriter, r *http.Request) {
 		req.ReplUser, req.ReplPassword, req.ReplUser,
 	)
 
-	err = runCommand("docker", "exec", "-i", req.ContainerName, "mysql", "-uroot", fmt.Sprintf("-p%s", req.RootPassword), "-e", createReplUserSQL)
-	if err != nil {
+	if err := runCommand("docker", "exec", "-i", req.ContainerName, "mysql", "-uroot", fmt.Sprintf("-p%s", req.RootPassword), "-e", createReplUserSQL); err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(Response{Success: false, Message: "Fallo al crear el usuario de replicación en el Master", Details: err.Error()})
 		return
 	}
 
-	showMasterStatus, err := runCommandOutput("docker", "exec", "-i", req.ContainerName, "mysql", "-uroot", fmt.Sprintf("-p%s", req.RootPassword), "-N", "-e", "SHOW MASTER STATUS;")
-	if err == nil {
-		fields := strings.Fields(showMasterStatus)
-		if len(fields) >= 2 {
-			w.Header().Set("X-Binlog-File", fields[0])
-			w.Header().Set("X-Binlog-Pos", fields[1])
-		}
+	binlogFile, binlogPos, err := getMasterBinlogStatus(req.ContainerName, req.RootPassword)
+	if err != nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(Response{Success: false, Message: "Master desplegado, pero falló la lectura del estado del Binlog", Details: err.Error()})
+		return
 	}
 
+	w.Header().Set("X-Binlog-File", binlogFile)
+	w.Header().Set("X-Binlog-Pos", binlogPos)
 	w.Header().Set("Content-Type", "application/json")
-	log.Printf("¡Master %s desplegado y configurado correctamente!\n", req.ContainerName)
+
+	log.Printf("¡Master %s desplegado y configurado correctamente! (%s:%s)\n", req.ContainerName, binlogFile, binlogPos)
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(Response{
-		Success: true,
-		Message: fmt.Sprintf("Contenedor Master %s desplegado y usuario de replicación configurado con éxito.", req.ContainerName),
+		Success:    true,
+		Message:    fmt.Sprintf("Contenedor Master %s desplegado y usuario de replicación configurado con éxito.", req.ContainerName),
+		BinlogFile: binlogFile,
+		BinlogPos:  binlogPos,
 	})
 }
 
@@ -228,69 +326,73 @@ func setupReplicaHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	req.ContainerName = req.ReplicaName
 
-	if req.MasterName == "" { req.MasterName = "mysql-master" }
-	if req.Port == "" { req.Port = "3307" }
-	if req.ServerID == 0 { req.ServerID = int(time.Now().Unix()%1000) + 10 }
+	if req.MasterName == "" {
+		req.MasterName = "mysql-master"
+	}
+	if req.Port == "" {
+		req.Port = "3307"
+	}
+	if req.ServerID == 0 {
+		req.ServerID = int(time.Now().Unix()%1000) + 10
+	}
 
-	log.Printf("Desplegando réplica: %s vinculada a %s...\n", req.ReplicaName, req.MasterName)
+	// 1. Verificar el Master y obtener coordenadas del binlog antes de crear la réplica
+	binlogFile, binlogPos, err := getMasterBinlogStatus(req.MasterName, req.RootPassword)
+	if err != nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(Response{
+			Success: false,
+			Message: "No se puede crear la réplica porque el Master no está listo o no tiene binlog activo",
+			Details: err.Error(),
+		})
+		return
+	}
+
+	log.Printf("Desplegando réplica: %s vinculada a %s (%s:%s)...\n", req.ReplicaName, req.MasterName, binlogFile, binlogPos)
 
 	extraArgs := []string{
 		fmt.Sprintf("--server-id=%d", req.ServerID),
 	}
 
-	err := deployMySQLContainer(req.BaseRequest, extraArgs...)
-	if err != nil {
+	if err := deployMySQLContainer(req.BaseRequest, extraArgs...); err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(Response{Success: false, Message: "Fallo al desplegar la réplica base", Details: err.Error()})
 		return
 	}
 
-	showMasterStatus, err := runCommandOutput("docker", "exec", "-i", req.MasterName, "mysql", "-uroot", fmt.Sprintf("-p%s", req.RootPassword), "-N", "-e", "SHOW MASTER STATUS;")
-	if err != nil {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(Response{Success: false, Message: "Fallo al obtener estado del Master (Binlog)", Details: err.Error()})
-		return
-	}
-
-	var cleanLines []string
-	for _, line := range strings.Split(showMasterStatus, "\n") {
-		trimmed := strings.TrimSpace(line)
-		if trimmed != "" && !strings.HasPrefix(trimmed, "mysql:") {
-			cleanLines = append(cleanLines, trimmed)
-		}
-	}
-
-	if len(cleanLines) == 0 {
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(Response{Success: false, Message: "No se pudo leer la información del Binlog del Master"})
-		return
-	}
-
-	fields := strings.Fields(cleanLines[0])
-	binlogFile := fields[0]
-	binlogPos := fields[1]
-
 	replicationSQL := fmt.Sprintf(
-		"STOP SLAVE; "+
-			"CHANGE MASTER TO "+
-			"MASTER_HOST='%s', "+
-			"MASTER_USER='%s', "+
-			"MASTER_PASSWORD='%s', "+
-			"MASTER_LOG_FILE='%s', "+
-			"MASTER_LOG_POS=%s, "+
-			"GET_MASTER_PUBLIC_KEY=1; "+
-			"START SLAVE;",
+		"STOP REPLICA; "+
+			"CHANGE REPLICATION SOURCE TO "+
+			"SOURCE_HOST='%s', "+
+			"SOURCE_USER='%s', "+
+			"SOURCE_PASSWORD='%s', "+
+			"SOURCE_LOG_FILE='%s', "+
+			"SOURCE_LOG_POS=%s, "+
+			"GET_SOURCE_PUBLIC_KEY=1; "+
+			"START REPLICA;",
 		req.MasterName, req.ReplUser, req.ReplPassword, binlogFile, binlogPos,
 	)
 
-	err = runCommand("docker", "exec", "-i", req.ContainerName, "mysql", "-uroot", fmt.Sprintf("-p%s", req.RootPassword), "-e", replicationSQL)
-	if err != nil {
+	if err := runCommand("docker", "exec", "-i", req.ContainerName, "mysql", "-uroot", fmt.Sprintf("-p%s", req.RootPassword), "-e", replicationSQL); err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(Response{Success: false, Message: "Fallo al vincular la réplica con el Master", Details: err.Error()})
+		return
+	}
+
+	statusSummary, err := checkReplicaStatus(req.ContainerName, req.RootPassword)
+	if err != nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(Response{
+			Success:    false,
+			Message:    "La réplica se creó, pero los hilos de replicación no están activos",
+			Details:    err.Error(),
+			BinlogFile: binlogFile,
+			BinlogPos:  binlogPos,
+		})
 		return
 	}
 
@@ -298,11 +400,13 @@ func setupReplicaHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("X-Binlog-Pos", binlogPos)
 	w.Header().Set("Content-Type", "application/json")
 
-	log.Printf("¡Réplica %s vinculada correctamente con Master (%s)!\n", req.ReplicaName, req.MasterName)
+	log.Printf("¡Réplica %s vinculada y activa con Master (%s) [%s]!\n", req.ReplicaName, req.MasterName, statusSummary)
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(Response{
-		Success: true,
-		Message: fmt.Sprintf("Réplica %s sincronizada y vinculada correctamente al Master.", req.ReplicaName),
+		Success:    true,
+		Message:    fmt.Sprintf("Réplica %s sincronizada y vinculada correctamente al Master (%s).", req.ReplicaName, statusSummary),
+		BinlogFile: binlogFile,
+		BinlogPos:  binlogPos,
 	})
 }
 
