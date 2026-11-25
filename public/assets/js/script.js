@@ -69,6 +69,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const targetServiceEndpoint = document.getElementById('targetServiceEndpoint');
     const targetServiceTokenVal = document.getElementById('targetServiceTokenVal');
     const targetServiceDB = document.getElementById('targetServiceDB');
+    const targetServicePASS = document.getElementById('targetServicePASS');
+    const targetServicePORT = document.getElementById('targetServicePORT');
     const tServiceDBTable = document.getElementById('tServiceDBTable');
     const tsTablePrimaryKey = document.getElementById('tsTablePrimaryKey');
     const tsClientFilePath = document.getElementById('tsClientFilePath');
@@ -1043,6 +1045,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 targetServiceEndpoint: targetServiceEndpoint.value.trim(),
                 targetServiceTokenVal: targetServiceTokenVal.value.trim(),
                 db: targetServiceDB.value.trim(),
+                pass: targetServicePASS.value.trim(),
+                port: targetServicePORT.value.trim(),
                 tableName: tServiceDBTable.value.trim(),
                 primaryKey: tsTablePrimaryKey.value.trim(),
                 tsClientFilePath: tsClientFilePath.value.trim()
