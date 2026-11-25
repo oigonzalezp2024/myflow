@@ -86,7 +86,7 @@
         "filePath": "../project/public/api/"
       },
       "ragConfig": {},
-      "generatedCode": "<?php\nnamespace Presentation\\Controllers;\n\nrequire_once __DIR__ . '/../../src/Application/DTO/UsuariosRequestDTO.php';\nrequire_once __DIR__ . '/../../src/Application/UseCases/ManageUsuariosUseCase.php';\nrequire_once __DIR__ . '/../../src/Domain/Entities/UsuariosEntity.php';\nrequire_once __DIR__ . '/../../src/Domain/Repositories/UsuariosRepositoryInterface.php';\nrequire_once __DIR__ . '/../../src/Infrastructure/Persistence/MySQLUsuariosRepository.php';\n\nuse Domain\\Entities\\UsuariosEntity;\nuse Domain\\Repositories\\UsuariosRepositoryInterface;\nuse Infrastructure\\Persistence\\MySQLUsuariosRepository;\nuse Application\\UseCases\\ManageUsuariosUseCase;\nuse Application\\DTO\\UsuariosRequestDTO;\nuse PDO;\n\nheader('Content-Type: application/json');\nheader('Access-Control-Allow-Origin: *');\nheader('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');\nheader('Access-Control-Allow-Headers: Content-Type, Authorization');\n\nif ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { exit(0); }\n\ndefine('API_TOKEN', 'token_53e5436caacfa0ccd5d56e19e07d82f8');\n$headers = apache_request_headers();\n$authHeader = $headers['Authorization'] ?? $headers['authorization'] ?? '';\nif (!preg_match('/Bearer\\s(\\S+)/', $authHeader, $matches) || $matches[1] !== API_TOKEN) {\n    http_response_code(401);\n    echo json_encode(['success' => false, 'error' => 'Acceso no autorizado.']);\n    exit();\n}\n\n$pdo = new PDO('mysql:host=localhost;port=3307;dbname=testdb;charset=utf8mb4', 'root', '12345678', [\n    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,\n    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC\n]);\n\n$repository = new MySQLUsuariosRepository($pdo);\n$useCase = new ManageUsuariosUseCase($repository);\n\n$method = $_SERVER['REQUEST_METHOD'];\n$input = json_decode(file_get_contents('php://input'), true) ?? [];\n$id = $_GET['id_usuario'] ?? null;\n\nswitch ($method) {\n    case 'GET':\n        if ($id) {\n            $entity = $useCase->handleGet($id);\n            echo json_encode($entity ? $entity->toArray() : ['message' => 'Registro no encontrado']);\n        } else {\n            $entities = $useCase->handleList();\n            echo json_encode(array_map(fn($e) => $e->toArray(), $entities));\n        }\n        break;\n    case 'POST':\n        $dto = new UsuariosRequestDTO($input);\n        $insertId = $useCase->handleCreate($dto);\n        echo json_encode(['success' => true, 'id_usuario' => $insertId]);\n        break;\n    case 'PUT':\n        if (!$id) { echo json_encode(['error' => 'Se requiere el campo id_usuario']); break; }\n        $dto = new UsuariosRequestDTO($input);\n        $updated = $useCase->handleUpdate($id, $dto);\n        echo json_encode(['success' => true, 'updated' => $updated]);\n        break;\n    case 'DELETE':\n        if (!$id) { echo json_encode(['error' => 'Se requiere el campo id_usuario']); break; }\n        $deleted = $useCase->handleDelete($id);\n        echo json_encode(['success' => true, 'deleted' => $deleted]);\n        break;\n}\n"
+      "generatedCode": "<?php\nnamespace Presentation\\Controllers;\n\nrequire_once __DIR__ . '/../../src/Application/DTO/UsuariosRequestDTO.php';\nrequire_once __DIR__ . '/../../src/Application/UseCases/ManageUsuariosUseCase.php';\nrequire_once __DIR__ . '/../../src/Domain/Entities/UsuariosEntity.php';\nrequire_once __DIR__ . '/../../src/Domain/Repositories/UsuariosRepositoryInterface.php';\nrequire_once __DIR__ . '/../../src/Infrastructure/Persistence/MySQLUsuariosRepository.php';\n\nuse Domain\\Entities\\UsuariosEntity;\nuse Domain\\Repositories\\UsuariosRepositoryInterface;\nuse Infrastructure\\Persistence\\MySQLUsuariosRepository;\nuse Application\\UseCases\\ManageUsuariosUseCase;\nuse Application\\DTO\\UsuariosRequestDTO;\nuse PDO;\n\nheader('Content-Type: application/json');\nheader('Access-Control-Allow-Origin: *');\nheader('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');\nheader('Access-Control-Allow-Headers: Content-Type, Authorization');\n\nif ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { exit(0); }\n\ndefine('API_TOKEN', 'token_acca47c8e02b73fb1f14e2e6ce49b0fd');\n$headers = apache_request_headers();\n$authHeader = $headers['Authorization'] ?? $headers['authorization'] ?? '';\nif (!preg_match('/Bearer\\s(\\S+)/', $authHeader, $matches) || $matches[1] !== API_TOKEN) {\n    http_response_code(401);\n    echo json_encode(['success' => false, 'error' => 'Acceso no autorizado.']);\n    exit();\n}\n\n$pdo = new PDO('mysql:host=localhost;port=3307;dbname=testdb;charset=utf8mb4', 'root', '12345678', [\n    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,\n    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC\n]);\n\n$repository = new MySQLUsuariosRepository($pdo);\n$useCase = new ManageUsuariosUseCase($repository);\n\n$method = $_SERVER['REQUEST_METHOD'];\n$input = json_decode(file_get_contents('php://input'), true) ?? [];\n$id = $_GET['id_usuario'] ?? null;\n\nswitch ($method) {\n    case 'GET':\n        if ($id) {\n            $entity = $useCase->handleGet($id);\n            echo json_encode($entity ? $entity->toArray() : ['message' => 'Registro no encontrado']);\n        } else {\n            $entities = $useCase->handleList();\n            echo json_encode(array_map(fn($e) => $e->toArray(), $entities));\n        }\n        break;\n    case 'POST':\n        $dto = new UsuariosRequestDTO($input);\n        $insertId = $useCase->handleCreate($dto);\n        echo json_encode(['success' => true, 'id_usuario' => $insertId]);\n        break;\n    case 'PUT':\n        if (!$id) { echo json_encode(['error' => 'Se requiere el campo id_usuario']); break; }\n        $dto = new UsuariosRequestDTO($input);\n        $updated = $useCase->handleUpdate($id, $dto);\n        echo json_encode(['success' => true, 'updated' => $updated]);\n        break;\n    case 'DELETE':\n        if (!$id) { echo json_encode(['error' => 'Se requiere el campo id_usuario']); break; }\n        $deleted = $useCase->handleDelete($id);\n        echo json_encode(['success' => true, 'deleted' => $deleted]);\n        break;\n}\n"
     },
     {
       "id": "6d48362e-7399-415a-b31c-bb8f3edab256",
@@ -120,11 +120,38 @@
         "status": "pending",
         "endpointUrl": "http://localhost/myflow/public/controllers/generate_case_uses.php",
         "targetServiceEndpoint": "http://localhost/myflow/project/public/api/UsuariosApi.php",
-        "targetServiceTokenVal": "",
+        "targetServiceTokenVal": "token_53e5436caacfa0ccd5d56e19e07d82f8",
         "db": "testdb",
         "tableName": "usuarios",
         "primaryKey": "id_usuario",
         "tsClientFilePath": "project/public/"
+      },
+      "ragConfig": {}
+    },
+    {
+      "id": "6fb96782-5818-4c47-9916-cd92d0d26b53",
+      "type": "send-data",
+      "title": "RAG Server",
+      "subtitle": "Tabla: usuarios",
+      "x": 1288,
+      "y": 239.99999237060547,
+      "icon": "fas fa-paper-plane",
+      "sendDataConfig": {
+        "endpointUrl": "http://localhost/myflow/project/public/consume_usuarios_create.php",
+        "dbName": "testdb",
+        "tableName": "usuarios",
+        "formFields": [
+          {
+            "Field": "nombre",
+            "Type": "VARCHAR",
+            "value": ""
+          },
+          {
+            "Field": "pass",
+            "Type": "VARCHAR",
+            "value": ""
+          }
+        ]
       },
       "ragConfig": {}
     }

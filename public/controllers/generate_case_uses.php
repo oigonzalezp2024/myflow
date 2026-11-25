@@ -34,6 +34,7 @@ if (
 $primaryKey            = $data['title'] ?? 'id_proveedor';
 $tableName             = $data['tableName'] ?? 'pedidos';
 $db                    = $data['db'] ?? 'test_insumos';
+$port                  = $data['port'] ?? '3307';
 $targetServiceEndpoint = $data['targetServiceEndpoint'] ?? 'http://localhost/myflow/public/api/insumos/proveedores/';
 $targetServiceTokenVal = $_SESSION['api_tokens'][$tableName] ?? null;
 
@@ -62,6 +63,7 @@ foreach ($methods as $targetMethod) {
     $data = [];
     $data['host'] = 'localhost';
     $data['db'] = $db;
+    $data['port'] = $port;
     $data['action'] = 'generate_consumer';
     $data['endpointUrl'] = $targetServiceEndpoint;
     

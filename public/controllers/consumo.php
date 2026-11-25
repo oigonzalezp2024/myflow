@@ -49,8 +49,8 @@ $api_path = $data['api_path'] ?? 'clients/ApiClient.php';
 $host     = $data['host'] ?? '127.0.0.1';
 $db       = $data['db'] ?? 'myflow';
 $user     = $data['user'] ?? 'root';
-$pass     = $data['pass'] ?? '';
-$port     = $data['port'] ?? '3306';
+$pass     = $data['pass'] ?? '12345678';
+$port     = $data['port'] ?? '3307';
 $charset  = $data['charset'] ?? 'utf8mb4';
 
 if ($action === 'generate_consumer') {
