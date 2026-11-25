@@ -50,7 +50,7 @@ $host     = $data['host'] ?? '127.0.0.1';
 $db       = $data['db'] ?? 'myflow';
 $user     = $data['user'] ?? 'root';
 $pass     = $data['pass'] ?? '';
-$port     = $data['port'] ?? '3306';
+$port     = $data['port'] ?? '';
 $charset  = $data['charset'] ?? 'utf8mb4';
 
 if ($action === 'generate_consumer') {

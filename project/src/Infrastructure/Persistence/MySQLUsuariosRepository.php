@@ -26,14 +26,14 @@ class MySQLUsuariosRepository implements UsuariosRepositoryInterface {
     }
 
     public function create(array $data): int {
-        $sql = 'INSERT INTO `usuarios` (`nombre`) VALUES (:nombre)';
+        $sql = 'INSERT INTO `usuarios` (`nombre`, `pass`) VALUES (:nombre, :pass)';
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($data);
         return (int)$this->pdo->lastInsertId();
     }
 
     public function update($id, array $data): int {
-        $sql = 'UPDATE `usuarios` SET `nombre` = :nombre WHERE `id_usuario` = :id_usuario';
+        $sql = 'UPDATE `usuarios` SET `nombre` = :nombre, `pass` = :pass WHERE `id_usuario` = :id_usuario';
         $data['id_usuario'] = $id;
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($data);
