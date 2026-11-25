@@ -5,8 +5,8 @@
       "type": "mysql-master",
       "title": "MySQL Master",
       "subtitle": "Port: 3307 (Master)",
-      "x": 40,
-      "y": 41,
+      "x": 158,
+      "y": 79.98958587646484,
       "icon": "fas fa-hdd",
       "ragConfig": {},
       "mrConfig": {
@@ -34,7 +34,45 @@
           "details": "Master activo y listo"
         }
       }
+    },
+    {
+      "id": "8bf4223c-f021-4246-afb8-4c8c3fb5004e",
+      "type": "database",
+      "title": "usuarios",
+      "subtitle": "MySQL Master Usuarios",
+      "x": 458.5885009765625,
+      "y": 81.34375762939453,
+      "icon": "fas fa-database",
+      "dbConfig": {
+        "host": "localhost",
+        "port": "3307",
+        "username": "root",
+        "password": "12345678",
+        "dbName": "testdb",
+        "tableName": "usuarios",
+        "fields": [
+          {
+            "key": "id_usuario",
+            "value": "int(11)"
+          },
+          {
+            "key": "nombre",
+            "value": "varchar(190)"
+          },
+          {
+            "key": "pass",
+            "value": "varchar(190)"
+          }
+        ]
+      },
+      "ragConfig": {}
     }
   ],
-  "connections": []
+  "connections": [
+    {
+      "lineId": "line-5d75dc8a-afd6-4f13-9e72-1e22a4ab3627-8bf4223c-f021-4246-afb8-4c8c3fb5004e-dd78",
+      "fromNodeId": "5d75dc8a-afd6-4f13-9e72-1e22a4ab3627",
+      "toNodeId": "8bf4223c-f021-4246-afb8-4c8c3fb5004e"
+    }
+  ]
 }
