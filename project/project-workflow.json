@@ -5,8 +5,8 @@
       "type": "mysql-master",
       "title": "MySQL Master",
       "subtitle": "Port: 3307 (Master)",
-      "x": 158,
-      "y": 79.98958587646484,
+      "x": 18,
+      "y": 298.98958587646484,
       "icon": "fas fa-hdd",
       "ragConfig": {},
       "mrConfig": {
@@ -40,8 +40,8 @@
       "type": "database",
       "title": "usuarios",
       "subtitle": "MySQL Master Usuarios",
-      "x": 458.5885009765625,
-      "y": 81.34375762939453,
+      "x": 318.5885009765625,
+      "y": 300.34375762939453,
       "icon": "fas fa-database",
       "dbConfig": {
         "host": "localhost",
@@ -72,8 +72,8 @@
       "type": "crud-api",
       "title": "RAG Server",
       "subtitle": "Weaviate Docker",
-      "x": 719.9322509765625,
-      "y": 81.94271087646484,
+      "x": 620.9114379882812,
+      "y": 301.94010162353516,
       "icon": "fas fa-laptop-code",
       "apiConfig": {
         "action": "generate",
@@ -86,7 +86,47 @@
         "filePath": "../project/public/api/"
       },
       "ragConfig": {},
-      "generatedCode": "<?php\nnamespace Presentation\\Controllers;\n\nrequire_once __DIR__ . '/../../src/Application/DTO/UsuariosRequestDTO.php';\nrequire_once __DIR__ . '/../../src/Application/UseCases/ManageUsuariosUseCase.php';\nrequire_once __DIR__ . '/../../src/Domain/Entities/UsuariosEntity.php';\nrequire_once __DIR__ . '/../../src/Domain/Repositories/UsuariosRepositoryInterface.php';\nrequire_once __DIR__ . '/../../src/Infrastructure/Persistence/MySQLUsuariosRepository.php';\n\nuse Domain\\Entities\\UsuariosEntity;\nuse Domain\\Repositories\\UsuariosRepositoryInterface;\nuse Infrastructure\\Persistence\\MySQLUsuariosRepository;\nuse Application\\UseCases\\ManageUsuariosUseCase;\nuse Application\\DTO\\UsuariosRequestDTO;\nuse PDO;\n\nheader('Content-Type: application/json');\nheader('Access-Control-Allow-Origin: *');\nheader('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');\nheader('Access-Control-Allow-Headers: Content-Type, Authorization');\n\nif ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { exit(0); }\n\ndefine('API_TOKEN', 'token_ef0e669f0cf33bbe53d420d9a54603a8');\n$headers = apache_request_headers();\n$authHeader = $headers['Authorization'] ?? $headers['authorization'] ?? '';\nif (!preg_match('/Bearer\\s(\\S+)/', $authHeader, $matches) || $matches[1] !== API_TOKEN) {\n    http_response_code(401);\n    echo json_encode(['success' => false, 'error' => 'Acceso no autorizado.']);\n    exit();\n}\n\n$pdo = new PDO('mysql:host=localhost;port=3307;dbname=testdb;charset=utf8mb4', 'root', '12345678', [\n    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,\n    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC\n]);\n\n$repository = new MySQLUsuariosRepository($pdo);\n$useCase = new ManageUsuariosUseCase($repository);\n\n$method = $_SERVER['REQUEST_METHOD'];\n$input = json_decode(file_get_contents('php://input'), true) ?? [];\n$id = $_GET['id_usuario'] ?? null;\n\nswitch ($method) {\n    case 'GET':\n        if ($id) {\n            $entity = $useCase->handleGet($id);\n            echo json_encode($entity ? $entity->toArray() : ['message' => 'Registro no encontrado']);\n        } else {\n            $entities = $useCase->handleList();\n            echo json_encode(array_map(fn($e) => $e->toArray(), $entities));\n        }\n        break;\n    case 'POST':\n        $dto = new UsuariosRequestDTO($input);\n        $insertId = $useCase->handleCreate($dto);\n        echo json_encode(['success' => true, 'id_usuario' => $insertId]);\n        break;\n    case 'PUT':\n        if (!$id) { echo json_encode(['error' => 'Se requiere el campo id_usuario']); break; }\n        $dto = new UsuariosRequestDTO($input);\n        $updated = $useCase->handleUpdate($id, $dto);\n        echo json_encode(['success' => true, 'updated' => $updated]);\n        break;\n    case 'DELETE':\n        if (!$id) { echo json_encode(['error' => 'Se requiere el campo id_usuario']); break; }\n        $deleted = $useCase->handleDelete($id);\n        echo json_encode(['success' => true, 'deleted' => $deleted]);\n        break;\n}\n"
+      "generatedCode": "<?php\nnamespace Presentation\\Controllers;\n\nrequire_once __DIR__ . '/../../src/Application/DTO/UsuariosRequestDTO.php';\nrequire_once __DIR__ . '/../../src/Application/UseCases/ManageUsuariosUseCase.php';\nrequire_once __DIR__ . '/../../src/Domain/Entities/UsuariosEntity.php';\nrequire_once __DIR__ . '/../../src/Domain/Repositories/UsuariosRepositoryInterface.php';\nrequire_once __DIR__ . '/../../src/Infrastructure/Persistence/MySQLUsuariosRepository.php';\n\nuse Domain\\Entities\\UsuariosEntity;\nuse Domain\\Repositories\\UsuariosRepositoryInterface;\nuse Infrastructure\\Persistence\\MySQLUsuariosRepository;\nuse Application\\UseCases\\ManageUsuariosUseCase;\nuse Application\\DTO\\UsuariosRequestDTO;\nuse PDO;\n\nheader('Content-Type: application/json');\nheader('Access-Control-Allow-Origin: *');\nheader('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');\nheader('Access-Control-Allow-Headers: Content-Type, Authorization');\n\nif ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { exit(0); }\n\ndefine('API_TOKEN', 'token_53e5436caacfa0ccd5d56e19e07d82f8');\n$headers = apache_request_headers();\n$authHeader = $headers['Authorization'] ?? $headers['authorization'] ?? '';\nif (!preg_match('/Bearer\\s(\\S+)/', $authHeader, $matches) || $matches[1] !== API_TOKEN) {\n    http_response_code(401);\n    echo json_encode(['success' => false, 'error' => 'Acceso no autorizado.']);\n    exit();\n}\n\n$pdo = new PDO('mysql:host=localhost;port=3307;dbname=testdb;charset=utf8mb4', 'root', '12345678', [\n    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,\n    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC\n]);\n\n$repository = new MySQLUsuariosRepository($pdo);\n$useCase = new ManageUsuariosUseCase($repository);\n\n$method = $_SERVER['REQUEST_METHOD'];\n$input = json_decode(file_get_contents('php://input'), true) ?? [];\n$id = $_GET['id_usuario'] ?? null;\n\nswitch ($method) {\n    case 'GET':\n        if ($id) {\n            $entity = $useCase->handleGet($id);\n            echo json_encode($entity ? $entity->toArray() : ['message' => 'Registro no encontrado']);\n        } else {\n            $entities = $useCase->handleList();\n            echo json_encode(array_map(fn($e) => $e->toArray(), $entities));\n        }\n        break;\n    case 'POST':\n        $dto = new UsuariosRequestDTO($input);\n        $insertId = $useCase->handleCreate($dto);\n        echo json_encode(['success' => true, 'id_usuario' => $insertId]);\n        break;\n    case 'PUT':\n        if (!$id) { echo json_encode(['error' => 'Se requiere el campo id_usuario']); break; }\n        $dto = new UsuariosRequestDTO($input);\n        $updated = $useCase->handleUpdate($id, $dto);\n        echo json_encode(['success' => true, 'updated' => $updated]);\n        break;\n    case 'DELETE':\n        if (!$id) { echo json_encode(['error' => 'Se requiere el campo id_usuario']); break; }\n        $deleted = $useCase->handleDelete($id);\n        echo json_encode(['success' => true, 'deleted' => $deleted]);\n        break;\n}\n"
+    },
+    {
+      "id": "6d48362e-7399-415a-b31c-bb8f3edab256",
+      "type": "crud-client",
+      "title": "RAG Server",
+      "subtitle": "Weaviate Docker",
+      "x": 625.9609375,
+      "y": 134.97396087646484,
+      "icon": "fas fa-plug",
+      "clientConfig": {
+        "action": "generate_client",
+        "endpointUrl": "http://localhost/myflow/project/public/api/UsuariosApi.php",
+        "token": "token_53e5436caacfa0ccd5d56e19e07d82f8",
+        "primaryKey": "id_usuario",
+        "clientLanguage": "php"
+      },
+      "ragConfig": {},
+      "generatedClientCode": "<?php\n/**\n * Cliente PHP cURL autogenerado para consumir la API\n * Endpoint: http://localhost/myflow/project/public/api/UsuariosApi.php\n */\n\nclass ApiClient {\n    private $baseUrl;\n    private $token;\n    private $primaryKey;\n\n    public function __construct($baseUrl = 'http://localhost/myflow/project/public/api/UsuariosApi.php', $token = 'token_53e5436caacfa0ccd5d56e19e07d82f8', $primaryKey = 'id_usuario') {\n        $this->baseUrl = $baseUrl;\n        $this->token = $token;\n        $this->primaryKey = $primaryKey;\n    }\n\n    private function send($method, $data = null, $id = null) {\n        $url = $this->baseUrl;\n        if ($id !== null) {\n            $url .= '?' . $this->primaryKey . '=' . $id;\n        }\n\n        $ch = curl_init($url);\n        $headers = [\n            'Content-Type: application/json',\n            'Authorization: Bearer ' . $this->token\n        ];\n\n        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);\n        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);\n        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);\n\n        if ($data !== null && ($method === 'POST' || $method === 'PUT')) {\n            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));\n        }\n\n        $response = curl_exec($ch);\n        curl_close($ch);\n        return json_decode($response, true);\n    }\n\n    public function getAll() { return $this->send('GET'); }\n    public function getById($id) { return $this->send('GET', null, $id); }\n    public function create($data) { return $this->send('POST', $data); }\n    public function update($id, $data) { return $this->send('PUT', $data, $id); }\n    public function delete($id) { return $this->send('DELETE', null, $id); }\n}\n"
+    },
+    {
+      "id": "0fe5dc17-9ee1-40b8-aff5-2b7a5a98c2ea",
+      "type": "case-uses",
+      "title": "Casos de Uso Tabla Usuarios",
+      "subtitle": "Weaviate Docker",
+      "x": 976.0390625,
+      "y": 236.95833587646484,
+      "icon": "fas fa-solid fa-rss",
+      "caseUsesConfig": {
+        "title": "Casos de Uso Tabla Usuarios",
+        "description": "",
+        "status": "pending",
+        "endpointUrl": "http://localhost/myflow/public/controllers/generate_case_uses.php",
+        "targetServiceEndpoint": "http://localhost/myflow/project/public/api/UsuariosApi.php",
+        "targetServiceTokenVal": "",
+        "db": "testdb",
+        "tableName": "usuarios",
+        "primaryKey": "id_usuario",
+        "tsClientFilePath": "project/public/"
+      },
+      "ragConfig": {}
     }
   ],
   "connections": [
@@ -99,6 +139,16 @@
       "lineId": "line-8bf4223c-f021-4246-afb8-4c8c3fb5004e-0e994569-ad76-4848-a151-68ec750e1681-2479",
       "fromNodeId": "8bf4223c-f021-4246-afb8-4c8c3fb5004e",
       "toNodeId": "0e994569-ad76-4848-a151-68ec750e1681"
+    },
+    {
+      "lineId": "line-0e994569-ad76-4848-a151-68ec750e1681-0fe5dc17-9ee1-40b8-aff5-2b7a5a98c2ea-3847",
+      "fromNodeId": "0e994569-ad76-4848-a151-68ec750e1681",
+      "toNodeId": "0fe5dc17-9ee1-40b8-aff5-2b7a5a98c2ea"
+    },
+    {
+      "lineId": "line-6d48362e-7399-415a-b31c-bb8f3edab256-0fe5dc17-9ee1-40b8-aff5-2b7a5a98c2ea-588f",
+      "fromNodeId": "6d48362e-7399-415a-b31c-bb8f3edab256",
+      "toNodeId": "0fe5dc17-9ee1-40b8-aff5-2b7a5a98c2ea"
     }
   ]
 }
