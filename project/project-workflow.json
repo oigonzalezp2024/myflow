@@ -1,0 +1,40 @@
+{
+  "nodes": [
+    {
+      "id": "5d75dc8a-afd6-4f13-9e72-1e22a4ab3627",
+      "type": "mysql-master",
+      "title": "MySQL Master",
+      "subtitle": "Port: 3307 (Master)",
+      "x": 40,
+      "y": 41,
+      "icon": "fas fa-hdd",
+      "ragConfig": {},
+      "mrConfig": {
+        "type": "master",
+        "masterId": null,
+        "containerName": "mysql-master",
+        "port": "3307",
+        "dbName": "testdb",
+        "serverId": 1,
+        "rootPassword": "12345678",
+        "replUser": "replica",
+        "replPassword": "12345678",
+        "credentials": {
+          "port": "3307",
+          "username": "root",
+          "password": "12345678",
+          "dbName": "testdb"
+        },
+        "lastResult": {
+          "success": true,
+          "message": "Contenedor Master mysql-master desplegado y usuario de replicación configurado con éxito.",
+          "port": "3307",
+          "username": "root",
+          "db_name": "testdb",
+          "details": "Master activo y listo"
+        }
+      }
+    }
+  ],
+  "connections": []
+}
